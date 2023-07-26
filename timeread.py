@@ -1,6 +1,11 @@
+import os
+import sys as syst
+from time import  sleep
 from datetime import datetime
+from threading import Thread
+
 from logger import log_info
-language="de"
+
 def timereader(language, logg):
     if language == "en":
         now=datetime.now()
@@ -22,3 +27,24 @@ def timereader(language, logg):
         log_info(text, logg)
 
         return
+
+def title_time(stop_event, language):
+    sys=open("system.txt", "r").read()
+    while not stop_event.is_set():
+        if sys=="Windows":
+            now=datetime.now()
+            if language=="de":
+                now=now.strftime("%d/%m/%Y, %H:%M:%S")
+            if language=="en":
+                now=now.strftime("%m/%d/%Y, %r")
+
+            os.system(f"title Text Converter V2.3 {now}")
+            sleep(1)
+
+        if sys=="Linux":
+            now=datetime.now()
+            now=now.strftime("%d/%m/%Y, %H:%M:%S")
+            syst.stdout.write(f"\x1b]2;Text Converter V2.3 {now}\x07")
+            #print("Time Updated") somehow that fixes the title...
+            sleep(1)
+    #exit()
