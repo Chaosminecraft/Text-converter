@@ -40,5 +40,5 @@ data =  open("updater.py", "rb").read()
 
 string=base64.b64encode(data)
 
-with open("connverter.txt", "wb") as save:
+with open("updater.txt", "wb") as save:
     save.write(string)
