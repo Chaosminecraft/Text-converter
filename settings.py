@@ -6,7 +6,13 @@ import json
 #logg settings
 #language settings
 #ad settings
+#migrating old settings
 
+def migrate_settings():
+    with open("ad settings.txt", "r") as ad_settings:
+        ad_settings.read()
+    with open("lang.txt", "r") as language:
+        language.read()
 
 def settings_init():
     get_lang=loc.getdefaultlocale()[:1]
@@ -23,23 +29,27 @@ def settings_init():
 
     prompt="W.I.P"
 
+    upcheck=True
+
     settings={
         "language":language,
         "ad":ad,
         "prompt":prompt,
+        "update":upcheck
     }
 
     with open("settings.json", "w") as save:
         json.dump(settings, save)
     return language, ad
 
-def change_settings(setting):
+def change_settings(language, setting):
     with open("settings.json", "r") as file:
         settings=json.load(file)
     
     language=settings.get("language")
     ad=settings.get("ad")
     prompt=settings.get("prompt")
+    upcheck=settings.get("update")
 
     if setting=="ad":
         if language=="en":
@@ -61,7 +71,7 @@ def change_settings(setting):
     if setting=="language":
         if language=="en":
             print("There is currently only German and English, What do you choose?")
-            answer=input(">> ")
+            answer=input("German or English? ")
             if answer.lower()=="german" or answer.lower()=="deutsch":
                 language="de"
             if answer.lower()=="english" or answer.lower()=="englisch":
@@ -69,7 +79,7 @@ def change_settings(setting):
         
         if language=="de":
             print("Da ist momentan nur Deutsch und Englisch, was wählst du? ")
-            answer=input(">> ")
+            answer=input("Deutsch oder Englisch? ")
             if answer.lower()=="german" or answer.lower()=="deutsch":
                 language="de"
             if answer.lower()=="english" or answer.lower()=="englisch":
@@ -79,10 +89,28 @@ def change_settings(setting):
         print("That is Currently W.I.P!")
         return
     
+    if setting=="update":
+        if language=="en":
+            print("Do youn wanna Check for updates?")
+            answer=input("Yes or No? ")
+            if answer.lower()=="no" or answer.lower()=="nein":
+                upcheck=False
+            if answer.lower()=="yes" or answer.lower()=="ja":
+                upcheck=True
+        
+        if language=="de":
+            print("Willst du nach updates schauen?")
+            answer=input("Ja oder Nein? ")
+            if answer.lower()=="no" or answer.lower()=="nein":
+                upcheck==False
+            if answer.lower()=="yes" or answer.lower()=="ja":
+                upcheck=True
+    
     settings={
         "language":language,
         "ad":ad,
         "prompt":prompt,
+        "update":upcheck
     }
 
     with open("settings.json", "w") as file:

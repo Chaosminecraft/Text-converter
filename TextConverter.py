@@ -71,7 +71,7 @@ old_link="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
 old_repo="https://github.com/Chaosminecraft/Custom-Encoder"
 
 #initial variable for ad and other stuff
-ad="true"
+ad=""
 upcheck="true"
 module=""
 
@@ -103,7 +103,7 @@ while True:
         log_init(logg_makefile) #making the log file
         log_module_load(module)
         module="settings"
-        from settings import settings_init, change_settings, helper
+        from settings import migrate_settings, settings_init, change_settings, helper
         log_module_load(module)
         module="learn"
         from learn import free_ad, get_game
@@ -170,33 +170,94 @@ version="2.3"
 #variables for the rest of startup
 init="false"
 check_init_time=True
-change="false"
 language="en"
 error_reason=""
-noinp="false"
-content=""
-condecon=""
-
-while True:
-    try:
-        with open("settings.json", "r") as file:
-            settings=json.load(file)
-            language=settings.get("language")
-            ad=settings.get("ad")
-            prompt=settings.get("prompt")
-            ldset=True
-            if ldset==True:
-                break
-    except FileNotFoundError:
-        settings_init()
+settings=""
+prompt=""
 
 stop_event = Event()
+
+#loading the settings
+def settingsload():
+    global language
+    global ad
+    global prompt
+    while True:
+        try:
+            with open("settings.json", "r") as file:
+                settings=json.load(file)
+                language=settings.get("language")
+                ad=settings.get("ad")
+                prompt=settings.get("prompt")
+                ldset=True
+                if ldset==True:
+                    break
+        except FileNotFoundError:
+            try:
+                with open("lang.txt", "r") as file:
+                    language.read(file)
+
+                if language=="en":
+                    print("Do you wanna port the Settings?")
+                    answer=input("Yes or No? ")
+
+                    if answer.lower()=="yes" or answer.lower()=="ja":
+                        migrate_settings()
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
+
+                    if answer.lower()=="no":
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
+                        settings_init()
+                
+                if language=="de":
+                    print("Willst du die alten einstellungen behalten?")
+                    input("Ja oder Nein? ")
+
+                    if answer.lower()=="yes" or answer.lower()=="ja":
+                        migrate_settings()
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
+
+                    if answer.lower()=="no" or answer.lower()=="nein":
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
+                        settings_init()
+
+            except FileNotFoundError:
+                settings_init()
+    return
 
 #the initialising phase of the code
 def startup():
     global logg
-    global language
     global error_reason
+    settingsload()
     while True:
         try:
             logg_file=open("logg.txt", "r")
@@ -260,11 +321,8 @@ def main_thread():
                     temp=""
                 
                 if comand.lower()=="set language":
-                    pass
-                    change="true"
                     stop_event.set()
-                    #get_lang(language, change, init)
-                    change="false" 
+                    change_settings(language, setting="language")
                     init="false"
                     stop_event = ""
                     stop_event = Event()
