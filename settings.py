@@ -15,9 +15,9 @@ def settings_init():
         language="de"
     if systemlang=="('en_EN',)":
         language="en"
-    if systemlang!="('en_EN',)" or systemlang!="('de_DE',)":
-        print("No compatible language automatically found, Chose English.")
-        language="en"
+    #if systemlang!="('en_EN',)" or systemlang!="('de_DE',)":
+    #    print("No compatible language automatically found, Chose English.")
+    #    language="en"
     
     ad=True
 

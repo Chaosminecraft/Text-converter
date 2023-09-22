@@ -158,20 +158,7 @@ if sys=="Darwin":
     print("This platform is not supported!")
     input("press enter to exit")
     exit()
-while True:
-    try:
-        with open("settings.json", "r") as file:
-            settings=json.load(file)
-            language=settings.get("language")
-            ad=settings.get("ad")
-            prompt=settings.get("prompt")
-            ldset=True
-            if ldset==True:
-                break
-    except FileNotFoundError:
-        settings_init()
 
-stop_event = Event()
 
 #email adress for project
 mail="chaosminecraftmail@gmail.com"
@@ -189,6 +176,21 @@ error_reason=""
 noinp="false"
 content=""
 condecon=""
+
+while True:
+    try:
+        with open("settings.json", "r") as file:
+            settings=json.load(file)
+            language=settings.get("language")
+            ad=settings.get("ad")
+            prompt=settings.get("prompt")
+            ldset=True
+            if ldset==True:
+                break
+    except FileNotFoundError:
+        settings_init()
+
+stop_event = Event()
 
 #the initialising phase of the code
 def startup():
