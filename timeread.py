@@ -2,7 +2,6 @@ import os
 import sys as syst
 from time import  sleep
 from datetime import datetime
-from threading import Thread
 
 from logger import log_info
 

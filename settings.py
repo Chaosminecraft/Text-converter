@@ -1,139 +1,100 @@
 import locale as loc
 from logger import *
+import json
+
+#These settings are needed:
+#logg settings
+#language settings
+#ad settings
 
 
-def logg_settings(init, language):
-    if init=="true":
-        setting="true"
-        with open("logg.txt", "w") as save:
-            save.write(setting)
-        return
+def settings_init():
+    get_lang=loc.getdefaultlocale()[:1]
+    systemlang=str(get_lang)
+    if systemlang=="('de_DE',)":
+        language="de"
+    if systemlang=="('en_EN',)":
+        language="en"
+    if systemlang!="('en_EN',)" or systemlang!="('de_DE',)":
+        print("No compatible language automatically found, Chose English.")
+        language="en"
     
-    if language=="de":
-        while True:
-            print(f"\nWillst du die sachen loggen?\n")
-            setting=input("Ja oder Nein? ")
-            if setting.lower()=="ja":
-                choice="true"
-                with open("logg.txt", "w") as save:
-                    save.write(choice)
-                return
-            if setting.lower()=="nein":
-                choice="false"
-                with open("logg.txt", "w") as save:
-                    save.write(choice)
-                return
-            else:
-                print(f"\nVersuch nochmal!\n")
-    
-    if language=="en":
-        while True:
-            print(f"\nDo you want to log the Stuff? \n")
-            setting=input("Yes or No? ")
-            if setting.lower()=="yes":
-                choice="true"
-                with open("logg.txt", "w") as save:
-                    save.write(choice)
-                return
-            if setting.lower()=="no":
-                choice="false"
-                with open("logg.txt", "w") as save:
-                    save.write(choice)
-                return
-            else:
-                print(f"\nTry again!\n")
+    ad=True
 
-def get_lang(language, change, init):
-    get_language = loc.getdefaultlocale()[:1]
-    system_language = str(get_language)
-    if init=="false":
-        if system_language=="('en_EN',)" or system_language=="('de_DE',)":
-            if system_language=="('de_DE',)":
-                language="en"
-                with open("lang.txt", "w") as  save:
-                    save.write(language)
-            if system_language=="('de_DE',)":
-                language="de"
-                with open("lang.txt", "w") as save:
-                    save.write(language)
-            return
+    prompt="W.I.P"
 
-        else:
-            language="en"
-            with open("lang.txt", "w") as save:
-                save.write(language)
-            return
+    settings={
+        "language":language,
+        "ad":ad,
+        "prompt":prompt,
+    }
+
+    with open("settings.json", "w") as save:
+        json.dump(settings, save)
+    return language, ad
+
+def change_settings(setting):
+    with open("settings.json", "r") as file:
+        settings=json.load(file)
     
-    if change=="true":
-        if language == "en":
-            print(f"\nThere are English and German and are the official languages.\n")
-            language=input("What do you take? English or German: ")
-            if language.lower()=="german" or language.lower()=="deutsch":
-                language="de"
-            if language.lower()=="englisch" or language.lower()=="english":
-                language="en"
-            language.lower()
-            with open("lang.txt", "w") as save:
-                save.write(language)
-            return language
+    language=settings.get("language")
+    ad=settings.get("ad")
+    prompt=settings.get("prompt")
+
+    if setting=="ad":
+        if language=="en":
+            print("Do you wanna see the ad on every Startup and reboot?")
+            answer=input("Yes or No? ")
+            if answer.lower()=="no" or answer.lower()=="nein":
+                ad=False
+            if answer.lower()=="yes" or answer.lower()=="ja":
+                ad=True
         
         if language=="de":
-            print(f"\nDa ist Deutsch und Englisch die offiziellen sprachen.")
-            language=input("Was nimmst du? Deutsch oder Englisch: ")
-            if language.lower()=="deutsch" or language.lower() == "german":
-                language="de"
-            if language.lower()=="englisch" or language.lower() == "english":
-                language="en"
-            language.lower()
-            with open("lang.txt", "w") as save:
-                save.write(language)
-            return language
+            print("Willst du die Werbung sehen wenn fu es startest oder neu startest")
+            answer=input("Ja oder Nein? ")
+            if answer.lower()=="no" or answer.lower()=="nein":
+                ad=False
+            if answer.lower()=="yes" or answer.lower()=="ja":
+                ad=True
 
-def ad_makefile(logg):
-    ad="true"
-    with open("ad setting.txt", "w") as save:
-        save.write(ad)
-    text="settings file made."
-    log_info(text, logg)
+    if setting=="language":
+        if language=="en":
+            print("There is currently only German and English, What do you choose?")
+            answer=input(">> ")
+            if answer.lower()=="german" or answer.lower()=="deutsch":
+                language="de"
+            if answer.lower()=="english" or answer.lower()=="englisch":
+                language="en"
+        
+        if language=="de":
+            print("Da ist momentan nur Deutsch und Englisch, was wählst du? ")
+            answer=input(">> ")
+            if answer.lower()=="german" or answer.lower()=="deutsch":
+                language="de"
+            if answer.lower()=="english" or answer.lower()=="englisch":
+                language="en"
     
+    if setting=="prompt":
+        print("That is Currently W.I.P!")
+        return
+    
+    settings={
+        "language":language,
+        "ad":ad,
+        "prompt":prompt,
+    }
+
+    with open("settings.json", "w") as file:
+        json.dump(settings, file)
+
     return
 
-def ad_settings(language, logg):
-    while True:
-        if language=="de":
-            ad=input("Willst du die Werbung sehen? ")
-            if ad=="ja":
-                ad_var="true"
-                text="Werbung Aktiviert"
-
-            if ad=="nein":
-                ad_var="false"
-                text="Werbung deaktiviert"
-            
-            log_info(text, logg)
-            
-            with open("ad setting.txt", "w") as save:
-                save.write(ad_var)
-            return
-
-        if language=="en":
-            ad=input("Do you wanna see the advertisement? ")
-            if ad=="yes":
-                ad_var="true"
-
-            if ad=="no":
-                ad_var="false"
-
-            with open("ad setting.txt", "w") as save:
-                save.write(ad_var)
-            return
-
 def helper(language, logg):
-    try:
-        ad=open("ad setting.txt", ).read()
-    except FileNotFoundError:
-        ad_makefile(logg)
-        ad=open("ad setting.txt", ).read()
+    with open("settings.json", "r") as file:
+        settings=json.load(file)
+    
+    ad=settings.get("ad")
     text="helpsite printed"
     if language == "en":
         print(f"\nThere are the Conversion methods:\n")

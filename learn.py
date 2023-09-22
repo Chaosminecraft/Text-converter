@@ -1,6 +1,6 @@
 import webbrowser as web
 from logger import log_info
-from settings import ad_makefile
+#from settings import ad_makefile
 
 def free_ad(language, logg):
     while True:
@@ -18,7 +18,8 @@ def free_ad(language, logg):
                 else:
                     return
             except FileNotFoundError:
-                ad_makefile(logg)
+                #ad_makefile(logg)
+                temp=""
 
         except KeyboardInterrupt:
             return

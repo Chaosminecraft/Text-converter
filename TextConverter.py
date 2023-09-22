@@ -58,6 +58,7 @@ import getpass
 import os as ost
 import platform
 import socket
+import json
 from threading import Thread, Event
 
 #the Variables for the Logger module
@@ -102,7 +103,7 @@ while True:
         log_init(logg_makefile) #making the log file
         log_module_load(module)
         module="settings"
-        from settings import ad_settings, get_lang, helper, logg_settings
+        from settings import settings_init, change_settings, helper
         log_module_load(module)
         module="learn"
         from learn import free_ad, get_game
@@ -146,12 +147,29 @@ if sys=="Windows":
         print("That is my Favourite OS, but problems may occure.")
     
 if sys=="'Linux'":
-    print("WARNING: that is not the operating system of that it's designed to run on! there might be some problems.")
+    print("[WARNING] Linux is not checked anymore. it Might close. Continue?")
+    answer=input("Yes/No ")
+    if answer.lower()=="no" or answer.lower()=="nein":
+        exit()
+    else:
+        pass
 
 if sys=="Darwin":
     print("This platform is not supported!")
     input("press enter to exit")
     exit()
+while True:
+    try:
+        with open("settings.json", "r") as file:
+            settings=json.load(file)
+            language=settings.get("language")
+            ad=settings.get("ad")
+            prompt=settings.get("prompt")
+            ldset=True
+            if ldset==True:
+                break
+    except FileNotFoundError:
+        settings_init()
 
 stop_event = Event()
 
@@ -179,21 +197,11 @@ def startup():
     global error_reason
     while True:
         try:
-            language_file=open("lang.txt", "r")
-            language=language_file.read()
-            language_file.close()
-        except FileNotFoundError:
-            get_lang(language, change, init)
-            language_file=open("lang.txt", "r")
-            language=language_file.read()
-            language_file.close()
-
-        try:
             logg_file=open("logg.txt", "r")
             logg=logg_file.read()
             logg_file.close()
         except FileNotFoundError:
-            logg_settings(init, language)
+            #logg_settings(init, language)
             logg_file=open("logg.txt", "r")
             logg=logg_file.read()
             logg_file.close()
@@ -219,6 +227,7 @@ def main_thread():
     global init
     global stop_event
     global check_init_time
+    print(f"\n{language} {ad} {prompt}")
     try:
         try:
             while True:
@@ -245,12 +254,14 @@ def main_thread():
                     get_game(language, logg)
                 
                 if comand.lower()=="ad setting":
-                    ad_settings(language, logg)
+                    #ad_settings(language, logg)
+                    temp=""
                 
                 if comand.lower()=="set language":
+                    pass
                     change="true"
                     stop_event.set()
-                    get_lang(language, change, init)
+                    #get_lang(language, change, init)
                     change="false" 
                     init="false"
                     stop_event = ""
