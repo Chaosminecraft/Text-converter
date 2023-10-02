@@ -9,21 +9,40 @@ import json
 #migrating old settings
 
 def migrate_settings():
-    with open("ad settings.txt", "r") as ad_settings:
-        ad_settings.read()
-    with open("lang.txt", "r") as language:
-        language.read()
+    with open("ad setting.txt", "r") as file:
+        ad=file.read()
+
+    with open("lang.txt", "r") as file:
+        language=file.read()
+
+    with open("logg.txt", "r") as file:
+        logg=file.read()
+    
+    upcheck=True
+
+    prompt="W.I.P"
+
+    settings={
+        "language":language,
+        "ad":ad,
+        "prompt":prompt,
+        "update":upcheck,
+        "logging":logg
+    }
+    with open("settings.json", "w") as save:
+        json.dump(settings, save)
+    return language, ad, logg, prompt, upcheck
 
 def settings_init():
     get_lang=loc.getdefaultlocale()[:1]
     systemlang=str(get_lang)
-    if systemlang=="('de_DE',)":
+    if systemlang.lower()=="('de_de',)":
         language="de"
-    if systemlang=="('en_EN',)":
+    if systemlang.lower()=="('en_en',)":
         language="en"
-    #if systemlang!="('en_EN',)" or systemlang!="('de_DE',)":
-    #    print("No compatible language automatically found, Chose English.")
-    #    language="en"
+    if systemlang.lower()!="('en_en',)" or systemlang.lower()!="('de_de',)":
+        print(f"\nNo compatible language automatically found, Chose English.")
+        language="en"
     
     ad=True
 
@@ -31,11 +50,14 @@ def settings_init():
 
     upcheck=True
 
+    logg=True
+
     settings={
         "language":language,
         "ad":ad,
         "prompt":prompt,
-        "update":upcheck
+        "update":upcheck,
+        "logging":logg
     }
 
     with open("settings.json", "w") as save:
@@ -50,40 +72,35 @@ def change_settings(language, setting):
     ad=settings.get("ad")
     prompt=settings.get("prompt")
     upcheck=settings.get("update")
+    logg=settings.get("logging")
 
     if setting=="ad":
         if language=="en":
             print("Do you wanna see the ad on every Startup and reboot?")
             answer=input("Yes or No? ")
-            if answer.lower()=="no" or answer.lower()=="nein":
-                ad=False
-            if answer.lower()=="yes" or answer.lower()=="ja":
-                ad=True
         
         if language=="de":
             print("Willst du die Werbung sehen wenn fu es startest oder neu startest")
             answer=input("Ja oder Nein? ")
-            if answer.lower()=="no" or answer.lower()=="nein":
-                ad=False
-            if answer.lower()=="yes" or answer.lower()=="ja":
-                ad=True
+
+        if answer.lower()=="no" or answer.lower()=="nein":
+            ad=False
+        if answer.lower()=="yes" or answer.lower()=="ja":
+            ad=True
 
     if setting=="language":
         if language=="en":
             print("There is currently only German and English, What do you choose?")
             answer=input("German or English? ")
-            if answer.lower()=="german" or answer.lower()=="deutsch":
-                language="de"
-            if answer.lower()=="english" or answer.lower()=="englisch":
-                language="en"
         
         if language=="de":
             print("Da ist momentan nur Deutsch und Englisch, was wählst du? ")
             answer=input("Deutsch oder Englisch? ")
-            if answer.lower()=="german" or answer.lower()=="deutsch":
-                language="de"
-            if answer.lower()=="english" or answer.lower()=="englisch":
-                language="en"
+        
+        if answer.lower()=="german" or answer.lower()=="deutsch":
+            language="de"
+        if answer.lower()=="english" or answer.lower()=="englisch":
+            language="en"
     
     if setting=="prompt":
         print("That is Currently W.I.P!")
@@ -92,25 +109,37 @@ def change_settings(language, setting):
     if setting=="update":
         if language=="en":
             print("Do youn wanna Check for updates?")
-            answer=input("Yes or No? ")
-            if answer.lower()=="no" or answer.lower()=="nein":
-                upcheck=False
-            if answer.lower()=="yes" or answer.lower()=="ja":
-                upcheck=True
+            answer=input("Yes or No? ") 
         
         if language=="de":
             print("Willst du nach updates schauen?")
             answer=input("Ja oder Nein? ")
-            if answer.lower()=="no" or answer.lower()=="nein":
-                upcheck==False
-            if answer.lower()=="yes" or answer.lower()=="ja":
-                upcheck=True
+
+        if answer.lower()=="no" or answer.lower()=="nein":
+            upcheck==False
+        if answer.lower()=="yes" or answer.lower()=="ja":
+            upcheck=True
+
+    if setting=="logging":
+        if language=="en":
+            print("Should the Stuff be logged? If not, only warnings and errors are gonna be logged.")
+            answer=input("Yes or No? ")
+            
+        if language=="de":
+            print("Soll logging angeschalten werden? Wenn nicht, dann werden nur warnungen und fehler geloggt.")
+            answer=input("Ja oder Nein? ")
+
+        if answer.lower()=="no" or "nein":
+            logg=False
+        if answer.lower()=="yes" or "ja":
+            logg=True
     
     settings={
         "language":language,
         "ad":ad,
         "prompt":prompt,
-        "update":upcheck
+        "update":upcheck,
+        "logging":logg
     }
 
     with open("settings.json", "w") as file:

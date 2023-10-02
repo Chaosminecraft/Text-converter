@@ -6,17 +6,13 @@ def free_ad(language, logg):
     while True:
         try:
             try:
-                ad_setting = open("ad setting.txt", "r").read()
-                if ad_setting=="true":
-                    if language=="de":
-                        print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting\n")
-                    if language=="en":
-                        print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting\n")
-                    text="Ad has been delivered."
-                    log_info(text, logg)
-                    return
-                else:
-                    return
+                if language=="de":
+                    print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
+                if language=="en":
+                    print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting")
+                text="Ad has been delivered."
+                log_info(text, logg)
+                return
             except FileNotFoundError:
                 #ad_makefile(logg)
                 temp=""

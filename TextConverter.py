@@ -55,11 +55,16 @@ while True:
         ModuleRecovery(module)
 
 import getpass
-import os as ost
+import os 
 import platform
 import socket
 import json
 from threading import Thread, Event
+
+try:
+    os.remove("settings.json")
+except FileNotFoundError:
+    pass
 
 #the Variables for the Logger module
 logg="true"
@@ -70,18 +75,8 @@ dl_link="https://github.com/Chaosminecraft/Text-converter/releases/"
 old_link="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
 old_repo="https://github.com/Chaosminecraft/Custom-Encoder"
 
-#initial variable for ad and other stuff
-ad=""
-upcheck="true"
-module=""
-
-temp=1
-
 #for some reason that logging function is needed...
 def log_module_load(module):
-    global temp
-    #print(f"{temp}times started the function.")
-    temp+=1
     text=f"The module {module} has been loaded."
     log_system(text, logg)
     return
@@ -132,22 +127,23 @@ cpu=platform.machine()
 #print(cpu)
 arc=platform.architecture()[1]
 system=f"{sys} {ver}"
-with open("platform.txt", "w") as save:
-    save.write(system)
-
-with open("system.txt", "w") as save:
-    save.write(sys)
+text=f"{system} with the architecture of {cpu}"
+log_system(text, logg=True)
 
 if sys=="Windows":
     if ver>="10":
-        print("The Recommend OS is used.")
+        text="The Recommend OS is used."
+        log_info(logg, text)
     if ver=="8.1":
-        print("That operating system should work.")
+        text="That operating system should work."
+        log_warn(logg, text)
     if ver=="7":
-        print("That is my Favourite OS, but problems may occure.")
+        text="That is my Favourite OS, but problems may occure."
+        log_info(logg, text)
     
 if sys=="'Linux'":
     print("[WARNING] Linux is not checked anymore. it Might close. Continue?")
+    log_warn(logg, text="[WARNING] Linux is not checked anymore. it Might close.")
     answer=input("Yes/No ")
     if answer.lower()=="no" or answer.lower()=="nein":
         exit()
@@ -169,11 +165,16 @@ version="2.3"
 
 #variables for the rest of startup
 init="false"
-check_init_time=True
+check_init_time=False
 language="en"
 error_reason=""
 settings=""
 prompt=""
+ad=""
+upcheck="true"
+module=""
+
+updatethread=""
 
 stop_event = Event()
 
@@ -182,6 +183,8 @@ def settingsload():
     global language
     global ad
     global prompt
+    global upcheck
+    global logg
     while True:
         try:
             with open("settings.json", "r") as file:
@@ -189,67 +192,71 @@ def settingsload():
                 language=settings.get("language")
                 ad=settings.get("ad")
                 prompt=settings.get("prompt")
+                upcheck=settings.get("update")
                 ldset=True
                 if ldset==True:
                     break
         except FileNotFoundError:
             try:
                 with open("lang.txt", "r") as file:
-                    language.read(file)
+                    language=file.read()
 
                 if language=="en":
-                    print("Do you wanna port the Settings?")
+                    print("Would you like to keep your current configuration?")
                     answer=input("Yes or No? ")
 
                     if answer.lower()=="yes" or answer.lower()=="ja":
-                        migrate_settings()
-                        try:
-                            os.remove("ad settings.txt")
-                            os.remove("lang.txt")
-                            os.remove("logg.txt")
-                            os.remove("platform.txt")
-                            os.remove("system.txt")
-                        except FileNotFoundError:
-                            pass
+                        language, ad, prompt, logg, upcheck=migrate_settings()
+                        #try:
+                        #    os.remove("ad settings.txt")
+                        #    os.remove("lang.txt")
+                        #    os.remove("logg.txt")
+                        #    os.remove("platform.txt")
+                        #    os.remove("system.txt")
+                        #except FileNotFoundError:
+                        #    pass
 
                     if answer.lower()=="no":
-                        try:
-                            os.remove("ad settings.txt")
-                            os.remove("lang.txt")
-                            os.remove("logg.txt")
-                            os.remove("platform.txt")
-                            os.remove("system.txt")
-                        except FileNotFoundError:
-                            pass
+                        temp=""
+                        #try:
+                        #    os.remove("ad settings.txt")
+                        #    os.remove("lang.txt")
+                        #    os.remove("logg.txt")
+                        #    os.remove("platform.txt")
+                        #    os.remove("system.txt")
+                        #except FileNotFoundError:
+                        #    pass
                         settings_init()
                 
                 if language=="de":
                     print("Willst du die alten einstellungen behalten?")
-                    input("Ja oder Nein? ")
+                    answer=input("Ja oder Nein? ")
 
                     if answer.lower()=="yes" or answer.lower()=="ja":
-                        migrate_settings()
-                        try:
-                            os.remove("ad settings.txt")
-                            os.remove("lang.txt")
-                            os.remove("logg.txt")
-                            os.remove("platform.txt")
-                            os.remove("system.txt")
-                        except FileNotFoundError:
-                            pass
+                        language, ad, prompt, logg, upcheck=migrate_settings()
+                        #try:
+                        #    os.remove("ad settings.txt")
+                        #    os.remove("lang.txt")
+                        #    os.remove("logg.txt")
+                        #    os.remove("platform.txt")
+                        #    os.remove("system.txt")
+                        #except FileNotFoundError:
+                        #    pass
 
                     if answer.lower()=="no" or answer.lower()=="nein":
-                        try:
-                            os.remove("ad settings.txt")
-                            os.remove("lang.txt")
-                            os.remove("logg.txt")
-                            os.remove("platform.txt")
-                            os.remove("system.txt")
-                        except FileNotFoundError:
-                            pass
+                        temp=""
+                        #try:
+                        #    os.remove("ad settings.txt")
+                        #    os.remove("lang.txt")
+                        #    os.remove("logg.txt")
+                        #    os.remove("platform.txt")
+                        #    os.remove("system.txt")
+                        #except FileNotFoundError:
+                        #    pass
                         settings_init()
 
             except FileNotFoundError:
+                print("Settings_Init got run, uh oh...")
                 settings_init()
     return
 
@@ -257,7 +264,10 @@ def settingsload():
 def startup():
     global logg
     global error_reason
+    global updatethread
     settingsload()
+    updatethread=Thread(target=update, args=(release, language, ))
+    updatethread.start()
     while True:
         try:
             logg_file=open("logg.txt", "r")
@@ -268,8 +278,8 @@ def startup():
             logg_file=open("logg.txt", "r")
             logg=logg_file.read()
             logg_file.close()
-    
-        free_ad(language, logg)
+        if ad=="true":
+            free_ad(language, logg)
         if init=="false":
             #the thread that updates the time in the title
             timethread=Thread(target=title_time, args=(stop_event, language))
@@ -290,13 +300,15 @@ def main_thread():
     global init
     global stop_event
     global check_init_time
-    print(f"\n{language} {ad} {prompt}")
+    print(f"\n{language} {ad} {prompt} {upcheck} {logg}")
     try:
         try:
             while True:
                 name=getpass.getuser()
                 host=socket.gethostname()
                 init="true"
+                if upcheck==True:
+                    updatethread.join()
                 if check_init_time==True:
                     end=datetime.now()
                     computed=end-start

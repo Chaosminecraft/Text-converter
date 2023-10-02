@@ -13,7 +13,10 @@ def update(release, language):
         if release=="true":
                 url = "https://www.dropbox.com/s/a5wc7oon68nz9io/version-beta.txt?dl=1"
                 new_version = requests.get(url, allow_redirects=True)
-                open("release-version.txt", "wb").write(new_version.content)
+                new_version=str(new_version.content)[2:5]
+                print(new_version)
+                open("release-version.txt", "w").write(new_version)
+
                 
                 if new_version>rversion:
                     if language.lower() == "en":
@@ -22,7 +25,7 @@ def update(release, language):
                     if language.lower() == "de":
                         print(f"\nDa ist eine neue Version: {new_version}\nDa ist der link zum herunterladen:↓\n{link}\n")
 
-                    else:
+                    if language.lower()!="de" or language.lower()!="en":
                         print(f"\nThere is an new version: {new_version}\nThere is the download link:↓\n{link}\n")
 
                 if new_version==rversion:
@@ -32,7 +35,7 @@ def update(release, language):
                     if language.lower() == "de":
                         print(f"\nDas ist die neuste version im moment.\n")
 
-                    else:
+                    if language.lower()!="de" and language.lower()!="en":
                         print(f"\nThe version is the latest version at the moment.\n")
 
                 else:
@@ -42,7 +45,7 @@ def update(release, language):
                     if language.lower() == "de":
                         print(f"\nUNBEKANNTE VERSION\n")
                     
-                    else:
+                    if language.lower()!="de" or language.lower()!="en":
                         print(f"\nUNKNOWN VERSION.\n")
                 
                 return
@@ -59,7 +62,7 @@ def update(release, language):
                 if language.lower() == "de":
                     print(f"\nDa ist eine neue beta version: {new_version}\nDa ist der link zum herunterladen:↓\n{link}\n")
 
-                else:
+                if language.lower()!="de" or language.lower()!="en":
                     print(f"\nThere is an new beta version: {new_version}\nThere is the download link:↓\n{link}\n")
             
             if new_version==bversion:
@@ -69,8 +72,9 @@ def update(release, language):
                 if language.lower() == "de":
                     print(f"\nDas ist die neuste beta version im moment.\n")
 
-                else:
-                    print(f"\nThe version is the latest version at the moment.\n")
+                if language.lower()!="de" or language.lower()!="en":
+                    print(language)
+                    print(f"\nThe version is the latest beta version at the moment.\n")
             
             else:
                 if language.lower() == "en":
@@ -79,7 +83,7 @@ def update(release, language):
                 if language.lower() == "de":
                     print(f"\nUNBEKANNTE BETA VERSION\n")
                     
-                else:
+                if language.lower()!="de" or language.lower()!="en":
                     print(f"\nUNKNOWN BETA VERSION\n")
             return
 
