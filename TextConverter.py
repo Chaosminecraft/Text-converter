@@ -209,25 +209,25 @@ def settingsload():
 
                     if answer.lower()=="yes" or answer.lower()=="ja":
                         language, ad, prompt, logg, upcheck=migrate_settings()
-                        #try:
-                        #    os.remove("ad settings.txt")
-                        #    os.remove("lang.txt")
-                        #    os.remove("logg.txt")
-                        #    os.remove("platform.txt")
-                        #    os.remove("system.txt")
-                        #except FileNotFoundError:
-                        #    pass
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
 
                     if answer.lower()=="no":
                         temp=""
-                        #try:
-                        #    os.remove("ad settings.txt")
-                        #    os.remove("lang.txt")
-                        #    os.remove("logg.txt")
-                        #    os.remove("platform.txt")
-                        #    os.remove("system.txt")
-                        #except FileNotFoundError:
-                        #    pass
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
                         settings_init()
                 
                 if language=="de":
@@ -236,25 +236,25 @@ def settingsload():
 
                     if answer.lower()=="yes" or answer.lower()=="ja":
                         language, ad, prompt, logg, upcheck=migrate_settings()
-                        #try:
-                        #    os.remove("ad settings.txt")
-                        #    os.remove("lang.txt")
-                        #    os.remove("logg.txt")
-                        #    os.remove("platform.txt")
-                        #    os.remove("system.txt")
-                        #except FileNotFoundError:
-                        #    pass
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
 
                     if answer.lower()=="no" or answer.lower()=="nein":
                         temp=""
-                        #try:
-                        #    os.remove("ad settings.txt")
-                        #    os.remove("lang.txt")
-                        #    os.remove("logg.txt")
-                        #    os.remove("platform.txt")
-                        #    os.remove("system.txt")
-                        #except FileNotFoundError:
-                        #    pass
+                        try:
+                            os.remove("ad settings.txt")
+                            os.remove("lang.txt")
+                            os.remove("logg.txt")
+                            os.remove("platform.txt")
+                            os.remove("system.txt")
+                        except FileNotFoundError:
+                            pass
                         settings_init()
 
             except FileNotFoundError:
