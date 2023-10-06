@@ -7,12 +7,13 @@ link="https://github.com/Chaosminecraft/Text-converter/releases/"
 
 #the main function of that code
 def update(release, language, version):
+    print(version)
     try: #Trying to Check for updates
         if release==True:
-            url = "https://www.dropbox.com/s/a5wc7oon68nz9io/version-beta.txt?dl=1"
+            url = "https://www.dropbox.com/s/h9cwtlx43bkbro2/version.txt?dl=1"
             new_version = requests.get(url, allow_redirects=True)
             new_version=str(new_version.content)[2:5]
-            #print(new_version) #debug purpose
+            print(new_version) #debug purpose
 
                 
             if new_version>version:
