@@ -1,3 +1,6 @@
+#for the github page
+the source code here is probably more up to date than the Source code in the release version.
+
 # Text-converter
 The Rerelease of Custom-Encoder
 
