@@ -1,12 +1,11 @@
 #importing the Needed modules
 import more_itertools, base64
-
-#importing the other modules
 from brainfuckery import Brainfuckery
 
 #importing custom modules
-from logger import *
+from logger import log_info
 
+#the tables For some other conversion methods.
 phex = { 'a': '01',    'A': '02', 'b': '03',    'B': '04', 'c': '05',    'C': '06', 'd': '07',    'D': '08',
             'e': '09',    'E': '0A', 'f': '0B',    'F': '0C', 'g': '0D',    'G': '0E', 'h': '0F',    'H': '11',
             'i': '12',    'I': '13', 'j': '14',    'J': '15', 'k': '16',    'K': '17', 'l': '18',    'L': '19',
@@ -63,10 +62,6 @@ pbinary_legacy = { 'a': '10110100',    'A': '00011001',    '1': '00110010',    '
             'z': '00011000',    'Z': '00110001',
             '?': '10110110' }
 
-leetspeak_decon = (('4','a'), ('3','e'), ('1','i'), ('0','o'), ('+','t') )
-
-leetspeak_con = (('a','4'), ('e','3'), ('i','1'), ('o','0'), ('t','+') )
-
 #the main function of the converter
 def convert(comand, language, logg, name):
     while True:
@@ -110,10 +105,6 @@ def convert(comand, language, logg, name):
                             print(" ".join(str(ord(c)) for c in content))
                             out=" ".join(str(ord(c)) for c in content)
 
-                        if comand.lower()=="leetcode":
-                            print("Temporarely Removed.")
-                            return
-
                         if comand.lower()=="brainfuck":
                             print(Brainfuckery().convert(content))
                             out=Brainfuckery().convert(content)
@@ -149,10 +140,6 @@ def convert(comand, language, logg, name):
 
                             out="".join(map(lambda x: chr(int(x)), content.split()))
 
-                        if comand.lower()=="leetcode":
-                            print("Temporarely Removed.")
-                            return
-
                         if comand.lower()=="brainfuck":
                             print(Brainfuckery().interpret(content))
 
@@ -179,7 +166,8 @@ def convert(comand, language, logg, name):
         except KeyboardInterrupt:
             return
 
-def helpsite(comand, language):#the helpsite for the converter.
+#the helpsite for the converter.
+def helpsite(comand, language):
 
     if language.lower() == "en":
         print(f"Here is the Help site of the converter:\n")

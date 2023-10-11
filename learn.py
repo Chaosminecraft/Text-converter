@@ -1,5 +1,6 @@
 import webbrowser as web
 from logger import log_info
+from random import randint
 
 def free_ad(language, logg):
     try:
@@ -7,28 +8,41 @@ def free_ad(language, logg):
             print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
         if language=="en":
             print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting")
-        text="Ad has been given, but i don't get paid of that."
+        text=randomtext()
         log_info(text, logg)
         return
 
     except KeyboardInterrupt:
         return
 
-def get_game(language, logg):
+def randomtext():
+    random=randint(1, 5)
+    if random==1:
+        text="Why do i deliver that ad? i won't get paid anyways. [Sigh]... i delivered it anyways."
+    if random==2:
+        text="A... Ad delivered, please just don't disable it... Just kidding, i don't get paid for that."
+    if random==3:
+        text="HAHAHAHHAHHAHHAHHHA, Thanks for using that ad. i won'd get paid tho for that."
+    if random==4:
+        text="Thanks for running the ad i don't get paid for. :)"
+    if random==5:
+        text="[helper] Ran ad successfully boss! [boss] Good >:) (jk, It is not supposed to do harm)"
+    return text
+
+def get_game(language, logg, name):
     while True:
         try:
             if language=="de":
                 print("Da sind diese Stores:\n1. steam\n2. epic games store\n3. humble\n4. Google Play\n5. Apple Store\n6. Nintendo\n7. Playstation 4\n8. Galaxy Store\n9. gog\n10. luden.io\n11. Exit geht zurück zum text converter Projekt.")
                 ans=input("Von welchem store möchtest du es: ")
                 ans=ans.lower()
-                text=ans
-                log_info(text, logg)
             
             if language=="en":
                 print("there are those stores:\n1. steam\n2. epic games store\n3. humble\n4. Google Play\n5. Apple Store\n6. Nintendo\n7. Playstation 4\n8. Galaxy Store\n9. gog\n10. Exit goes to the Text converter Project.")
                 ans=input("from what store do you want it: ")
-                text=ans
-                log_info(text)
+            
+            text=f"the user {name} chose the store: {ans}"
+            log_info(text, logg)
 
             if ans=="steam" or ans=="1":
                 web.open("https://store.steampowered.com/app/619150/while_True_learn/")

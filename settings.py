@@ -1,6 +1,6 @@
 import locale as loc
 from logger import *
-import json
+import json, re
 
 #These settings are needed:
 #logg settings
@@ -11,12 +11,22 @@ import json
 def migrate_settings():
     with open("ad setting.txt", "r") as file:
         ad=file.read()
+    
+    if ad=="true":
+        ad=True
+    if ad=="false":
+        ad=False
 
     with open("lang.txt", "r") as file:
         language=file.read()
 
     with open("logg.txt", "r") as file:
         logg=file.read()
+    
+    if logg=="true":
+        logg=True
+    if logg=="false":
+        logg=False
     
     upcheck=True
 
@@ -46,7 +56,7 @@ def settings_init():
     
     ad=True
 
-    prompt="W.I.P"
+    prompt="{name}@{host}:~$ "
 
     upcheck=True
 
@@ -62,7 +72,7 @@ def settings_init():
 
     with open("settings.json", "w") as save:
         json.dump(settings, save)
-    return language, ad
+    return
 
 def change_settings(language, setting):
     with open("settings.json", "r") as file:
@@ -73,6 +83,8 @@ def change_settings(language, setting):
     prompt=settings.get("prompt")
     upcheck=settings.get("update")
     logg=settings.get("logging")
+    print(f"{language}\n\n{setting}")
+
 
     if setting=="ad":
         if language=="en":
@@ -103,8 +115,7 @@ def change_settings(language, setting):
             language="en"
     
     if setting=="prompt":
-        print("That is Currently W.I.P!")
-        return
+        prompt=input("What prompt look? ")
     
     if setting=="update":
         if language=="en":
@@ -113,12 +124,7 @@ def change_settings(language, setting):
         
         if language=="de":
             print("Willst du nach updates schauen?")
-            answer=input("Ja oder Nein? ")
-
-        if answer.lower()=="no" or answer.lower()=="nein":
-            upcheck==False
-        if answer.lower()=="yes" or answer.lower()=="ja":
-            upcheck=True
+            answer=input("Ja oder Nein? ").lower()
 
     if setting=="logging":
         if language=="en":
@@ -127,12 +133,7 @@ def change_settings(language, setting):
             
         if language=="de":
             print("Soll logging angeschalten werden? Wenn nicht, dann werden nur warnungen und fehler geloggt.")
-            answer=input("Ja oder Nein? ")
-
-        if answer.lower()=="no" or "nein":
-            logg=False
-        if answer.lower()=="yes" or "ja":
-            logg=True
+            answer=input("Ja oder Nein? ").lower()
     
     settings={
         "language":language,

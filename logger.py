@@ -2,47 +2,41 @@ import logging
 from datetime import *
 import os
 
-def log_init(logg_makefile):
+def log_init(logg):
     try:
-        if logg_makefile=="true":
-            now=datetime.now()
-            time=now.strftime("%d.%m.%Y %H.%M.%S")
-            logging.basicConfig(filename=f"logs/{time} logg.txt", filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
-            return
-        if logg_makefile=="false":
-            return
+        now=datetime.now()
+        time=now.strftime("%d.%m.%Y %H.%M.%S")
+        logging.basicConfig(filename=f"logs/{time} logg.txt", filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
+        return
     except FileNotFoundError:
         os.mkdir("logs")
-        log_init(logg_makefile)
+        log_init(logg)
 
-def log_system(text, logg):
-    if logg=="true":
-        text=f"[SYSTEM] {text}"
-        logging.info(text)
-        return
-    if logg=="false":
-        return
+def log_system(text):
+    text=f"[SYSTEM] {text}"
+    logging.info(text)
+    return
 
 def log_info(text, logg):
-    if logg=="true":
+    if logg==True:
         text=f"[INFO] {text}"
         logging.info(text)
         return
-    if logg=="false":
+    if logg==False:
         return
 
 def log_warn(text, logg):
-    if logg=="true":
+    if logg==True:
         text=f"[WARNING] {text}"
-        logging.warn(text)
+        logging.info(text)
         return
-    if logg=="false":
+    if logg==False:
         return
 
 def log_error(text, logg):
-    if logg=="true":
+    if logg==True:
         text=f"[ERROR] {text}"
-        logging.error(text)
+        logging.info(text)
         return
-    if logg=="false":
+    if logg==False:
         return

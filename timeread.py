@@ -27,8 +27,7 @@ def timereader(language, logg):
 
         return
 
-def title_time(stop_event, language):
-    sys=open("system.txt", "r").read()
+def title_time(stop_event, language, sys):
     while not stop_event.is_set():
         if sys=="Windows":
             now=datetime.now()

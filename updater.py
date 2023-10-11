@@ -7,56 +7,56 @@ link="https://github.com/Chaosminecraft/Text-converter/releases/"
 
 #the main function of that code
 def update(release, language, version):
-    print(version)
+    #print(version) #also debugging, can be optionally removed.
     try: #Trying to Check for updates
         if release==True:
             url = "https://www.dropbox.com/s/h9cwtlx43bkbro2/version.txt?dl=1"
             new_version = requests.get(url, allow_redirects=True)
             new_version=str(new_version.content)[2:5]
-            print(new_version) #debug purpose
+            #print(new_version) #debug purpose
 
                 
             if new_version>version:
-                if language.lower() == "en":
+                if language == "en":
                     print(f"\nThere is an new version: {new_version}\nThere is download the link:↓\n{link}\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nDa ist eine neue Version: {new_version}\nDa ist der link zum herunterladen:↓\n{link}\n")
 
-                elif language.lower()!="de" or language.lower()!="en":
+                elif language!="de" or language !="en":
                     print(f"\nThere is an new version: {new_version}\nThere is the download link:↓\n{link}\n")
                 return
 
             elif new_version==version:
-                if language.lower() == "en":
+                if language == "en":
                     print(f"\nThe version is the latest version at the moment.\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nDas ist die neuste version im moment.\n")
 
-                elif language.lower()!="de" and language.lower()!="en":
+                elif language!="de" and language !="en":
                     print(f"\nThe version is the latest version at the moment.\n")
                 return
                 
             elif new_version<version:
-                if language.lower() == "en":
+                if language == "en":
                     print(f"\nAre you a Dev?\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nBist du ein dev?\n")
 
-                elif language.lower()!="de" and language.lower()!="en":
+                elif language !="de" and language !="en":
                     print(f"\nAre you a Dev?\n")
                 return
 
             else:
-                if language.lower() == "en":
+                if language == "en":
                     print(f"\nUNKNOWN VERSION.\n")
 
-                if language.lower() == "de":
+                if language == "de":
                     print(f"\nUNBEKANNTE VERSION\n")
                     
-                if language.lower()!="de" or language.lower()!="en":
+                if language !="de" or language !="en":
                     print(f"\nUNKNOWN VERSION.\n")
                 return
         
@@ -67,36 +67,36 @@ def update(release, language, version):
             #print(new_version)#for debugging
             
             if new_version>version:
-                if language.lower() == "en":
+                if language == "en":
                         print(f"\nThere is an new beta version: {new_version}\nThere is download the link:↓\n{link}\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nDa ist eine neue beta version: {new_version}\nDa ist der link zum herunterladen:↓\n{link}\n")
 
-                elif language.lower()!="de" or language.lower()!="en":
+                elif language !="de" or language !="en":
                     print(f"\nThere is an new beta version: {new_version}\nThere is the download link:↓\n{link}\n")
                 return
             
             elif new_version==version:
-                if language.lower() == "en":
+                if language == "en":
                         print(f"\nThe version is the latest beta version at the moment.\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nDas ist die neuste beta version im moment.\n")
 
-                elif language.lower()!="de" or language.lower()!="en":
+                elif language !="de" or language !="en":
                     print(language)
                     print(f"\nThe version is the latest beta version at the moment.\n")
                 return
             
             else:
-                if language.lower() == "en":
+                if language == "en":
                     print(f"\nUNKNOWN BETA VERSION\n")
 
-                elif language.lower() == "de":
+                elif language == "de":
                     print(f"\nUNBEKANNTE BETA VERSION\n")
                     
-                elif language.lower()!="de" or language.lower()!="en":
+                elif language !="de" or language !="en":
                     print(f"\nUNKNOWN BETA VERSION\n")
                 return
 
