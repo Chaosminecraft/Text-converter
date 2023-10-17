@@ -204,11 +204,15 @@ def TextConverter(language, prompt, upcheck, logg, ad):
                 if comand=="prompt settings":
                     if language=="en":
                         print("""Warning: That feauture is experimental! Continue with caution.
-    The options are {system} and {name} and {host}, The rest can be however you want. IF the program crashes, Please tell me on GiHub or Email! The email adress can be found in the "Contact if crash.txt".
+    The options are {system} and {name} and {host}, The rest can be however you want.
+    
+    IF the program crashes, Please tell me on GiHub or Email! The email adress can be found in the "Contact if crash.txt".
                     """)
                     if language=="de":
                         print("""Warnung: Dieses feature ist expertimental! Fahre fort mit vorsicht.
-    Die optionen sind {system} und {name} und {host}, Der rest kann alles sein. Wenn das programm crasht, Bitte sag es mir bei GitHub oder Email! Die email adresse kann im "Contact if crash.txt" gefunden werden.
+    Die optionen sind {system} und {name} und {host}, Der rest kann alles sein. 
+    
+    Wenn das programm crasht, Bitte sag es mir bei GitHub oder Email! Die email adresse kann im "Contact if crash.txt" gefunden werden.
                     """)
                     prompt=change_settings(language, name, host, system, setting="promptinput")
                     return
@@ -218,6 +222,7 @@ def TextConverter(language, prompt, upcheck, logg, ad):
                 
                 if comand=="language settings":
                     language=change_settings(language, name, host, system, setting="language")
+                    return
                 
                 if comand=="language":
                     print(language)
