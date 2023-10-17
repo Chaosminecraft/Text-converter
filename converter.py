@@ -164,6 +164,7 @@ def convert(comand, language, logg, name):
             except TypeError:
                 continue
         except KeyboardInterrupt:
+            print()
             return
 
 #the helpsite for the converter.

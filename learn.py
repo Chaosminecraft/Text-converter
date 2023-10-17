@@ -1,16 +1,19 @@
 import webbrowser as web
-from logger import log_info
+from logger import log_info, log_system
 from random import randint
 
-def free_ad(language, logg):
+def free_ad(language, logg, ad):
     try:
-        if language=="de":
-            print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
-        if language=="en":
-            print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting")
-        text=randomtext()
-        log_info(text, logg)
-        return
+        if ad==True:
+            if language=="de":
+                print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
+            if language=="en":
+                print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting")
+            text=randomtext()
+            log_system(text)
+            return
+        if ad==False:
+            return
 
     except KeyboardInterrupt:
         return
@@ -26,7 +29,7 @@ def randomtext():
     if random==4:
         text="Thanks for running the ad i don't get paid for. :)"
     if random==5:
-        text="[helper] Ran ad successfully boss! [boss] Good >:) (jk, It is not supposed to do harm)"
+        text="Don... DON'T CODE WHILE HALF ASLEEP FOR THE LOVE OF GOD! there is an ad tho."
     return text
 
 def get_game(language, logg, name):

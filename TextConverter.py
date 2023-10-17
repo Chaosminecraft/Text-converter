@@ -7,7 +7,7 @@ old_repo="https://github.com/Chaosminecraft/Custom-Encoder"
 from datetime import datetime
 from time import sleep
 start=datetime.now()
-import getpass, os, platform, socket, json
+import getpass, os, platform, socket, json, sys, traceback
 from threading import Thread, Event
 
 #importing the rest of the modules that might not be installed.
@@ -19,8 +19,7 @@ except ImportError:
 
 #determins if release or not and determins the version.
 release=True
-rversion="2.4"
-bversion="2.3"
+version="2.4"
 
 #Variables for the project
 logg=True
@@ -29,6 +28,8 @@ check_init_time=True
 updatethread=""
 mail="chaosminecraftmail@gmail.com"
 stop_event=Event()
+name=getpass.getuser()
+host=socket.gethostname()
 
 #for some reason that logging function is needed...
 def log_module_load(module):
@@ -72,7 +73,7 @@ cpu=platform.machine()
 arc=platform.architecture()
 system=f"{sys} {ver}"
 
-text=f"The platform uses: {sys} {ver} {arc[0]} {cpu} {arc[1]}
+text=f"The platform uses: {sys} {ver} {arc[0]} {cpu} {arc[1]}"
 log_system(text)
 
 if sys=="'Linux'":
@@ -88,103 +89,85 @@ if sys=="Darwin":
     input("press enter to exit")
     exit()
 
-#loading settings
-def settingsload():
-    while True:
-        try:
-            with open("settings.json", "r") as file:
-                settings=json.load(file)
-
-            language=settings.get("langauge")
-            ad=settings.get("ad")
-            prompt=settings.get("prompt")
-            upcheck=settings.get("update")
-            logg=settings.get("logging")
-            break
-        except FileNotFoundError:
-            try:
-                print("Would you like to keep your current configuration?")
-                answer=input("Yes or No? ").lower()
-
-                if answer=="yes" or answer=="ja":
-                    migrate_settings()
-                    try:
-                        os.remove("ad settings.txt")
-                        os.remove("lang.txt")
-                        os.remove("logg.txt")
-                        os.remove("platform.txt")
-                        os.remove("system.txt")
-                    except FileNotFoundError:
-                        pass
-
-                if answer=="no" or answer=="nein":
-                    try:
-                        os.remove("ad settings.txt")
-                        os.remove("lang.txt")
-                        os.remove("logg.txt")
-                        os.remove("platform.txt")
-                        os.remove("system.txt")
-                    except FileNotFoundError:
-                        pass
-                    settings_init()
-            except:
-                print("I'm sorry, but something went wrong while trying to get the settings... The old settings are still there.")
-                settings_init
-    return language, ad, prompt, upcheck, logg
-
 #init function for startup
 def main():
     global updatethread
     global stop_event
+    global init
     while True:
         stop_event=Event()
-        language, ad, prompt, upcheck, logg=settingsload()
-        if release==True:
-            version=rversion
-        elif release==False:
-            version=bversion
+        while True:
+            try:
+                with open("settings.json", "r") as file:
+                    settings=json.load(file)
+
+                language=settings.get("lang")
+                ad=settings.get("ad")
+                prompt=settings.get("prompt")
+                upcheck=settings.get("update")
+                logg=settings.get("logging")
+                break
+            except FileNotFoundError:
+                settings_init(name, host)
         if upcheck==True:
             updatethread=Thread(target=update, args=(release, language, version))
             updatethread.start()
         if ad==True:
-            free_ad(language, logg)
+            free_ad(language, logg, ad)
         timethread=Thread(target=title_time, args=(stop_event, language, sys))
         timethread.start()
 
         if sys=="'Linux'":
             print(f"It is known that the title has an update issue in Linux.")
-        
+
         if language == "de":
             print(f"\nWilkommen beim Text converter, wenn es das erste mal ist das du benutzt, es gibt den befehl: help")
         if language == "en":
             print(f"\nWelcome at the text converter, if that is the first time that you use it, there is the command: help")
-        
-        TextConverter(language, prompt, upcheck, logg)
+        while True:
+            if init=="true":
+                while True:
+                    try:
+                        with open("settings.json", "r") as file: 
+                            settings=json.load(file)
 
-def TextConverter(language, prompt, upcheck, logg):
+                        language=settings.get("lang")
+                        ad=settings.get("ad")
+                        prompt=settings.get("prompt")
+                        upcheck=settings.get("update")
+                        logg=settings.get("logging")
+                        break
+                    except FileNotFoundError:
+                        settings_init(name, host)
+            TextConverter(language, prompt, upcheck, logg, ad)
+
+def TextConverter(language, prompt, upcheck, logg, ad):
     global init
     global check_init_time
     global stop_event
     try:
         try:
-            text="The program started successfully"
-            log_system(text)
-            while True:
-                name=getpass.getuser()
-                host=socket.gethostname()
-                init="true"
-                if upcheck==True:
+            
+            if upcheck==True:
+                if init=="false":
                     updatethread.join()
-                if check_init_time==True:
-                    end=datetime.now()
-                    computed=end-start
-                    print(f"Startup needed that long to start: {computed}")
-                    check_init_time=False
 
+            if check_init_time==True:
+                end=datetime.now()
+                computed=end-start
+                print(f"Startup needed that long to start: {computed}\n")
+                check_init_time=False
 
+            if init=="false":
+                text=f"The program started successfully in {computed} seconds."
+                log_system(text)
+
+            while True:
+
+                init="true"
                 comand=input(prompt).lower()
 
-                text=f"the user used: {comand}"
+                text=f"the user entered: {comand}"
                 log_info(text, logg)
 
                 if comand=="test":
@@ -207,33 +190,63 @@ def TextConverter(language, prompt, upcheck, logg):
                     get_game(language, logg)
                 
                 if comand=="ad settings":
-                    ad=change_settings(language, setting="ad")
+                    change_settings(language, name, host, system, setting="ad")#
+                
+                if comand=="ad":
+                    print(f"the advertisement is set to: {ad}")
                 
                 if comand=="logg settings":
-                    logg=change_settings(language, setting="logging")
+                    logg=change_settings(language, name, host, system, setting="logging")
+                
+                if comand=="logg":
+                    print(f"The logging is set to: {logg}")
                 
                 if comand=="prompt settings":
-                    print("Warning: That feauture is experimental! Continue with caution.")
-                    logg=change_settings(language, setting="prompt")
+                    if language=="en":
+                        print("""Warning: That feauture is experimental! Continue with caution.
+    The options are {system} and {name} and {host}, The rest can be however you want. IF the program crashes, Please tell me on GiHub or Email! The email adress can be found in the "Contact if crash.txt".
+                    """)
+                    if language=="de":
+                        print("""Warnung: Dieses feature ist expertimental! Fahre fort mit vorsicht.
+    Die optionen sind {system} und {name} und {host}, Der rest kann alles sein. Wenn das programm crasht, Bitte sag es mir bei GitHub oder Email! Die email adresse kann im "Contact if crash.txt" gefunden werden.
+                    """)
+                    prompt=change_settings(language, name, host, system, setting="promptinput")
+                    return
+
+                if comand=="prompt":
+                    print(f"\n{prompt}\n")
                 
                 if comand=="language settings":
-                    language=change_settings(language, settings="language")
+                    language=change_settings(language, name, host, system, setting="language")
+                
+                if comand=="language":
+                    print(language)
 
                 if comand=="update settings":
-                    upcheck=change_settings(language, setting="update")
+                    upcheck=change_settings(language, name, host, system, setting="update")
+                
+                if comand=="update":
+                    update(release, language, version)
                 
                 if comand=="reset settings" or comand=="new settingsfile":
                     if language=="en":
                         print(f"\nAre you sure you want to wipe the Settings to the default?")
                         answer=input("Yes/No ").lower()
                         if answer=="yes" or answer=="ja":
-                            settings_init()
+                            settings_init(name, host)
 
                     if language=="de":
                         print(f"\nBist du dir sicher das du die einstellungen zurücksetzen willst?")
                         answer=input("Ja/Nein").lower()
                         if answer=="yes" or answer=="ja":
-                            settings_init()
+                            settings_init(name, host)
+
+                if comand=="delete settings":
+                    try:
+                        os.remove("settings.json")
+
+                    except FileNotFoundError:
+                        print(f"\nNo settings file there... i'd advice that you make one.\n")
 
                 if comand=="clear screen":
                     if sys=="Windows":
@@ -241,20 +254,26 @@ def TextConverter(language, prompt, upcheck, logg):
                     if sys=="Linux":
                         os.system("clear")
                 
+                if comand=="reset":
+                    return
+                
                 if comand=="exit":
                     close(language)
         except TypeError:
+            traced=traceback.format_exc()
             if language=="en":
                 print(f"\nThere has been an unexpected Error. That is gonna get fixed soon.\n")
             if language=="de":
                 print(f"\nDas war ein unerwarteter Fehler. Dieser ist bald repariert.\n")
+            text=f"There has been an unexpected error, there is an traceback:\n{traced}"
+            log_system(text)
             sleep(5)
             stop_event.set()
             exit()
     except KeyboardInterrupt:
-        close(language)
+        close(language, sys)
 
-def close(language):
+def close(language, sys):
     global count
     
     if sys.lower()=="windows":
