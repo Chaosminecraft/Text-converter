@@ -46,11 +46,12 @@ def migrate_settings():
 def settings_init(name, host):
     get_lang=loc.getdefaultlocale()[:1]
     systemlang=str(get_lang)
-    if systemlang.lower()=="('de_de',)":
-        language="de"
-    if systemlang.lower()=="('en_en',)":
-        language="en"
-    if systemlang.lower()!="('en_en',)" or systemlang.lower()!="('de_de',)":
+    try:
+        if systemlang.lower()=="('de_de',)":
+            language="de"
+        if systemlang.lower()=="('en_en',)":
+            language="en"
+    except:
         print(f"\nNo compatible language automatically found, Chose English.")
         language="en"
     
