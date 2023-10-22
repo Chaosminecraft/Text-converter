@@ -49,7 +49,7 @@ while True:
         log_init(logg)
         log_module_load(module)
         module="settings"
-        from settings import migrate_settings, settings_init, change_settings, helper
+        from settings import settings_init, change_settings, helper
         log_module_load(module)
         module="learn"
         from learn import free_ad, get_game
@@ -139,9 +139,9 @@ def main():
                         break
                     except FileNotFoundError:
                         settings_init(name, host)
-            TextConverter(language, prompt, upcheck, logg, ad)
+            textconverter(language, prompt, upcheck, logg, ad)
 
-def TextConverter(language, prompt, upcheck, logg, ad):
+def textconverter(language, prompt, upcheck, logg, ad):
     global init
     global check_init_time
     global stop_event

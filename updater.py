@@ -114,7 +114,7 @@ def update(release, language, version):
             
         return
 
-def Test():
+def test():
     while True:
         language=input("DE/EN ").lower()
         release=input("TRUE/FALSE ").lower()
@@ -125,4 +125,4 @@ def Test():
         version=input("VER: ")
         update(release, language, version)
 
-#Test()
+#test()

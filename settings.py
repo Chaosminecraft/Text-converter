@@ -8,41 +8,6 @@ import json, re
 #ad settings
 #migrating old settings
 
-def migrate_settings():
-    with open("ad setting.txt", "r") as file:
-        ad=file.read()
-    
-    if ad=="true":
-        ad=True
-    if ad=="false":
-        ad=False
-
-    with open("lang.txt", "r") as file:
-        language=file.read()
-
-    with open("logg.txt", "r") as file:
-        logg=file.read()
-    
-    if logg=="true":
-        logg=True
-    if logg=="false":
-        logg=False
-    
-    upcheck=True
-
-    prompt="W.I.P"
-
-    settings={
-        "lang":language,
-        "ad":ad,
-        "prompt":prompt,
-        "update":upcheck,
-        "logging":logg
-    }
-    with open("settings.json", "w") as save:
-        json.dump(settings, save)
-    return language, ad, logg, prompt, upcheck
-
 def settings_init(name, host):
     get_lang=loc.getdefaultlocale()[:1]
     systemlang=str(get_lang)
