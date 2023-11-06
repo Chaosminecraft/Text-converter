@@ -206,7 +206,7 @@ def textconverter(language, prompt, upcheck, logg, ad):
                         print("""Warning: That feauture is experimental! Continue with caution.
     The options are {system} and {name} and {host}, The rest can be however you want.
     
-    IF the program crashes, Please tell me on GiHub or Email! The email adress can be found in the "Contact if crash.txt".
+    IF the program crashes, Please tell me on GitHub or Email! The email adress can be found in the "Contact if crash.txt".
                     """)
                     if language=="de":
                         print("""Warnung: Dieses feature ist expertimental! Fahre fort mit vorsicht.
