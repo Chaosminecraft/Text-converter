@@ -124,5 +124,4 @@ def test():
             release=False
         version=input("VER: ")
         update(release, language, version)
-
 #test()

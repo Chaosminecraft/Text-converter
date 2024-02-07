@@ -187,7 +187,7 @@ def helpsite(comand, language):
         print(f"\nno language supplied. :(\n")
         return
 
-def DevUse():
+def devuse():
     while True:
         comand=input("What conversion?")
         language="de"
