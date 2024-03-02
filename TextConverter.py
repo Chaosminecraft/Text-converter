@@ -5,7 +5,7 @@ from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=False
+    release=True
     version="2.5"
     beta_version="2.6"
 
@@ -49,6 +49,7 @@ from settings import settings_init, change_settings
 from timeread import timereader, title_time
 from converter import convert
 from helpfunctions import mainhelp
+from advert import free_ad, get_game
 
 #The update checking function
 def updatecheck():
@@ -191,6 +192,9 @@ def init():
             setting.logg=True
 
             print(f"A temporare workaround has been put in until the solution is there.\n")
+
+            if setting.ad==True:
+                free_ad(setting.language, setting.logg, setting.ad)
 
         if setting.init==False:
             threads.titletime.start()

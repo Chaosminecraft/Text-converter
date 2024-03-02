@@ -1,6 +1,5 @@
-import locale
+import locale, json, argparse
 from logger import log_info, log_error, log_warn, log_system
-import json
 
 #These settings are needed:
 #logg settings
@@ -44,13 +43,17 @@ def settings_init(name, host):
     return
 
 def change_settings(**args):
-    print("W.I.P")
-    return
     try:
         with open("settings.json", "r") as file:
             settings=json.load(file)
         
         language=settings.get("language")
+        ad=settings.get("ad")
+        prompt=settings.get("prompt")
+        upcheck=settings.get("update")
+        logg=settings.get("logging")
+
+        
     
     except KeyboardInterrupt:
         print()
