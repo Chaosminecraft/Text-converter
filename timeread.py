@@ -2,12 +2,11 @@ import os, traceback
 import sys as syst
 from time import  sleep
 from datetime import datetime
-from threading import Event
 
 from logger import log_info, log_system
 
 class timesetting:
-    delay=0.10
+    delay=0.125
 
 def timereader(language, logg):
     if language == "en":
@@ -31,10 +30,10 @@ def timereader(language, logg):
 
         return
 
-def title_time(stop_event, language, sys_):
+def title_time(language, system, stop_event):
     try:
-        if sys_=="Windows":
-            while not stop_event:
+        if system=="Windows":
+            while not stop_event.is_set():
                 now=datetime.now()
                 if language=="de":
                     now=now.strftime("%d/%m/%Y, %H:%M:%S.%f")
@@ -45,8 +44,8 @@ def title_time(stop_event, language, sys_):
                 sleep(timesetting.delay)
 
 
-        if sys_=="Linux":
-            while not stop_event:
+        if system=="Linux":
+            while not stop_event.is_set():
                 now=datetime.now()
                 now=now.strftime("%d/%m/%Y, %H:%M:%S")
                 syst.stdout.write(f"\x1b]2;Text Converter V2.3 {now}\x07")
@@ -56,8 +55,8 @@ def title_time(stop_event, language, sys_):
         traced=traceback.format_exc()
         text=f"There has been an exception:\n{traced}"
         log_system(text)
-        if sys_=="Linux":
+        if system=="Linux":
             syst.stdout.write(f"\x1b]2;Text Converter V2.3\x07")
-        if sys_=="Windows":
+        if system=="Windows":
             os.system(f"title Text Converter V2.3")
         return
