@@ -1,13 +1,13 @@
 #importing required "libraries" adn getting the beginning of the startup time
-import getpass, os, platform, socket, json, sys, traceback, webbrowser
+import getpass, os, platform, socket, json, traceback, webbrowser
 from threading import Thread, Event
 from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=True
+    release=False
     version="2.5"
-    beta_version="2.6"
+    beta_version="2.97"
 
     #variables needed for propper execution
     language=""
@@ -33,6 +33,9 @@ class setting:
     old_link="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
     old_repo="https://github.com/Chaosminecraft/Custom-Encoder"
 
+class converterdata:
+    out=""
+    
 from datetime import datetime
 setting.start=datetime.now()
 
@@ -100,7 +103,7 @@ def updatecheck():
     elif setting.release==False:
         print("BETA RELEASE")
         link_ver="https://github.com/Chaosminecraft/Text-Converter-Beta/raw/main/version.txt"
-        checked_version=requests.get(link_ver, allow_redirects=True)
+        checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:5]
         print(checked_version)
 
@@ -142,7 +145,8 @@ def updatecheck():
 
 class SysInf:
     system=platform.system()
-    version=platform.version()
+    version=platform.release()
+    detail_version=platform.version()
     cpu_architecture=platform.machine()
     complete_system=f"{system} {version}"
 
@@ -151,7 +155,7 @@ class threads:
     stop_event=Event()
     titletime=Thread(target=title_time, args=(setting.language, SysInf.system, stop_event, ))
 
-text=f"The platform uses: {SysInf.complete_system} {SysInf.cpu_architecture}\n"
+text=f"The platform uses: \n                {SysInf.complete_system} build {SysInf.detail_version}\n                With the architecture: {SysInf.cpu_architecture}\n"
 log_system(text)
 
 if SysInf.system=="'Linux'":
@@ -168,7 +172,7 @@ def init():
                     with open("settings.json", "r") as file:
                         settings=json.load(file)
 
-                    setting.language=settings.get("lang")
+                    setting.language=settings.get("language")
                     setting.ad=settings.get("ad")
                     setting.prompt=settings.get("prompt")
                     setting.upcheck=settings.get("update")
@@ -244,10 +248,31 @@ def main():
                             print(f"\nThat feature is permanently Removed.\n")
                     
                     elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64":
-                        convert(command, setting.language, setting.logg, setting.name)
+                        converterdata.out=convert(command, setting.language, setting.logg, setting.name)
+                    
+                    elif command=="last conversion":
+                        print(converterdata.out)
                     
                     elif command=="help" or command=="helpsite":
                         mainhelp(command, setting.language)
+                    
+                    elif command=="language":
+                        change_settings(settings="lang", prom=setting.prompt, language=setting.language, logging=setting.logg)
+                        return
+                    
+                    elif command=="prompt":
+                        change_settings(settings="prompt", prom=setting.prompt, language=setting.language, logging=setting.logg, pc=setting.host, name=setting.name, version=SysInf.version, system=SysInf.system)
+                        return
+                    
+                    elif command=="ad":
+                        change_settings(settings="ad", prom=setting.prompt, language=setting.language, logging=setting.logg)
+                        return
+                    
+                    elif command=="check update":
+                        updatecheck()
+                    
+                    elif command=="reset":
+                        return
 
                     elif command=="exit" or command=="close" or command=="stop":
                         close()

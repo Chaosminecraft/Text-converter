@@ -15,7 +15,9 @@ Common commands:
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)\n
 Additional info:
-    The settings currently can't be dynamicalyl be changed.\n""")
+    language let's you change between English(en) or German(de).
+    prompt let's you change the prompt look. (After startup the prompt)
+    The rest of the settings currently can't be dynamicalyl be changed.\n""")
         
         return
 
@@ -32,6 +34,8 @@ Allgemeine Befehle:
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
 Zusätzliche Informationen:
+    language lässt dich zwischen Deutsch(de) und Englisch(en)
+    prompt ändert den prompt look (direkt nach start den prompt)
     Die einstellungen können aktuell nicht dynamisch geändert werden.\n""")
         
         return
