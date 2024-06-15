@@ -7,7 +7,7 @@ class setting:
     #if the version is a release or Dev version
     release=False
     version="2.5"
-    beta_version="2.97"
+    beta_version="2.6"
 
     #variables needed for propper execution
     language=""
@@ -102,7 +102,7 @@ def updatecheck():
     
     elif setting.release==False:
         print("BETA RELEASE")
-        link_ver="https://github.com/Chaosminecraft/Text-Converter-Beta/raw/main/version.txt"
+        link_ver="https://github.com/Chaosminecraft/Text-converter/raw/main/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:5]
         print(checked_version)
