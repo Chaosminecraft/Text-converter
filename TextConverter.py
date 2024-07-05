@@ -56,13 +56,13 @@ from advert import free_ad, get_game
 
 #The update checking function
 def updatecheck():
-    print("FUNCTION START")
+    #print("FUNCTION START") #For checking if the function starts at all
     if setting.release==True:
-        print("RELEASE VERSION")
+        #print("RELEASE VERSION") #says if it is a Release version.
         link_ver="https://github.com/Chaosminecraft/Text-converter/raw/main/version.txt"
         checked_version=requests.get(link_ver, allow_redirects=True)
         checked_version=str(checked_version.content)[2:5]
-        print(checked_version)
+        #print(checked_version) #If the version from the internet doesn't give good results.
         
         if checked_version>setting.version:
             if setting.language=="en":
@@ -75,11 +75,11 @@ def updatecheck():
         
         elif checked_version==setting.version:
             if setting.language == "en":
-                print(f"\nThe version is the latest version at the moment.\n")
+                print(f"\nThe version {setting.version} is the latest version at the moment.\n")
             elif setting.language == "de":
-                    print(f"\nDas ist die neuste version im moment.\n")
+                    print(f"\nDie version {setting.version} ist die neuste im moment.\n")
             else:
-                print(f"\nThe version is the latest version at the moment.\n")
+                print(f"\nThe version {setting.version} is the latest version at the moment.\n")
             return
         
         elif checked_version<setting.version:
@@ -101,11 +101,11 @@ def updatecheck():
             return
     
     elif setting.release==False:
-        print("BETA RELEASE")
+        #print("BETA RELEASE") Says if it is a Beta version.
         link_ver="https://github.com/Chaosminecraft/Text-converter/raw/Beta/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:5]
-        print(checked_version)
+        #print(checked_version) #If the version from the internet doesn't give good results.
 
         if checked_version>setting.beta_version:
             if setting.language=="en":
@@ -118,11 +118,11 @@ def updatecheck():
         
         elif checked_version==setting.beta_version:
             if setting.language=="en":
-                print(f"That is the latest beta version\n")
+                print(f"The beta verision {setting.beta_version} is the latest version right now.\n")
             elif setting.language=="de":
-                print(f"Das ist die neuste beta version\n")
+                print(f"Die version {setting.beta_version} ist die neuste Beta version.\n")
             else:
-                print(f"That is the latest beta version\n")
+                print(f"The beta verision {setting.beta_version} is the latest version right now.\n")
             return
         
         elif checked_version<setting.beta_version:
