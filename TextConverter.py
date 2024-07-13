@@ -247,7 +247,7 @@ def main():
                         if setting.language=="en":
                             print(f"\nThat feature is permanently Removed.\n")
                     
-                    elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64":
+                    elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64" or command=="symbenc":
                         converterdata.out=convert(command, setting.language, setting.logg, setting.name)
                     
                     elif command=="last conversion":

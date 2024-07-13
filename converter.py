@@ -64,6 +64,11 @@ class lists:
                 'y': '00010111',    'Y': '00110000',
                 'z': '00011000',    'Z': '00110001',
                 '?': '10110110' }
+    
+    convert = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j", " ": "4", ",": "0", ".": "1", "?": "2", "!": "3", "a": "!", "b": "@", "c": "#", "d": "$", "e": "%", "f": "^", "g": "&", "h": "*", "i": "(", "j": ")", "k": "-", "l": "_", "m": "=", "n": "+", "o": "[", "p": "]", "q": "{", "r": "}", "s": ":", "t": ";", "u": "<", "v": ">", "w": ",", "x": ".", "y": "/", "z": "?"}
+
+    deconvert = {"a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6", "g": "7", "h": "8", "i": "9", "j": "0", "\"": "\"", " ": " ", "4": " ", "0": ",", "1": ".", "2": "?", "3": "!", "!": "a", "@": "b", "#": "c", "$": "d", "%": "e", "^": "f", "&": "g", "*": "h", "(": "i", ")": "j", "-": "k", "_": "l", "=": "m", "+": "n", "[": "o", "]": "p", "{": "q", "}": "r", ":": "s", ";": "t", "<": "u", ">": "v", ",": "w", ".": "x", "/": "y", "?": "z"}
+    
 
 #Variables
 class variables:
@@ -125,6 +130,24 @@ def convert(command, language, logg, name):
                 variables.out=bytes.decode(part2)
                 print(variables.out)
             
+            elif command=="symbenc":
+                variables.content=variables.content.lower()
+                print(variables.content)
+                unsupported_symbols=""
+                for i in range(len(variables.content)):
+                    if variables.content[i] not in lists.convert:
+                        unsupported_symbols += f"{variables.content[i]}, "
+                unsupported_symbols = unsupported_symbols[:-2]
+                if unsupported_symbols=="":
+                    variables.out=""
+                    for e in range(len(variables.content)):
+                        variables.out += str(lists.convert[variables.content[e]])
+                    print(variables.out)
+                    unsupported_symbols=""
+                else:
+                    print(f"Haha, not supported: {unsupported_symbols}")
+                unsupported_symbols=""
+            
             else:
                 if language=="en":
                     print(f"\nThat option is not there however you got that in.\n")
@@ -163,6 +186,21 @@ def convert(command, language, logg, name):
                 part2=base64.b64decode(part1)
                 variables.out=str(part2, encoding="utf-8")
                 print(variables.out)
+            
+            elif command=="symbenc":
+                unsupported_symbols=""
+                for i in range(len(variables.content)):
+                    if  variables.content[i] not in lists.deconvert:
+                        unsupported_symbols += f"{variables.content[i]}, "
+                unsupported_symbols = unsupported_symbols[:-2]
+                if unsupported_symbols=="":
+                    for _ in range(len(variables.content)):
+                        variables.out += str(lists.deconvert[variables.content[_]])
+                    print(variables.out)
+                    unsupported_symbols=""
+                else:
+                    print(f"Error: the symbols are not supported: {unsupported_symbols}")
+                    unsupported_symbols=""
             
             else:
                 if language=="en":
