@@ -5,9 +5,9 @@ from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=False
-    version="2.5"
-    beta_version="2.6"
+    release=True
+    version="2.6"
+    beta_version="2.7"
 
     #variables needed for propper execution
     language=""
@@ -247,7 +247,7 @@ def main():
                         if setting.language=="en":
                             print(f"\nThat feature is permanently Removed.\n")
                     
-                    elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64":
+                    elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64" or command=="symbenc":
                         converterdata.out=convert(command, setting.language, setting.logg, setting.name)
                     
                     elif command=="last conversion":
