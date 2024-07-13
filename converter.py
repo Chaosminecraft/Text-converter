@@ -132,7 +132,6 @@ def convert(command, language, logg, name):
             
             elif command=="symbenc":
                 variables.content=variables.content.lower()
-                print(variables.content)
                 unsupported_symbols=""
                 for i in range(len(variables.content)):
                     if variables.content[i] not in lists.convert:
