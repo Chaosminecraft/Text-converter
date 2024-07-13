@@ -5,7 +5,7 @@ from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=True
+    release=False
     version="2.6"
     beta_version="2.7"
 
