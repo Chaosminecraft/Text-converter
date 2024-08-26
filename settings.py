@@ -1,6 +1,7 @@
 import locale
 from logger import log_info, log_error, log_warn, log_system
 import json
+from random import randint
 
 #These settings are needed:
 #logg settings
@@ -68,7 +69,7 @@ def change_settings(**kwargs):
         variables.logg=settings_file.get("logging")
 
         if kwargs['settings'] == "lang":
-            print("I RAN")
+            print("language Settings")
             if kwargs["language"] == "de":
                 while True:
                     text=input("Welche Sprache? Da ist EN und DE: ").lower()
@@ -89,8 +90,14 @@ def change_settings(**kwargs):
                         break
                     
                     else:
-                        print("Nope, that is sadly invalid!")
-            
+                        if variables.language=="en":
+                            print("Nope, that is sadly invalid!")
+                        
+                        elif variables.language=="de":
+                            print("Nope, Das ist nicht Valide!")
+
+                        else:
+                            print("Nope, that is sadly invalid!")
             else:
                 while True:
                     text=input("What language? There is EN and DE: ").lower()
@@ -101,36 +108,61 @@ def change_settings(**kwargs):
                     
                     else:
                         print("Nope, that is sadly invalid!")
+        
+        elif kwargs['settings'] == "ad":
+            print("Ad Settings")
+            if variables.language=="en":
+                while True:
+                    print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
+                    text=input("Yes or No? ").lower()
+                    if text=="yes" or text=="no":
+                        variables.ad=text
+                        break
+                    
+                    else:
+                        if variables.language=="en":
+                            print("Nope, that is sadly invalid!")
+                
+            if variables.language=="de":
+                while True:
+                    print(f"Willst du die werbung sehen?? {variables.ad} ist die Aktuelle einstellung.")
+                    text=input("Yes or No? ").lower()
+                    if text=="yes" or text=="no":
+                        variables.ad=text
+                        break
+                    
+                    else:
+                        if variables.language=="en":
+                            print("Nope, that is sadly invalid!")
+                
+        
+        elif kwargs['settings']=="prompt":
+            print("Prompt Settings")
+            if variables.language=="en":
+                print("What style do you want? You Can pull the {host} to pull the pc name, you can do {name} to get the name of the user on the PC, with {system} you can pull the System (not always accurate.)")
+                print(f"There are also 2 presets:\n1. linux\n2. windows")
             
-        
-        if kwargs['settings'] == "prompt":
-            if kwargs["language"] == "en":
+            elif variables.language=="de":
+                print("Was für einen style möchtest du? Du kannst mit {host} den PC namen nehmen, mit {name} kann man den aktuellen nutzernamen nutzen, und mit {system} kann man den namen vom system nehmen.")
+                print(f"Da sind auch 2 presets:\n1. linux\n2. windows")
+            
+            if variables.language=="en":
                 variables.prompt=input("What prompt look? ")
-                if variables.prompt.lower()=="linux":
-                    variables.prompt=f"{kwargs["name"]}@{kwargs["pc"]}:~$ "
-                if variables.prompt.lower()=="windows":
-                    variables.prompt=f"C:\\user\\{kwargs["name"]}> "
-                
-                for r in (("{name}", kwargs["name"]), ("{host}", kwargs["pc"]), ("{system}", kwargs["system"])):
-                    variables.prompt=variables.prompt.replace(*r)
-
-            elif kwargs["language"] == "de":
+            
+            elif variables.language=="de":
+                variables.prompt=input("Was für ein Prompt? ")
+            
+            else:
                 variables.prompt=input("What prompt look? ")
-                if variables.prompt.lower()=="linux":
-                    variables.prompt=f"{kwargs["name"]}@{kwargs["pc"]}:~$ "
-                if variables.prompt.lower()=="windows":
-                    variables.prompt=f"C:\\user\\{kwargs["name"]}> "
-                
-                for r in (("{name}", kwargs["name"]), ("{host}", kwargs["pc"]), ("{system}", kwargs["system"])):
-                    variables.prompt=variables.prompt.replace(*r)
-        
-        elif kwargs["settings"] == "ad":
-            if kwargs["language"] == "en":
-                print("AYO language time!")
-            elif kwargs["language"] == "de":
-                print("HALLOOOOOOOOOOOOOOO")
-        
-        print(variables.language)
+            
+            if variables.prompt.lower()=="linux":
+                variables.prompt="{name}@{host}:~$ "
+            
+            if variables.prompt.lower()=="windows":
+                variables.prompt="C:\\user\\{name}> "
+            
+            for r in (("{name}", kwargs['name']), ("{host}", kwargs['pc']), ("{system}", kwargs['system'])):
+                variables.prompt=variables.prompt.replace(*r)
 
         settings={
             "language":variables.language,
