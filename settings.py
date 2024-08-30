@@ -140,11 +140,11 @@ def change_settings(**kwargs):
             print("Prompt Settings")
             if variables.language=="en":
                 print("What style do you want? You Can pull the {host} to pull the pc name, you can do {name} to get the name of the user on the PC, with {system} you can pull the System (not always accurate.)")
-                print(f"There are also 2 presets:\n1. linux\n2. windows")
+                print("there are 3 presets:\n1. linux\n2. windows\n3. macos")
             
             elif variables.language=="de":
                 print("Was für einen style möchtest du? Du kannst mit {host} den PC namen nehmen, mit {name} kann man den aktuellen nutzernamen nutzen, und mit {system} kann man den namen vom system nehmen.")
-                print(f"Da sind auch 2 presets:\n1. linux\n2. windows")
+                print(f"Da sind auch 3 presets:\n1. linux\n2. windows\n3. macos")
             
             if variables.language=="en":
                 variables.prompt=input("What prompt look? ")
@@ -158,8 +158,11 @@ def change_settings(**kwargs):
             if variables.prompt.lower()=="linux":
                 variables.prompt="{name}@{host}:~$ "
             
-            if variables.prompt.lower()=="windows":
+            elif variables.prompt.lower()=="windows":
                 variables.prompt="C:\\user\\{name}> "
+            
+            elif variables.prompt.lower()=="macos":
+                variables.prompt="{name}@{host} ~ % "
             
             for r in (("{name}", kwargs['name']), ("{host}", kwargs['pc']), ("{system}", kwargs['system'])):
                 variables.prompt=variables.prompt.replace(*r)
