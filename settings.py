@@ -166,6 +166,64 @@ def change_settings(**kwargs):
             
             for r in (("{name}", kwargs['name']), ("{host}", kwargs['pc']), ("{system}", kwargs['system'])):
                 variables.prompt=variables.prompt.replace(*r)
+        
+        if kwargs['settings']=="ad":
+            print("Ad Settings")
+            if variables.language=="en":
+                print("Do you wanna see the ad?")
+                text=input("Yes or No? ").lower()
+                if text=="yes":
+                    variables.ad==True
+                
+                else:
+                    variables.ad==False
+            
+            elif variables.language=="de":
+                print("Willst du die werbung sehen?")
+                text=input("Ja oder Nein?").lower()
+                if text=="ja":
+                    variables.ad=True
+                
+                else:
+                    variables.ad=False
+            
+            else:
+                print("Do you wanna see the ad?")
+                text=input("Yes or No? ").lower()
+                if text=="yes":
+                    variables.ad==True
+                
+                else:
+                    variables.ad==False
+        
+        if kwargs['settings']=="log":
+            print("Logg Settings")
+            if variables.language=="en":
+                print("Do you want that non critical stuff is not logged anymore? (Critical was meant with if a crash occured.)")
+                text=input("Yes or No? ").lower()
+                if text=="yes":
+                    variables.logg=True
+                
+                else:
+                    variables.logg=False
+            
+            elif variables.language=="de":
+                print("Willst du das nicht kritische sachen geloggt werden? (Kiritische sachen sind wie ein Crash.)")
+                text=input("Ja oder Nein? ")
+                if text=="ja":
+                    variables.logg=True
+                
+                else:
+                    variables.logg=False
+            
+            else:
+                print("Do you want that non critical stuff is not logged anymore? (Critical was meant with if a crash occured.)")
+                text=input("Yes or No? ").lower()
+                if text=="yes":
+                    variables.logg=True
+                
+                else:
+                    variables.logg=False
 
         settings={
             "language":variables.language,
