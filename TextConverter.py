@@ -6,7 +6,7 @@ from time import sleep
 class setting:
     #if the version is a release or Dev version
     release=True
-    version="2.6"
+    version="2.7"
     beta_version="2.7"
 
     #variables needed for propper execution
@@ -162,7 +162,7 @@ if SysInf.system=="'Linux'":
     print("[WARNING] Linux may not work on all versions...")
 
 if SysInf.system=="'Darwin'":
-    print(f"[WARNING] MacOS and other Darwin based systems can't be tested, it may not work.\n")
+    print(f"[WARNING] MacOS and other Darwin based systems can't be tested, it may not work!\n")
 
 def init():
     while True:
@@ -227,7 +227,10 @@ def main():
                 if setting.check_init_time==True:
                     setting.start_time=datetime.now()-setting.start
                     if setting.init==False:
-                        print(f"Startup needed {setting.start_time} seconds.")
+                        if setting.language=="en":
+                            print(f"Startup needed {setting.start_time} seconds.")
+                        elif setting.language=="de":
+                            print(f"Start brauchte {setting.start_time} Sekunden.")
                     text=f"The program started in {setting.start_time} seconds."
                     log_system(text)
                 
@@ -272,6 +275,9 @@ def main():
                         updatecheck()
                     
                     elif command=="reset":
+                        setting.init=False
+                        setting.start_time=""
+                        threads.stop_event.set()
                         return
 
                     elif command=="exit" or command=="close" or command=="stop":
