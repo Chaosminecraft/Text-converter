@@ -128,30 +128,31 @@ def change_settings(**kwargs):
             elif kwargs["language"]=="de":
                 while True:
                     print(f"Willst du die werbung sehen?? {variables.ad} ist die Aktuelle einstellung.")
-                    if kwargs["language"]=="en":
-                        text=input("Yes or No? ").lower()
-                        if text=="yes":
-                            variables.ad=True
-                            break
-                        elif text=="no":
-                            variables.ad=False
-                            break
+                    text=input("Yes or No? ").lower()
+                    if text=="ja":
+                        variables.ad=True
+                        break
+                    elif text=="nein":
+                        variables.ad=False
+                        break
                     
-                        else:
-                            print("Nope, Das ist leider nicht valide.")
-            
                     else:
-                        print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
-                        text=input("Yes or No? ").lower()
-                        if text=="yes":
-                            variables.ad=True
-                            break
+                        print("Nope, Das ist leider nicht valide.")
+            
+            else:
+                while True:
+                    print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
+                    text=input("Yes or No? ").lower()
+                    if text=="yes":
+                        variables.ad=True
+                        break
 
-                        elif text=="no":
-                            variables.ad=False
+                    elif text=="no":
+                        variables.ad=False
+                        break
 
-                        else:
-                            print("Nope, that is sadly invalid!")
+                    else:
+                        print("Nope, that is sadly invalid!")
         
         elif kwargs['target']=="prompt":
             print("Prompt Settings")
