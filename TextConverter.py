@@ -5,9 +5,9 @@ from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=True
+    release=False
     version="2.7"
-    beta_version="2.7"
+    beta_version="2.75"
 
     #variables needed for propper execution
     language=""
@@ -153,7 +153,7 @@ class SysInf:
 class threads:
     updatethread=Thread(target=updatecheck)
     stop_event=Event()
-    titletime=Thread(target=title_time, args=(setting.language, SysInf.system, stop_event, ))
+    titletime=Thread(target=title_time, args=(setting, SysInf.system, stop_event, ))
 
 text=f"The platform uses: \n                {SysInf.complete_system} build {SysInf.detail_version}\n                With the architecture: {SysInf.cpu_architecture}\n"
 log_system(text)
@@ -258,26 +258,17 @@ def main():
                     
                     elif command=="help" or command=="helpsite":
                         mainhelp(command, setting.language)
+
+                    elif command=="language" or command=="prompt" or command=="ad" or command=="update" or command=="logging":
+                        setting.prompt, setting.language, setting.ad, setting.upcheck = change_settings(target=command, prom=setting.prompt, language=setting.language, logging=setting.logg, pc=setting.host, name=setting.name, version=SysInf.version, system=SysInf.system)
                     
-                    elif command=="language":
-                        change_settings(settings="lang", prom=setting.prompt, language=setting.language, logging=setting.logg)
-                        return
-                    
-                    elif command=="prompt":
-                        change_settings(settings="prompt", prom=setting.prompt, language=setting.language, logging=setting.logg, pc=setting.host, name=setting.name, version=SysInf.version, system=SysInf.system)
-                        return
-                    
-                    elif command=="ad":
-                        change_settings(settings="ad", prom=setting.prompt, language=setting.language, logging=setting.logg)
-                        return
+                    elif command=="reset settings":
+                        settings_init(setting.name, setting.host)
                     
                     elif command=="check update":
                         updatecheck()
                     
                     elif command=="reset":
-                        setting.init=False
-                        setting.start_time=""
-                        threads.stop_event.set()
                         return
 
                     elif command=="exit" or command=="close" or command=="stop":
@@ -287,14 +278,9 @@ def main():
                         threads.stop_event.set()
                         exit()
                     
-                    elif command=="titletimestop":
+                    elif command=="titlestop":
                         threads.stop_event.set()
-                    
-                    elif command=="titletimestart":
-                        threads.stop_event=Event()
-                        threads.titletime=Thread(target=title_time, args=(setting.language, SysInf.system, threads.stop_event, ))
-                        threads.titletime.start()
-                    
+
                     elif command=="":
                         if setting.language=="en":
                             print(f"I'm sorry, i can't parse nothing :(")
@@ -307,6 +293,7 @@ def main():
                     
                     else:
                         text=f"The user used an unknown command: {command}"
+                        log_info(setting.logg, text)
                         if setting.language=="en":
                             print(f"The command '{command}' was not found :(")
                         elif setting.language=="de":
@@ -332,15 +319,23 @@ def main():
 
 def close():
     if setting.language=="en":
-        os.system("cls")
-        print(f"\nDo you wanna clsoe the PRogram?\n")
+        if SysInf.system=="'Linux'":
+            os.system("clear")
+        if SysInf.system=="'Windows'":
+            os.system("cls")
+        
+        print(f"\nDo you wanna close the Program?\n")
         if input("Yes/No: ").lower()=="yes":
             threads.stop_event.set()
             exit()
         else:
             return
     if setting.language=="de":
-        os.system("cls")
+        if SysInf.system=="'Linux'":
+            os.system("clear")
+        if SysInf.system=="'Windows'":
+            os.system("cls")
+
         print(f"Willst du das Program beenden?\n")
         if input("Ja/Nein: ").lower()=="ja":
             threads.stop_event.set()

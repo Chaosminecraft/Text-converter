@@ -68,7 +68,7 @@ def change_settings(**kwargs):
         variables.upcheck=settings_file.get("update")
         variables.logg=settings_file.get("logging")
 
-        if kwargs['settings'] == "lang":
+        if kwargs['target'] == "language":
             print("language Settings")
             if kwargs["language"] == "de":
                 while True:
@@ -109,47 +109,64 @@ def change_settings(**kwargs):
                     else:
                         print("Nope, that is sadly invalid!")
         
-        elif kwargs['settings'] == "ad":
+        elif kwargs['target'] == "ad":
             print("Ad Settings")
-            if variables.language=="en":
+            if kwargs["language"]=="en":
                 while True:
                     print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
                     text=input("Yes or No? ").lower()
-                    if text=="yes" or text=="no":
-                        variables.ad=text
+                    if text=="yes":
+                        variables.ad=True
                         break
                     
+                    elif text=="no":
+                        variables.ad=False
+                    
                     else:
-                        if variables.language=="en":
-                            print("Nope, that is sadly invalid!")
+                        print("Nope, that is sadly invalid!")
                 
-            if variables.language=="de":
+            elif kwargs["language"]=="de":
                 while True:
                     print(f"Willst du die werbung sehen?? {variables.ad} ist die Aktuelle einstellung.")
-                    text=input("Yes or No? ").lower()
-                    if text=="yes" or text=="no":
-                        variables.ad=text
-                        break
+                    if kwargs["language"]=="en":
+                        text=input("Yes or No? ").lower()
+                        if text=="yes":
+                            variables.ad=True
+                            break
+                        elif text=="no":
+                            variables.ad=False
+                            break
                     
+                        else:
+                            print("Nope, Das ist leider nicht valide.")
+            
                     else:
-                        if variables.language=="en":
+                        print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
+                        text=input("Yes or No? ").lower()
+                        if text=="yes":
+                            variables.ad=True
+                            break
+
+                        elif text=="no":
+                            variables.ad=False
+
+                        else:
                             print("Nope, that is sadly invalid!")
-                
         
-        elif kwargs['settings']=="prompt":
+        elif kwargs['target']=="prompt":
             print("Prompt Settings")
-            if variables.language=="en":
+            if kwargs["language"]=="en":
                 print("What style do you want? You Can pull the {host} to pull the pc name, you can do {name} to get the name of the user on the PC, with {system} you can pull the System (not always accurate.)")
                 print("there are 3 presets:\n1. linux\n2. windows\n3. macos")
             
-            elif variables.language=="de":
+            elif kwargs["language"]=="de":
                 print("Was für einen style möchtest du? Du kannst mit {host} den PC namen nehmen, mit {name} kann man den aktuellen nutzernamen nutzen, und mit {system} kann man den namen vom system nehmen.")
                 print(f"Da sind auch 3 presets:\n1. linux\n2. windows\n3. macos")
             
-            if variables.language=="en":
+            if kwargs["language"]=="en":
                 variables.prompt=input("What prompt look? ")
             
-            elif variables.language=="de":
+            elif kwargs["language"]=="de":
                 variables.prompt=input("Was für ein Prompt? ")
             
             else:
@@ -167,36 +184,7 @@ def change_settings(**kwargs):
             for r in (("{name}", kwargs['name']), ("{host}", kwargs['pc']), ("{system}", kwargs['system'])):
                 variables.prompt=variables.prompt.replace(*r)
         
-        if kwargs['settings']=="ad":
-            print("Ad Settings")
-            if variables.language=="en":
-                print("Do you wanna see the ad?")
-                text=input("Yes or No? ").lower()
-                if text=="yes":
-                    variables.ad==True
-                
-                else:
-                    variables.ad==False
-            
-            elif variables.language=="de":
-                print("Willst du die werbung sehen?")
-                text=input("Ja oder Nein?").lower()
-                if text=="ja":
-                    variables.ad=True
-                
-                else:
-                    variables.ad=False
-            
-            else:
-                print("Do you wanna see the ad?")
-                text=input("Yes or No? ").lower()
-                if text=="yes":
-                    variables.ad==True
-                
-                else:
-                    variables.ad==False
-        
-        if kwargs['settings']=="log":
+        if kwargs['target']=="logging":
             print("Logg Settings")
             if variables.language=="en":
                 print("Do you want that non critical stuff is not logged anymore? (Critical was meant with if a crash occured.)")
@@ -224,6 +212,9 @@ def change_settings(**kwargs):
                 
                 else:
                     variables.logg=False
+        
+        elif kwargs['target']=="update":
+            print("update settings")
 
         settings={
             "language":variables.language,
@@ -236,8 +227,11 @@ def change_settings(**kwargs):
         with open("settings.json", "w") as file:
             json.dump(settings, file)
         
-        return
+        return variables.prompt, variables.language, variables.ad, variables.upcheck
     
     except KeyboardInterrupt:
         print()
         return
+
+if __name__=="__main__":
+    print("Please don't run that file.")
