@@ -6,8 +6,8 @@ from time import sleep
 class setting:
     #if the version is a release or Dev version
     release=True
-    version="2.7"
-    beta_version="2.7"
+    version="2.8"
+    beta_version="2.8"
 
     #variables needed for propper execution
     language=""
@@ -35,6 +35,7 @@ class setting:
 
 class converterdata:
     out=""
+    fromtowhat=""
     
 from datetime import datetime
 setting.start=datetime.now()
@@ -153,7 +154,7 @@ class SysInf:
 class threads:
     updatethread=Thread(target=updatecheck)
     stop_event=Event()
-    titletime=Thread(target=title_time, args=(setting.language, SysInf.system, stop_event, ))
+    titletime=Thread(target=title_time, args=(setting, SysInf.system, stop_event, ))
 
 text=f"The platform uses: \n                {SysInf.complete_system} build {SysInf.detail_version}\n                With the architecture: {SysInf.cpu_architecture}\n"
 log_system(text)
@@ -211,8 +212,31 @@ def init():
             print("I'm aware that the title doesn't update on Linux...")
             threads.stop_event.set()
         
-        if setting.language=="en":
-            print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+        if setting.release==False:
+            if setting.language=="en":
+                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+            
+            elif setting.language=="de":
+                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {setting.beta_channel}")
+                temp=""
+            
+            else:
+                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+
+        elif setting.release==True:
+            if setting.language=="en":
+                print(f"Welcome to the Release version of Text Converter. Please complain on the GitHub Site about issues. it is at {setting.dl_link}")
+            
+            elif setting.language=="de":
+                #print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {setting.dl_link}")
+                temp=""
+            
+            else:
+                #print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.dl_link}")
+                temp=""
+        
+        else:
+            print("Something happened that shouldn't be there, Check the code and maybe download the code again.")
 
         main()
 
@@ -231,8 +255,9 @@ def main():
                             print(f"Startup needed {setting.start_time} seconds.")
                         elif setting.language=="de":
                             print(f"Start brauchte {setting.start_time} Sekunden.")
-                    text=f"The program started in {setting.start_time} seconds."
-                    log_system(text)
+                    if setting.init==False:
+                        text=f"The program started in {setting.start_time} seconds."
+                        log_system(text)
                 
                 while True:
                     setting.init=True
@@ -245,40 +270,56 @@ def main():
 
                     if command=="test":
                         print("SUCCESS :P")
+                        text="SUCCESS :P"
+                        log_info(text, setting.logg)
 
                     elif command=="leetspeak" or command=="leetcode":
                         if setting.language=="en":
                             print(f"\nThat feature is permanently Removed.\n")
                     
                     elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64" or command=="symbenc":
-                        converterdata.out=convert(command, setting.language, setting.logg, setting.name)
+                        converterdata.out, converterdata.fromtowhat=convert(command, setting.language, setting.logg, setting.name)
                     
                     elif command=="last conversion":
                         print(converterdata.out)
                     
                     elif command=="help" or command=="helpsite":
                         mainhelp(command, setting.language)
+
+                    elif command=="language" or command=="prompt" or command=="ad" or command=="update" or command=="logging":
+                        setting.prompt, setting.language, setting.ad, setting.upcheck = change_settings(target=command, prom=setting.prompt, language=setting.language, logging=setting.logg, pc=setting.host, name=setting.name, version=SysInf.version, system=SysInf.system)
                     
-                    elif command=="language":
-                        change_settings(settings="lang", prom=setting.prompt, language=setting.language, logging=setting.logg)
-                        return
-                    
-                    elif command=="prompt":
-                        change_settings(settings="prompt", prom=setting.prompt, language=setting.language, logging=setting.logg, pc=setting.host, name=setting.name, version=SysInf.version, system=SysInf.system)
-                        return
-                    
-                    elif command=="ad":
-                        change_settings(settings="ad", prom=setting.prompt, language=setting.language, logging=setting.logg)
-                        return
+                    elif command=="reset settings":
+                        settings_init(setting.name, setting.host)
                     
                     elif command=="check update":
                         updatecheck()
                     
+                    elif command=="last convert":
+                        print(converterdata.fromtowhat)
+                    
+                    elif command=="cls" or command=="clear" or command=="clear screen":
+                        if SysInf.system=="'Linux'":
+                            os.system("clear")
+                        elif SysInf.system=="'Windows'":
+                            os.system("cls")
+                    
                     elif command=="reset":
-                        setting.init=False
-                        setting.start_time=""
-                        threads.stop_event.set()
                         return
+                    
+                    elif command=="reload settings":
+                        while True:
+                            try:
+                                with open("settings.json", "r") as file:
+                                    settings=json.load(file)
+                                setting.language=settings.get("language")
+                                setting.ad=settings.get("ad")
+                                setting.prompt=settings.get("prompt")
+                                setting.upcheck=settings.get("update")
+                                setting.logg=settings.get("logging")
+                                break
+                            except FileNotFoundError:
+                                settings_init(setting.name, setting.host)
 
                     elif command=="exit" or command=="close" or command=="stop":
                         close()
@@ -287,14 +328,9 @@ def main():
                         threads.stop_event.set()
                         exit()
                     
-                    elif command=="titletimestop":
+                    elif command=="titlestop":
                         threads.stop_event.set()
-                    
-                    elif command=="titletimestart":
-                        threads.stop_event=Event()
-                        threads.titletime=Thread(target=title_time, args=(setting.language, SysInf.system, threads.stop_event, ))
-                        threads.titletime.start()
-                    
+
                     elif command=="":
                         if setting.language=="en":
                             print(f"I'm sorry, i can't parse nothing :(")
@@ -307,6 +343,7 @@ def main():
                     
                     else:
                         text=f"The user used an unknown command: {command}"
+                        log_info(setting.logg, text)
                         if setting.language=="en":
                             print(f"The command '{command}' was not found :(")
                         elif setting.language=="de":
@@ -331,20 +368,39 @@ def main():
         close()
 
 def close():
+    print(f"The important info is: \nLanguage: {setting.language}\nSysten is: {SysInf.system}\n")
     if setting.language=="en":
-        os.system("cls")
-        print(f"\nDo you wanna clsoe the PRogram?\n")
+        if SysInf.system=="'Linux'":
+            os.system("clear")
+        if SysInf.system=="'Windows'":
+            os.system("cls")
+        
+        print(f"\nDo you wanna close the Program?\n")
         if input("Yes/No: ").lower()=="yes":
             threads.stop_event.set()
             exit()
         else:
             return
     if setting.language=="de":
-        os.system("cls")
+        if SysInf.system=="'Linux'":
+            os.system("clear")
+        if SysInf.system=="'Windows'":
+            os.system("cls")
+
         print(f"Willst du das Program beenden?\n")
         if input("Ja/Nein: ").lower()=="ja":
             threads.stop_event.set()
             exit()
+        else:
+            return
+    
+    else:
+        print("Oh no, no Language was provided. If that code is ran of a Floppy Drive, That may be a side effect.")
+        print(f"Do you wanna close the program?\n")
+        if  input("Yes/No: ").lower()=="yes":
+            threads.stop_event.set()
+            exit()
+        
         else:
             return
     return

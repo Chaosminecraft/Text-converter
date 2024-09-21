@@ -30,29 +30,34 @@ def timereader(language, logg):
 
         return
 
-def title_time(language, system, stop_event):
+def title_time(setting, system, stop_event):
     try:
         if system=="Windows":
             while not stop_event.is_set():
                 now=datetime.now()
-                if language=="de":
-                    now=now.strftime("%d/%m/%Y, %H:%M:%S.%f")
-                if language=="en":
+                if setting.language=="de":
+                    now=now.strftime("%d/%m/%Y, %r") #%H:%M:%S.%f
+                if setting.language=="en":
                     now=now.strftime("%m/%d/%Y, %r")
 
                 os.system(f"title Text Converter V2.3 {now}")
                 sleep(timesetting.delay)
+                
 
 
         if system=="Linux":
+            syst.stdout.write(f"\x1b]2;Text Converter V2.3\x07")
+            return
             while not stop_event.is_set():
                 now=datetime.now()
                 now=now.strftime("%d/%m/%Y, %H:%M:%S")
                 syst.stdout.write(f"\x1b]2;Text Converter V2.3 {now}\x07")
                 #print("Time Updated") somehow that fixes the title...
                 sleep(timesetting.delay)
+                
     except:
         traced=traceback.format_exc()
+        print(f"There has been an exception:\n{traced}")
         text=f"There has been an exception:\n{traced}"
         log_system(text)
         if system=="Linux":
@@ -60,3 +65,6 @@ def title_time(language, system, stop_event):
         if system=="Windows":
             os.system(f"title Text Converter V2.3")
         return
+
+if __name__=="__main__":
+    print("That file isn't designed to run on it's own. It is supposed to be a module.")
