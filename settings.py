@@ -112,8 +112,8 @@ def change_settings(**kwargs):
         elif kwargs['target'] == "ad":
             print("Ad Settings")
             if kwargs["language"]=="en":
+                print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
                 while True:
-                    print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
                     text=input("Yes or No? ").lower()
                     if text=="yes":
                         variables.ad=True
@@ -121,14 +121,15 @@ def change_settings(**kwargs):
                     
                     elif text=="no":
                         variables.ad=False
+                        break
                     
                     else:
                         print("Nope, that is sadly invalid!")
                 
             elif kwargs["language"]=="de":
+                print(f"Willst du die werbung sehen?? {variables.ad} ist die Aktuelle einstellung.")
                 while True:
-                    print(f"Willst du die werbung sehen?? {variables.ad} ist die Aktuelle einstellung.")
-                    text=input("Yes or No? ").lower()
+                    text=input("Ja oder Nein? ").lower()
                     if text=="ja":
                         variables.ad=True
                         break
@@ -140,8 +141,8 @@ def change_settings(**kwargs):
                         print("Nope, Das ist leider nicht valide.")
             
             else:
+                print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
                 while True:
-                    print(f"Do you wanna see the ad? {variables.ad} is the current setting.")
                     text=input("Yes or No? ").lower()
                     if text=="yes":
                         variables.ad=True
@@ -192,6 +193,7 @@ def change_settings(**kwargs):
                 text=input("Yes or No? ").lower()
                 if text=="yes":
                     variables.logg=True
+                    
                 
                 else:
                     variables.logg=False
@@ -235,4 +237,4 @@ def change_settings(**kwargs):
         return
 
 if __name__=="__main__":
-    print("Please don't run that file.")
+    print("Please don't run that file on it's own.")

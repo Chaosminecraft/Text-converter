@@ -36,7 +36,7 @@ def title_time(setting, system, stop_event):
             while not stop_event.is_set():
                 now=datetime.now()
                 if setting.language=="de":
-                    now=now.strftime("%d/%m/%Y, %H:%M:%S.%f")
+                    now=now.strftime("%d/%m/%Y, %r") #%H:%M:%S.%f
                 if setting.language=="en":
                     now=now.strftime("%m/%d/%Y, %r")
 

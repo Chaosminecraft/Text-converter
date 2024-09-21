@@ -5,9 +5,9 @@ from time import sleep
 
 class setting:
     #if the version is a release or Dev version
-    release=False
-    version="2.7"
-    beta_version="2.75"
+    release=True
+    version="2.8"
+    beta_version="2.8"
 
     #variables needed for propper execution
     language=""
@@ -35,6 +35,7 @@ class setting:
 
 class converterdata:
     out=""
+    fromtowhat=""
     
 from datetime import datetime
 setting.start=datetime.now()
@@ -211,8 +212,31 @@ def init():
             print("I'm aware that the title doesn't update on Linux...")
             threads.stop_event.set()
         
-        if setting.language=="en":
-            print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+        if setting.release==False:
+            if setting.language=="en":
+                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+            
+            elif setting.language=="de":
+                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {setting.beta_channel}")
+                temp=""
+            
+            else:
+                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.beta_channel}")
+
+        elif setting.release==True:
+            if setting.language=="en":
+                print(f"Welcome to the Release version of Text Converter. Please complain on the GitHub Site about issues. it is at {setting.dl_link}")
+            
+            elif setting.language=="de":
+                #print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {setting.dl_link}")
+                temp=""
+            
+            else:
+                #print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {setting.dl_link}")
+                temp=""
+        
+        else:
+            print("Something happened that shouldn't be there, Check the code and maybe download the code again.")
 
         main()
 
@@ -231,8 +255,9 @@ def main():
                             print(f"Startup needed {setting.start_time} seconds.")
                         elif setting.language=="de":
                             print(f"Start brauchte {setting.start_time} Sekunden.")
-                    text=f"The program started in {setting.start_time} seconds."
-                    log_system(text)
+                    if setting.init==False:
+                        text=f"The program started in {setting.start_time} seconds."
+                        log_system(text)
                 
                 while True:
                     setting.init=True
@@ -245,13 +270,15 @@ def main():
 
                     if command=="test":
                         print("SUCCESS :P")
+                        text="SUCCESS :P"
+                        log_info(text, setting.logg)
 
                     elif command=="leetspeak" or command=="leetcode":
                         if setting.language=="en":
                             print(f"\nThat feature is permanently Removed.\n")
                     
                     elif command=="phex" or command=="pbin" or command=="legacy pbin" or command=="hex" or command=="bin" or command=="ascii" or command=="brainfuck" or command=="base64" or command=="symbenc":
-                        converterdata.out=convert(command, setting.language, setting.logg, setting.name)
+                        converterdata.out, converterdata.fromtowhat=convert(command, setting.language, setting.logg, setting.name)
                     
                     elif command=="last conversion":
                         print(converterdata.out)
@@ -268,8 +295,31 @@ def main():
                     elif command=="check update":
                         updatecheck()
                     
+                    elif command=="last convert":
+                        print(converterdata.fromtowhat)
+                    
+                    elif command=="cls" or command=="clear" or command=="clear screen":
+                        if SysInf.system=="'Linux'":
+                            os.system("clear")
+                        elif SysInf.system=="'Windows'":
+                            os.system("cls")
+                    
                     elif command=="reset":
                         return
+                    
+                    elif command=="reload settings":
+                        while True:
+                            try:
+                                with open("settings.json", "r") as file:
+                                    settings=json.load(file)
+                                setting.language=settings.get("language")
+                                setting.ad=settings.get("ad")
+                                setting.prompt=settings.get("prompt")
+                                setting.upcheck=settings.get("update")
+                                setting.logg=settings.get("logging")
+                                break
+                            except FileNotFoundError:
+                                settings_init(setting.name, setting.host)
 
                     elif command=="exit" or command=="close" or command=="stop":
                         close()
@@ -318,6 +368,7 @@ def main():
         close()
 
 def close():
+    print(f"The important info is: \nLanguage: {setting.language}\nSysten is: {SysInf.system}\n")
     if setting.language=="en":
         if SysInf.system=="'Linux'":
             os.system("clear")
@@ -340,6 +391,16 @@ def close():
         if input("Ja/Nein: ").lower()=="ja":
             threads.stop_event.set()
             exit()
+        else:
+            return
+    
+    else:
+        print("Oh no, no Language was provided. If that code is ran of a Floppy Drive, That may be a side effect.")
+        print(f"Do you wanna close the program?\n")
+        if  input("Yes/No: ").lower()=="yes":
+            threads.stop_event.set()
+            exit()
+        
         else:
             return
     return
