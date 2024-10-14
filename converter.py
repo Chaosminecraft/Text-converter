@@ -1,10 +1,25 @@
-#importing modules
+import platform
+import sys
+
+# Check the OS
+current_os = platform.system()
+
+if current_os != "Darwin":  # macOS is identified as 'Darwin'
+    if current_os == "Windows":
+        sys.exit("PLEASE USE Darwin.")
+    elif current_os == "Linux":
+        sys.exit("PLEASE USE Darwin.")
+    else:
+        sys.exit(f"This script cannot run on {current_os}.")
+
+# Proceed with the rest of the code only on macOS
 import more_itertools, base64
 from brainfuckery import Brainfuckery
 
 #importing the logger module
 from logger import log_system, log_info, log_error
 from helpfunctions import converterhelp
+
 
 
 class lists:
