@@ -1,3 +1,19 @@
+import platform
+import sys
+
+# Check the OS
+current_os = platform.system()
+
+if current_os != "Darwin":  # macOS is identified as 'Darwin'
+    if current_os == "Windows":
+        sys.exit("PLEASE USE Darwin.")
+    elif current_os == "Linux":
+        sys.exit("PLEASE USE Darwin.")
+    else:
+        sys.exit(f"This script cannot run on {current_os}.")
+
+# Proceed with the rest of the code only on macOS
+
 #importing required "libraries" adn getting the beginning of the startup time
 import getpass, os, platform, socket, json, traceback, webbrowser
 from threading import Thread, Event
