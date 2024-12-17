@@ -1,13 +1,5 @@
-def converterhelp(command, language, answer):
-    if language=="en":
-        print(f"""
-Common commands:
-    help shows that site
-    convert converts from text to {command} (My own formats have a limit to ascii only)
-    deconvert converts from {command} to text
-    exit returns to the main menu\n""")
-
-    elif language=="de":
+def converterhelp(command, language):
+    if language=="de":
         print(f"""
 Allgemeine commands:
     help zeigt diese seite
@@ -26,26 +18,7 @@ Common commands:
     return
 
 def mainhelp(command, language):
-    if language=="en":
-        print(f"""
-Common commands:
-    Help gives the Help text
-    Hex converts between hex and text
-    phex converts between pseudo hex and text
-    bin converts between Binary and text
-    pbin converts between pseudo binary and text
-    legagy pbin converts between an older version of Pseudo Binary and text
-    ascii converts between ascii and text
-    brainfuck converts between brainfuck and text
-    base64 converts between base64 and text (only normal text for now)\n
-Additional info:
-    language let's you change between English(en) or German(de).
-    prompt let's you change the prompt look. (After startup the prompt)
-    The rest of the settings currently can't be dynamicalyl be changed.\n""")
-        
-        return
-
-    elif language=="de":
+    if language=="de":
         print(f"""
 Allgemeine commands:
     Hilfe gibt den Hilfetext aus

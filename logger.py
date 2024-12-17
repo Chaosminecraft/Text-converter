@@ -17,20 +17,20 @@ def log_system(text):
     logging.info(text)
     return
 
-def log_info(text, logg):
-    if logg==True:
-        text=f"[INFO] {text}"
+def log_info(**kwargs):
+    if kwargs["logg"]==True:
+        text=f"[INFO] {kwargs["text"]}"
         logging.info(text)
         return
-    if logg==False:
+    if kwargs["logg"]==False:
         return
 
-def log_warn(text, logg):
-    if logg==True:
-        text=f"[WARNING] {text}"
+def log_warn(**kwargs):
+    if kwargs["logg"]==True:
+        text=f"[WARNING] {kwargs["text"]}"
         logging.info(text)
         return
-    if logg==False:
+    if kwargs["logg"]==False:
         return
 
 def log_error(text):
