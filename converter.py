@@ -74,10 +74,10 @@ class lists:
 class variables:
     content=""
     out=""
-    fromtowhat=""
+    detailed_converted_text=""
 
 #the main function of the converter
-def convert(command, language, logg, name):
+def convert(command, language, logg):
     variables.content=""
     variables.out=""
     try:
@@ -86,7 +86,7 @@ def convert(command, language, logg, name):
                 text_list=lists.phex
             elif command=="pbin":
                 text_list=lists.pbinary
-            elif command=="legacy bin":
+            elif command=="legacy pbin":
                 text_list=lists.pbinary_legacy
 
             while True:
@@ -98,7 +98,7 @@ def convert(command, language, logg, name):
                     answer=input("Convert or Deconvert? ").lower()
 
                 text=f"The user wanted to: {answer}"
-                log_info(text, logg)
+                log_info(text=text, logg=logg)
             
                 if answer=="help":
                     converterhelp(command, language, answer)
@@ -227,9 +227,9 @@ def convert(command, language, logg, name):
             except:
                 pass
         
-            variables.fromtowhat=f"{variables.content} → {variables.out}"
+            variables.detailed_converted_text=f"{variables.content} → {variables.out}"
 
-            return variables.out, variables.fromtowhat
+            return variables.detailed_converted_text
     except KeyboardInterrupt:
         print()
         return
