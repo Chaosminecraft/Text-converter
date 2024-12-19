@@ -16,7 +16,7 @@ class vars:
     logg=""
     autopwgen=""
     excluded_chars=""
-    included_uppercase=""
+    include_uppercase=""
     include_numbers=""
     include_specials=""
 
@@ -42,7 +42,7 @@ def settings_init(**kwargs):
     
     autopwgen=False
     
-    exclude_chars=None
+    exclude_chars=""
     
     include_uppercase=True
     
@@ -84,8 +84,8 @@ def change_settings(**kwargs):
         vars.upcheck=settings_file.get("update")
         vars.logg=settings_file.get("logging")
         vars.autopwgen=settings_file.get("autopwgen")
-        vars.excluded_chars=settings_file.get("excludedchars")
-        vars.included_uppercase=settings_file.get("includeuppercase")
+        vars.excluded_chars=settings_file.get("excludechars")
+        vars.include_uppercase=settings_file.get("includeuppercase")
         vars.include_numbers=settings_file.get("includenumbers")
         vars.include_specials=settings_file.get("includespecials")
 
@@ -149,7 +149,7 @@ def change_settings(**kwargs):
             
             else:
                 print("What style do you want? You Can pull the {host} to pull the pc name, you can do {name} to get the name of the user on the PC, with {system} you can pull the System (not always accurate.)")
-                print("there are 3 presets:\n1. linux\n2. windows\n3. macos")
+                print("there are 3 presets:\n1. linux\n2. windows\n3. windows system32\n4. macos")
             
             if kwargs["language"]=="de":
                 vars.prompt=input("Was für ein Prompt? ")
@@ -162,6 +162,9 @@ def change_settings(**kwargs):
             
             elif vars.prompt.lower()=="windows":
                 vars.prompt="C:\\user\\{name}> "
+            
+            elif vars.prompt.lower()=="windows system32":
+                vars.prompt="C:\\Windows\\System32> "
             
             elif vars.prompt.lower()=="macos":
                 vars.prompt="{name}@{host} ~ % "
@@ -259,7 +262,7 @@ def change_settings(**kwargs):
             else:
                 print("What characters do you wanna exclude when generating a password?")
                 text=input("write them here> ")
-                vars.excluded_chars=text
+                vars.excluded_chars=f" {text}"
         
         elif kwargs["target"]=="include uppercase":
             if kwargs["language"]=="de":
@@ -370,7 +373,7 @@ def change_settings(**kwargs):
         with open("settings.json", "w") as file:
             json.dump(settings, file)
         
-        return vars.prompt, vars.language, vars.ad, vars.upcheck, vars.logg, vars.autopwgen, vars.exclude_chars, vars.include_uppercase, vars.include_numbers, vars.include_specials
+        return vars.prompt, vars.language, vars.ad, vars.upcheck, vars.logg, vars.autopwgen, vars.excluded_chars, vars.include_uppercase, vars.include_numbers, vars.include_specials
     
     except KeyboardInterrupt:
         print()

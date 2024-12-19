@@ -86,7 +86,7 @@ def convert(command, language, logg):
                 text_list=lists.phex
             elif command=="pbin":
                 text_list=lists.pbinary
-            elif command=="legacy bin":
+            elif command=="legacy pbin":
                 text_list=lists.pbinary_legacy
 
             while True:

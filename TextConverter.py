@@ -31,6 +31,7 @@ class settings:
     helpfunctions_module_ok=True
     advert_module_ok=True
     password_module_ok=True
+    split_module_ok=True
 
     #the username and system name
     name=getpass.getuser()
@@ -120,6 +121,12 @@ try:
 except ImportError:
     print("The Password Generator part is unavailable due to the file probably having a corruption.")
     settings.password_module_ok=False
+
+try:
+    from SplitIt.backend import split
+except ImportError:
+    print("The Split It project is not available at the moment.")
+    settings.split_module_ok=False
 
 #The update checking function
 def updatecheck():
@@ -227,9 +234,9 @@ def init():
                     settings.upcheck=settings.config.get("update")
                     settings.logg=settings.config.get("logging")
                     pwgen.autopwgen=settings.config.get("autopwgen")
-                    pwgen.excluded_chars=settings.config.get("excludedchars")
-                    if pwgen.excluded_chars==None:
-                        pwgen.excluded_chars=""
+                    pwgen.excluded_chars=settings.config.get("excludechars")
+                    #if pwgen.excluded_chars==None:
+                    #    pwgen.excluded_chars=""
                     pwgen.include_uppercase=settings.config.get("includeuppercase")
                     pwgen.include_numbers=settings.config.get("includenumbers")
                     pwgen.include_specials=settings.config.get("includespecials")
@@ -371,6 +378,32 @@ def main():
                     elif command == "manualtraceback":
                         text = f"There as an unexpected error, There is a traceback:\n{traceback.format_exc()}"
                         log_system(text)
+                    
+                    elif command == "split it test module":
+                        print(f"This is a hidden Module test! Use with caution!!!\nThere is only Yes, No and Skip")
+                        while True:
+                            standalone=input("Test Standalone or Module?").lower()
+                            if standalone=="yes" or standalone=="ja":
+                                standalone=True
+                                break
+                            elif standalone=="no" or standalone=="nein":
+                                standalone=False
+                                break
+                            elif standalone=="skip":
+                                break
+                            else:
+                                if settings.language=="de":
+                                    print("Nope, Da gibt es nur Ja oder Nein oder Skip.")
+                                else:
+                                    print("Nope, There is only Yes or No or Skip.")
+                        
+                        if standalone==True or standalone==False:
+                            split(standalone=standalone)
+                        else:
+                            split(standalone=False)
+                    
+                    elif command == "split it":
+                        split(standalone=False)
                         
             except AttributeError:
                 pass
