@@ -6,8 +6,8 @@ from time import sleep
 class setting:
     #if the version is a release or Dev version
     release=True
-    version="2.8"
-    beta_version="2.8"
+    version="2.9"
+    beta_version="2.9"
 
     #variables needed for propper execution
     language=""
