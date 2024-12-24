@@ -149,7 +149,7 @@ def change_settings(**kwargs):
             
             else:
                 print("What style do you want? You Can pull the {host} to pull the pc name, you can do {name} to get the name of the user on the PC, with {system} you can pull the System (not always accurate.)")
-                print("there are 3 presets:\n1. linux\n2. windows\n3. windows system32\n4. macos")
+                print("there are 3 presets:\n1. linux\n2. windows\n3. windows system32\n4. macos\n5. templeos")
             
             if kwargs["language"]=="de":
                 vars.prompt=input("Was für ein Prompt? ")
@@ -168,6 +168,9 @@ def change_settings(**kwargs):
             
             elif vars.prompt.lower()=="macos":
                 vars.prompt="{name}@{host} ~ % "
+            
+            elif vars.prompt.lower()=="templeos":
+                vars.prompt="C:/Home"
             
             for r in (("{name}", kwargs['name']), ("{host}", kwargs['host']), ("{system}", kwargs['system'])):
                 vars.prompt=vars.prompt.replace(*r)
