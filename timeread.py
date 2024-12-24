@@ -39,8 +39,11 @@ def title_time(settings, system, stop_event):
                     now=now.strftime("%d/%m/%Y, %H:%M:%S") #%H:%M:%S.%f
                 if settings.language=="en":
                     now=now.strftime("%m/%d/%Y, %r")
-
-                os.system(f"title Text Converter V2.3 {now}")
+                
+                if settings.release==True:
+                    os.system(f"title Text Converter {settings.version} {now}")
+                else:
+                    os.system(f"title Text Converter Beta {settings.beta_version} {now}")
                 sleep(timesetting.delay)
                 
 
