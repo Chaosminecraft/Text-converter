@@ -10,7 +10,10 @@ def log_init(logg):
         return
     except FileNotFoundError:
         os.mkdir("logs")
-        log_init(logg)
+        now=datetime.now()
+        time=now.strftime("%d.%m.%Y %H.%M.%S")
+        logging.basicConfig(filename=f"logs/{time} logg.txt", filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
+        return
 
 def log_system(text):
     text=f"[SYSTEM] {text}"
