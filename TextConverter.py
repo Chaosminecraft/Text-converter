@@ -11,7 +11,7 @@ class settings:
 
     #What version it is
     version="2.8"
-    beta_version="2.81"
+    beta_version="2.9"
 
     #variables for runtime
     config={}
@@ -59,6 +59,7 @@ class variables:
     beta_site="https://github.com/Chaosminecraft/Text-Converter-Beta/"
     public_archive="https://github.com/Chaosminecraft/Custom-Encoder"
     old_public_archive="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
+    ingenarel="https://github.com/ingenarel"
     
     #The converted text is here too
     converted_text="" #a basic version of what was last time converted
@@ -175,9 +176,9 @@ def updatecheck():
 
         if checked_version>settings.beta_version:
             if settings.language=="de":
-                print(f"Da ist eine neue beta version: {checked_version}\nDa ist der Download link: {settings.beta_channel}\n")
+                print(f"Da ist eine neue beta version: {checked_version}\nDa ist der Download link: {variables.beta_site}\n")
             else:
-                print(f"There is a new beta version, Download it here: {checked_version}\nThere is the download link: {settings.beta_channel}\n")
+                print(f"There is a new beta version, Download it here: {checked_version}\nThere is the download link: {variables.beta_site}\n")
             return
         
         elif checked_version==settings.beta_version:
@@ -292,7 +293,7 @@ def init():
         
         if settings.release==False:
             if settings.language=="de":
-                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.beta_site}")
+                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.beta_site}\nJetzt neu: Split It Integration Made by ingenarel: {variables.ingenarel}")
             
             else:
                 print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {variables.beta_site}")
