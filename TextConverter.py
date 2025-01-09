@@ -7,11 +7,11 @@ from datetime import datetime
 #the settings class
 class settings:
     #If the version is a release
-    release=True
+    release=False
 
     #What version it is
     version="2.9"
-    beta_version="2.9"
+    beta_version="2.9.1"
 
     #variables for runtime
     config={}
