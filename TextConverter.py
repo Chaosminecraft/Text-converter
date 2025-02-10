@@ -62,7 +62,7 @@ class variables:
     ingenarel="https://github.com/ingenarel"
     
     #The converted text is here too
-    converted_text="" #a basic version of what was last time converted
+    converted_text="No Text was converted!!!" #a basic version of what was last time converted
     detailed_converted_text="" #A more detailed version of from what to what
 
 #Basic System infos
@@ -102,7 +102,7 @@ except ImportError:
 try:
     from converter import convert
 except ImportError:
-    print("The main funcionality of the project is currently not available.")
+    print("The main funcionality of the project is currently not available. Please check dependeicies until I sorted out the dependency checking.")
     settings.convert_module_ok=False
 
 try:
@@ -244,7 +244,7 @@ def init():
                     break
                 
                 except FileNotFoundError: #If the File didn't exist
-                    settings_init(name=settings.name, host=settings.host)
+                    settings.prompt, settings.language, settings.ad, settings.upcheck = settings_init(name=settings.name, host=settings.host)
         
         except: #if the Default settings are required
             error=traceback.format_exc()
@@ -274,29 +274,41 @@ def init():
             settings.prompt="Input: "
             settings.upcheck=True
             settings.logg=True
+            pwgen.autopwgen=False
+            pwgen.excluded_chars=""
+            pwgen.include_uppercase=True
+            pwgen.include_numbers=True
+            pwgen.include_specials=True
 
         if settings.ad==True:
             if settings.init==True:
-                free_ad(settings.language, settings.logg)
+                if settings.advert_module_ok==True:
+                    free_ad(settings.language, settings.logg)
+                else:
+                    continue
 
         if settings.init==False:
             if settings.timeread_module_ok==True:
                 threads.titletime=Thread(target=title_time, args=(settings, SysInf.system, threads.stop_event, ))
                 threads.titletime.start()
+            else:
+                continue
 
         if settings.init==False:
             if settings.upcheck==True:
                 threads.updatethread.start()
+            else:
+                continue
 
         if SysInf.system=="Linux":
             print("I'M aware that some issues may come at a few versions on that Project...")
         
         if settings.release==False:
             if settings.language=="de":
-                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.beta_site}\nJetzt neu: Split It Integration Made by ingenarel: {variables.ingenarel}")
+                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.beta_site}\n[BETA] Split It Integration. Split it ist von ingenarel: {variables.ingenarel}")
             
             else:
-                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {variables.beta_site}")
+                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {variables.beta_site}\n[BETA] Split It integration. Split it was made by ingenarel: {variables.ingenarel}")
         
         elif settings.release==True:
             if settings.language=="de":
@@ -353,7 +365,13 @@ def main():
                             print(f"\nThis feature is permanently removed!\n")
 
                     elif command == "phex" or command == "pbin" or command == "legacy pbin" or command == "hex" or command == "bin" or command == "ascii" or command == "brainfuck" or command == "base64" or command == "symbenc":
-                        variables.converted_text = convert(command, settings.language, settings.logg)
+                        if settings.convert_module_ok==True:
+                            variables.converted_text = convert(command, settings.language, settings.logg)
+                        else:
+                            if settings.language=="de":
+                                print("Das converter modul fehlt.")
+                            else:
+                                print("The converter module is missing.")
 
                     elif command == "last conversion":
                         print(variables.converted_text)
@@ -369,47 +387,72 @@ def main():
 
                     elif command == "reset settings":
                         settings_init(name=settings.name, host=settings.host)
+                    
+                    elif command == "reload settings":
+                        while True:
+                            try:
+                                with open("settings.json", "r") as file:
+                                    settings_file=json.load(file)
+                                settings.language=settings_file.get("language")
+                                settings.ad=settings_file.get("ad")
+                                settings.prompt=settings_file.get("prompt")
+                                settings.upcheck=settings_file.get("update")
+                                settings.logg=settings_file.get("logging")
+                                break
+
+                            except FileNotFoundError:
+                                settings.prompt, settings.language, settings.ad, settings.upcheck = settings_init(settings.name, settings.host)
 
                     elif command == "check update":
-                        updatecheck()
+                        if settings.upcheck==True:
+                            updatecheck()
+                        else:
+                            print("The requests module isn't installed.")
                     
                     elif command == "password generator" or command == "passwort generator" or command == "passwordgen" or command == "pwgen":
-                        pwgen.e, pwgen.password=password_generator(settings, pwgen, variables)  # Neuer Passwort-Generator-Befehl
+                        if settings.password_module_ok==True:
+                            pwgen.e, pwgen.password=password_generator(settings, pwgen, variables)  # Neuer Passwort-Generator-Befehl
+                        else:
+                            continue
                     
                     elif command == "manualtraceback":
                         text = f"There as an unexpected error, There is a traceback:\n{traceback.format_exc()}"
                         log_system(text)
                     
                     elif command == "split it test module":
-                        print(f"This is a hidden Module test! Use with caution!!!\nThere is only Yes, No and Skip")
-                        while True:
-                            standalone=input("Test Standalone or Module?").lower()
-                            if standalone=="yes" or standalone=="ja":
-                                standalone=True
-                                break
-                            elif standalone=="no" or standalone=="nein":
-                                standalone=False
-                                break
-                            elif standalone=="skip":
-                                break
-                            else:
-                                if settings.language=="de":
-                                    print("Nope, Da gibt es nur Ja oder Nein oder Skip.")
+                        if settings.split_module_ok==True:
+                            print(f"This is a hidden Module test! Use with caution!!!\nThere is only Yes, No and Skip")
+                            while True:
+                                standalone=input("Test Standalone or Module?").lower()
+                                if standalone=="yes" or standalone=="ja":
+                                    standalone=True
+                                    break
+                                elif standalone=="no" or standalone=="nein":
+                                    standalone=False
+                                    break
+                                elif standalone=="skip":
+                                    break
                                 else:
-                                    print("Nope, There is only Yes or No or Skip.")
+                                    if settings.language=="de":
+                                        print("Nope, Da gibt es nur Ja oder Nein oder Skip.")
+                                    else:
+                                        print("Nope, There is only Yes or No or Skip.")
                         
-                        if standalone==True or standalone==False:
-                            split(standalone=standalone)
-                        else:
-                            split(standalone=False)
+                            if standalone==True or standalone==False:
+                                split(standalone=standalone)
+                            else:
+                                split(standalone=False)
                     
                     elif command == "split it":
-                        split(standalone=False)
+                        if settings.split_module_ok==True:
+                            split(standalone=False)
+                        else:
+                            continue
                         
             except AttributeError:
                 pass
         except KeyboardInterrupt:
-            temp="" #Put closing function here
+            close()
     except:
             traced = traceback.format_exc()
             if settings.language == "de":
@@ -419,6 +462,29 @@ def main():
 
             text = f"There as an unexpected error, There is a traceback:\n{traced}"
             log_system(text)
+
+def close():
+    if SysInf.system=="'Linux'":
+        os.system("clear")
+    elif SysInf.system=="'Windows'":
+        os.system("cls")
+
+    if settings.language=="de":
+        print(f"Willst du das Program beenden?\n")
+        if input("Ja/Nein: ").lower()=="ja":
+            threads.stop_event.set()
+            exit()
+        else:
+            return
+    
+    else:
+        print(f"\nDo you wanna close the Program?\n")
+        if input("Yes/No: ").lower()=="yes":
+            threads.stop_event.set()
+            exit()
+        else:
+            return
+    return
 
 if __name__ == "__main__":
     init()
