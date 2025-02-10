@@ -41,9 +41,9 @@ def title_time(settings, system, stop_event):
                     now=now.strftime("%m/%d/%Y, %r")
                 
                 if settings.release==True:
-                    os.system(f"title Text Converter {settings.version} {now}")
+                    os.system(f"title Text Converter V{settings.version} {now}")
                 else:
-                    os.system(f"title Text Converter Beta {settings.beta_version} {now}")
+                    os.system(f"title Text Converter Beta V{settings.beta_version} {now}")
                 sleep(timesetting.delay)
                 
 
