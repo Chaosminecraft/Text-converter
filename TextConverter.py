@@ -11,7 +11,7 @@ class settings:
 
     #What version it is
     version="3.0.0"
-    beta_version="3.0.1"
+    beta_version="3.0.2"
 
     #variables for runtime
     config={}
@@ -56,7 +56,7 @@ class variables:
     
     #There are the links that are for the people that snoop in my code to see something
     release_site="https://github.com/Chaosminecraft/Text-converter/releases/"
-    beta_site="https://github.com/Chaosminecraft/Text-Converter-Beta/"
+    beta_site="https://github.com/Chaosminecraft/Text-converter/tree/Beta"
     public_archive="https://github.com/Chaosminecraft/Custom-Encoder"
     old_public_archive="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
     ingenarel="https://github.com/ingenarel"
