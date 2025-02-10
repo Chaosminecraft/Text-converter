@@ -172,7 +172,7 @@ def updatecheck():
         link_ver="https://github.com/Chaosminecraft/Text-converter/raw/Beta/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:7]
-        print(checked_version) #If the version from the internet doesn't give good results.
+        #print(checked_version) #If the version from the internet doesn't give good results.
 
         if checked_version>settings.beta_version:
             if settings.language=="de":
