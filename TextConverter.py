@@ -134,7 +134,7 @@ def updatecheck():
     #print("FUNCTION START") #For checking if the function starts at all
     if settings.release==True:
         #print("RELEASE VERSION") #says if it is a Release version.
-        link_ver="https://github.com/Chaosminecraft/Text-converter/raw/main/version.txt"
+        link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/version.txt"
         checked_version=requests.get(link_ver, allow_redirects=True)
         checked_version=str(checked_version.content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
@@ -169,7 +169,7 @@ def updatecheck():
     
     elif settings.release==False:
         #print("BETA RELEASE") Says if it is a Beta version.
-        link_ver="https://github.com/Chaosminecraft/Text-converter/raw/Beta/betaversion.txt"
+        link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
