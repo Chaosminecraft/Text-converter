@@ -10,8 +10,8 @@ class settings:
     release=False
 
     #What version it is
-    version="2.9"
-    beta_version="2.9.1"
+    version="2.9.0"
+    beta_version="2.9.2"
 
     #variables for runtime
     config={}
@@ -136,7 +136,7 @@ def updatecheck():
         #print("RELEASE VERSION") #says if it is a Release version.
         link_ver="https://github.com/Chaosminecraft/Text-converter/raw/main/version.txt"
         checked_version=requests.get(link_ver, allow_redirects=True)
-        checked_version=str(checked_version.content)[2:5]
+        checked_version=str(checked_version.content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
         
         if checked_version>settings.version:
@@ -171,8 +171,8 @@ def updatecheck():
         #print("BETA RELEASE") Says if it is a Beta version.
         link_ver="https://github.com/Chaosminecraft/Text-converter/raw/Beta/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
-        checked_version=str(checked_version.content)[2:5]
-        #print(checked_version) #If the version from the internet doesn't give good results.
+        checked_version=str(checked_version.content)[2:7]
+        print(checked_version) #If the version from the internet doesn't give good results.
 
         if checked_version>settings.beta_version:
             if settings.language=="de":
