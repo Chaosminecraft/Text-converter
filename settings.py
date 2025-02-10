@@ -90,7 +90,7 @@ def change_settings(**kwargs):
         vars.include_specials=settings_file.get("includespecials")
 
         if kwargs['target'] == "language":
-            print("language Settings")
+            #print("language Settings")
             if kwargs["language"] == "de":
                 while True:
                     text=input("Welche Sprache? Da ist EN und DE: ").lower()

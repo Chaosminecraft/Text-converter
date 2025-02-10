@@ -21,7 +21,7 @@ def mainhelp(command, language):
     if language=="de":
         print(f"""
 Allgemeine commands:
-    Hilfe gibt den Hilfetext aus
+    Help gibt den Hilfetext aus
     Hex konvertiert zwischen Hex und Text
     phex konvertiert zwischen Pseudo-Hex und Text
     bin konvertiert zwischen Binär und Text

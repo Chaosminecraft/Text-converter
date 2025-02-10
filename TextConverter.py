@@ -7,11 +7,11 @@ from datetime import datetime
 #the settings class
 class settings:
     #If the version is a release
-    release=True
+    release=False
 
     #What version it is
     version="3.0.0"
-    beta_version="3.0.0"
+    beta_version="3.0.1"
 
     #variables for runtime
     config={}
@@ -376,7 +376,7 @@ def main():
                     elif command == "last conversion":
                         print(variables.converted_text)
 
-                    elif command == "help" or command == "helpsite":
+                    elif command == "help" or command == "helpsite" or command=="hilfe":
                         mainhelp(command, settings.language)
 
                     elif command == "language" or command == "prompt" or command == "ad" or command == "update" or command == "logging" or command=="auto password" or command=="excluded chars" or command=="include uppercase" or command=="include numbers" or command=="include specials":
