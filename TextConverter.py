@@ -369,7 +369,7 @@ def init():
 
         try:
             config.language=config.config.get("language")
-            print(config.language)
+            #print(config.language) #Debugging purposes
             if config.language not in ("de", "en"):
                 config.language="en"
             config.ad=config.config.get("advert")

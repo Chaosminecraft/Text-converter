@@ -3,7 +3,7 @@ from logger import log_info
 from random import randint
 
 def free_ad(config):
-    print(config.language)
+    #print(config.language) #Debugging
     if config.language=="de":
         print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
     else:
