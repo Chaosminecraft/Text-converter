@@ -13,7 +13,7 @@ def log_system(text):
     logging.info(f'[SYSTEM] {text}')
     return
 
-def log_info(text, config):
+def log_info(config, text):
     if config.logg==True:
         logging.info(f'[INFO] {text}')
     

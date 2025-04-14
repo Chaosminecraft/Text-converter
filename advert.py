@@ -11,7 +11,7 @@ def free_ad(config):
 
     if config.logg==True:
         text=randomtext()
-        log_info(text, config)
+        log_info(config, text)
     return
 
 # that function is just to do a little joking on the log

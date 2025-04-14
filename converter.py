@@ -142,7 +142,7 @@ def parse_input(config, **kwargs):
             convert_mode=kwargs["mode"]
             content=kwargs["content"]
 
-        if exit==False:
+        if variables.exit==False:
             process(config, charset=convert_list, mode=convert_mode, content=content, convert=kwargs["mode"])
 
         print()
@@ -206,7 +206,7 @@ def process(config, **kwargs):
 
     elif kwargs["mode"]=="deconvert":
         if kwargs["convert"]=="hex":
-            variables.out=bytes([int(x, 16) for x in variables.content.split()]).decode()
+            variables.out=bytes([int(x, 16) for x in kwargs["content"].split()]).decode()
             print(variables.out)
             
         elif kwargs["convert"]=="bin":
@@ -239,7 +239,7 @@ def process(config, **kwargs):
             unsupported_symbols=""
             for i in range(len(kwargs["content"])):
                 if  kwargs["content"][i] not in lists.deconvert:
-                    unsupported_symbols += f"{kwargs["content"][i]}, "
+                    unsupported_symbols += f'{kwargs["content"][i]}, '
             unsupported_symbols = unsupported_symbols[:-2]
             if unsupported_symbols=="":
                 for _ in range(len(kwargs["content"])):

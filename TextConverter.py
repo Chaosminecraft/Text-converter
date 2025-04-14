@@ -49,7 +49,9 @@ class info:
     public_archive="https://github.com/Chaosminecraft/Custom-Encoder"                       #The old versions of my converter
     old_public_archive="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM" #Yeah... I still host the first few versions in here... But at least I still keep them there if anyone wants to see.
     ingenarel="https://github.com/ingenarel"                                                #A real chad that made something neat (Yeah, Path n stuff is wonky right now on his version)
-    converted_text="No text was converted."                                                 #The last converted string
+
+class VariableData:
+    converted_text="No text was converted." #The last converted string
 
 #Basic system info for the log
 class sysinf:
@@ -376,6 +378,8 @@ def init():
             if config.ad not in (True, False):
                 config.ad=True
             config.prompt=config.config.get("prompt")
+            if config.prompt==None:
+                config.prompt=f"{config.name}@{config.host}:~$ "
             config.upcheck=config.config.get("update-check")
             if config.upcheck not in (True, False):
                 config.upcheck=True
@@ -439,35 +443,66 @@ Welcome to the Beta version of the Text Converter.\n""")
 
 def main():
     try:
-        try:
-            if config.upcheck==True:
+        while stopvars.exit_code is not True:
+            try:
+                if config.upcheck==True:
+                    if startup.init==False:
+                        threads.updatethread.join()
+
                 if startup.init==False:
-                    threads.updatethread.join()
+                    if startup.Startup_time_check==True:
+                        startup.start= datetime.datetime.now()-startup.start
+                        if config.language=="de":
+                            print(f"Das programm hat so viel zeit gebraucht: {startup.start}")
+                        else:
+                            print(f"The programm needed that much to start: {startup.start}")
 
-            if startup.init==True:
-                if startup.Startup_time_check==True:
-                    startup.start= datetime.datetime.now()-startup.start
-                    if config.language=="de":
-                        print(f"Das programm hat so viel zeit gebraucht: {startup.start}")
-                    else:
-                        print(f"The programm needed that much to start: {startup.start}")
+                        text=f"The programm needed that much to start: {startup.start}"
+                        if modules.logg_module==True:
+                            log_system(text)
+                        else:
+                            backupfunc.backup_logg(mode="logg", text=text)
 
-                    text=f"The programm needed that much to start: {startup.start}"
-                    if modules.logg_module==True:
-                        log_system(text)
-                    else:
-                        backupfunc.backup_logg(mode="logg", text=text)
-
-            while True:
                 startup.init=True
                 command=input(config.prompt).lower()
-                if command=="test":
+                if command=="":
+                    if modules.logg_module==True:
+                        log_info(config, text=f"The user didn't use a command")
+                    else:
+                        backupfunc.backup_logg(mode="logg", text=f"The user didn't use a command")
+                else:
+                    if modules.logg_module==True:
+                        log_info(config, text=f"The user used the command: {command}")
+                    else:
+                        backupfunc.backup_logg(mode="logg", text=f"The user used the command: {command}")
+                if command=="":
+                    if config.language=="de":
+                        print("Kein command gefunden.")
+                    else:
+                        print("No command found.")
+
+                elif command=="test":
                     print(f"\nTestOK!!\n")
                     if modules.logg_module==True:
                         log_system(text="The test went ok.")
-        except KeyboardInterrupt:
-            print()
-            close()
+
+                elif command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
+                    if modules.convert_module==True:
+                        VariableData.converted_text=parse_input(config, mode=command)
+                    else:
+                        if config.language=="de":
+                            print("Das convert modul ist nicht verfügbar.")
+                        else:
+                            print("The convert module is unavailable.")
+
+                elif command=="last conversion":
+                    print(VariableData.converted_text)
+
+            except KeyboardInterrupt:
+                print()
+                close()
+                if stopvars.is_exit==True:
+                    break
     except:
         print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
         error=traceback.format_exc()
@@ -508,6 +543,12 @@ def close():
             return
         
         else:
+            
+            if sysinf.system=="Linux":
+                os.system("clear")
+            elif sysinf.system=="Windows":
+                os.system("cls")
+
             if config.language=="de":
                 print("Schließen gestopt.")
             else:
