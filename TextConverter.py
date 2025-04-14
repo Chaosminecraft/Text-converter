@@ -1,490 +1,532 @@
-#That is the portion that get's the Normal modules
-import getpass, os, platform, socket, json, traceback, webbrowser
-from threading import Thread, Event
-from time import sleep
-from datetime import datetime
+import getpass, os, platform, socket, json, traceback, webbrowser, locale, time, datetime, threading, logging, subprocess, sys
 
-#the settings class
-class settings:
-    #If the version is a release
-    release=False
+#The version variables in a class
+class version:
+    release=False        #if that version is a release or beta version
+    version="3.0.0"      #The release version
+    beta_version="3.0.3" #The Beta version
 
-    #What version it is
-    version="3.0.0"
-    beta_version="3.0.2"
+#The settings variables in a class (Some name clashing was making me name the settings class to config)
+class config:
+    config={}                 #The variable that loads the settings file
+    language="en"             #The Language Variable
+    upcheck=True              #If the code checks for updates
+    prompt="Input> "          #This is the prompt look if loading the settings fails somehow (Heck that all that is pre-configured is a failsafe)
+    ad=True                   #This is if the ad for the game while true: learn(), But I'm not getting any ad money to show that, so feel free to just set it to false if you wanna.
+    logg=True                 #This is a optional thing, But I'm redoing the logging part. So that is to be seen what happens to it.
+    gui=False                 #The default setting of the CLI/GUI setting is False
+    log_name=""               #The log name in case of a error
+    name=getpass.getuser()    #The Username
+    host=socket.gethostname() #The PC name
 
-    #variables for runtime
-    config={}
-    language="en"
-    upcheck=True
-    prompt="Input> "
-    ad=True
-    logg=True
-    log_module_ok=True
-    init=False
-    start_time_check=True
-    start=datetime.now() #The startup time needed for initial Startup
-    start_time=""
-    settings_module_ok=True
-    timeread_module_ok=True
-    convert_module_ok=True
-    helpfunctions_module_ok=True
-    advert_module_ok=True
-    password_module_ok=True
-    split_module_ok=True
+#The Startup variables in a class
+class startup:
+    init=False                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
+    Startup_time_check=True       #That is if the Startup time should be checked
+    start=datetime.datetime.now() #that is taking the time when the code got started
+    stop=""                       #that is the time needed that the code got to the prompt part (including update checking)
 
-    #the username and system name
-    name=getpass.getuser()
-    host=socket.gethostname()
+#Some exit variables
+class stopvars:
+    exit_code=1   #The exit code get's changed on what failed and code is maybe gonna be added to look what went wrong.
+    is_exit=False #That is somewhat of a Band aid fix for the exit situation.
 
-class pwgen:
-    password="" #the generated password
-    e="" #if something went wrong from passwordgen
-    autopwgen="null" #if the password should have the same settings except length
-    excluded_chars="" #Excluded characters stored within the settings file
-    include_uppercase="" #if uppercase should be used defined from the settings file
-    include_numbers="" #if the password should have numbers defined by the settings file
-    include_specials="" #if there are Special characters needed according to the Settings file.
-    
+#the variables in here is if the module loading went ok or if something went south and to not use the funcionality of that module (module checking might be getting added in the future)
+class modules:
+    settings_module=True
+    convert_module=True
+    helpsite_module=True
+    advert_module=True
+    splitit_module=True
+    logg_module=True
 
+#Other General variables or links or E-Mail (For the project)
+class info:
+    mail="chaosminecraftmail@gmail.com"                                                     #The Email adress that is a direct contact to me for Feature suggestions (if youd're not comfortable with GitHub) or if there is an issue on the project
+    release_site="https://github.com/Chaosminecraft/Text-converter/releases/"               #The main version that also has releases with EXE files
+    issues_site="https://github.com/Chaosminecraft/Text-converter/issues"
+    beta_site="https://github.com/Chaosminecraft/Text-converter/tree/Beta"                  #The Beta branch that may have the latest fixes (no releases, only Source Code!!!)
+    public_archive="https://github.com/Chaosminecraft/Custom-Encoder"                       #The old versions of my converter
+    old_public_archive="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM" #Yeah... I still host the first few versions in here... But at least I still keep them there if anyone wants to see.
+    ingenarel="https://github.com/ingenarel"                                                #A real chad that made something neat (Yeah, Path n stuff is wonky right now on his version)
+    converted_text="No text was converted."                                                 #The last converted string
 
-
-#The class for the variables that are just variables.
-class variables:
-    #The email adress to directly complain to me
-    mail="chaosminecraftmail@gmail.com"
-    
-    #There are the links that are for the people that snoop in my code to see something
-    release_site="https://github.com/Chaosminecraft/Text-converter/releases/"
-    beta_site="https://github.com/Chaosminecraft/Text-converter/tree/Beta"
-    public_archive="https://github.com/Chaosminecraft/Custom-Encoder"
-    old_public_archive="https://drive.google.com/open?id=16AcLcgRRLlM7chKUi4eHgT-NOfBCnArM"
-    ingenarel="https://github.com/ingenarel"
-    
-    #The converted text is here too
-    converted_text="No Text was converted!!!" #a basic version of what was last time converted
-    detailed_converted_text="" #A more detailed version of from what to what
-
-#Basic System infos
-class SysInf:
+#Basic system info for the log
+class sysinf:
     system=platform.system()
-    version=platform.release()
-    detail_version=platform.version()
-    cpu_architecture=platform.machine()
-    complete_system=f"{system} {version}"
+    release=platform.release()
+    build=platform.version()
+    cpu=platform.machine()
+    system_desc=f"{system} {release}"
 
-#the other .py files are getting loaded.
-try:
-    import requests
-except ImportError:
-    print("Please install the module requests for update checking, for further information, write help requests")
-    settings.upcheck=False
+#backup functions (Experimental)
+class backupfunc:
+    def backup_logg(**kwargs):
+        if kwargs["mode"]=="init":
+            if not os.path.exists('meinOrdner'):
+                os.mkdir('meinOrdner')
+            loggfile=datetime.datetime.now().strftime("%d.%m.%Y %H.%M.%S")
+            config.logg_path=f"logs/{loggfile} logg.txt"
+            logging.basicConfig(filename=config.logg_path, filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
+            return
+
+        elif kwargs["mode"]=="logg":
+            text=f'[SYSTEM] {kwargs["text"]}'
+            logging.info(text)
+            return
+    
+    def backup_setting_init(**kwargs):
+        system_language=locale.getdefaultlocale()[:1]
+        system_language=str(system_language).lower()[2:7]
+    
+        if system_language=="de_de":
+            language="de"
+    
+        else:
+            language="en"
+    
+        ad=True
+    
+        logg=True
+    
+        upcheck=True
+    
+        prompt="{name}@{host}:~$ "
+        for r in (("{name}", kwargs["name"]), ("{host}", kwargs["host"])):
+            prompt=prompt.replace(*r)
+    
+        autopwgen=False
+    
+        exclude_chars=""
+    
+        include_uppercase=True
+    
+        include_numbers=True
+    
+        include_specials=True
+    
+        settings_file={
+            "language":language,
+            "advert":ad,
+            "prompt":prompt,
+            "update":upcheck,
+            "logging":logg,
+            "autopwgen":autopwgen,
+            "excludechars":exclude_chars,
+            "includeuppercase":include_uppercase,
+            "includenumbers":include_numbers,
+            "includespecials":include_specials
+            }
+    
+        with open("settings.json", "w") as save:
+            json.dump(settings_file, save)
+    
+        return prompt, language, ad, upcheck
+    
+    def backuphelp(language):
+        if language=="de":
+            print(f"""
+Allgemeine commands:
+    Help gibt den Hilfetext aus
+    Hex konvertiert zwischen Hex und Text
+    phex konvertiert zwischen Pseudo-Hex und Text
+    bin konvertiert zwischen Binär und Text
+    pbin konvertiert zwischen Pseudobinärdatei und Text
+    Legacy Pbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
+    ASCII konvertiert zwischen ASCII und Text
+    Brainfuck konvertiert zwischen Brainfuck und Text
+    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
+Zusätzliche Informationen:
+    language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
+    prompt ändert den prompt look (direkt nach start den prompt)
+    ad gibt dir die option ob du die Werbung sehen willst oder nicht
+    update gibt dir die option nach updates zu schauen am start.
+    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.\n""")
+        
+            return
+    
+        else:
+            print(f"""
+Common commands:
+    Help gives the Help text
+    Hex converts between hex and text
+    phex converts between pseudo hex and text
+    bin converts between Binary and text
+    pbin converts between pseudo binary and text
+    legagy pbin converts between an older version of Pseudo Binary and text
+    ascii converts between ascii and text
+    brainfuck converts between brainfuck and text
+    base64 converts between base64 and text (only normal text for now)\n
+Additional info:
+    language let's you change between English(en) or German(de).
+    prompt let's you change the prompt look. (After startup the prompt)
+    ad let's you change if you wanna see the ad (currently broken)
+    update let's you change the setting if you want to check for updates.
+    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)\n""")
+        
+            return
 
 try:
-    from logger import log_init, log_system, log_info, log_warn, log_error
-    log_init(settings.logg)
+    import requests #Trying to import requests
+except ImportError: #If the module isn't installed.
+    try:
+        if input("The 'requests' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes": #asking if installing the module is wanted.
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+            import requests
+        
+        else:
+            print("The requests module isn't installed, that simply means that no Update checking is available.")
+            config.upcheck=False
+
+    except subprocess.CalledProcessError:
+        print("The requests module isn't installed, that simply means that no Update checking is available.")
+        config.upcheck=False
+
+try:
+    from logger import *
+    log_init(config)
 except ImportError:
-    print(f"The logging module is missing/broken, IF that is unexpected, then try getting the latest version of {variables.release_site}")
-    settings.log_module_ok=False
+    backupfunc.backup_logg(mode="init")
+    if version.release==True:
+        print(f"The logging module is missing/broken, A bare basic built in logging version for errors and system calls is used now. Please get the missing module at: {info.release_site}")
+    else:
+        print(f"The logging module is missing/broken, A bare basic built in logging version for errors and system calls is used now. Please get the missing module at: {info.beta_site}")
+    modules.logg_module=False
 
 try:
     from settings import settings_init, change_settings
 except ImportError:
-    print(f'Warning: Settings cannot be Initialised/Changed for the moment (External Changing is still possible by makign a settings.json file with the right format or editing the existing one)\nThe format mentioned needed is: {"language": "en", "ad": false, "prompt": "Volks@PC-Patrick ~ % ", "update": false, "logging": true}')
-    settings.settings_module_ok=False
+    if version.release==True:
+        print(f"The module that is responsible for changing settings is unable to be loaded, please download the version of converter.py of V{version.version}")
+    else:
+        print(f"The module that is responsible for changing settings is unable to be loaded, please download the version of converter.py of V{info.beta_site}")
+    print("INFO: Only manual settings changes are possible at the moment. You can load the changes via 'reload settings'")
+    modules.settings_module=False
 
 try:
-    from timeread import timereader, title_time 
+    from converter import parse_input
 except ImportError:
-    print("Warning: Time can't be read or title time can't be set.")
-    settings.timeread_module_ok=False
+    if version.release==True:
+        print(f"The module that is responsible for converting text is unable to be loaded, please download the version of converter.py of V{version.version}")
+    else:
+        print(f"The module that is responsible for converting text is unable to be loaded, please download the version of converter.py of V{info.beta_site}")
+    modules.convert_module=False
 
 try:
-    from converter import convert
+    from helpfunctions import mainhelp
 except ImportError:
-    print("The main funcionality of the project is currently not available. Please check dependeicies until I sorted out the dependency checking.")
-    settings.convert_module_ok=False
-
-try:
-    from helpfunctions import mainhelp, converterhelp
-except ImportError:
-    print("The main help page is unavailabel, A basic one is available as a backup.")
-    settings.helpfunctions_module_ok=False
+    print("The help page module can't be loaded, that is currently then not available. I might move the Help site to the relevant modules.")
+    modules.helpsite_module=False
 
 try:
     from advert import free_ad, get_game
 except ImportError:
-    print("The advert cannot be shown (shrugs)")
-    settings.advert_module_ok=False
-
-try:
-    from passwdgen import password_generator
-except ImportError:
-    print("The Password Generator part is unavailable due to the file probably having a corruption.")
-    settings.password_module_ok=False
+    modules.advert_module=False
 
 try:
     from SplitIt.backend import split
 except ImportError:
-    print("The Split It project is not available at the moment.")
-    settings.split_module_ok=False
+    print("The project SplitIt is unable to be imported. That means it can't be ran.")
+    modules.splitit_module=False
 
 #The update checking function
 def updatecheck():
     #print("FUNCTION START") #For checking if the function starts at all
-    if settings.release==True:
+    if version.release==True:
         #print("RELEASE VERSION") #says if it is a Release version.
         link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/version.txt"
         checked_version=requests.get(link_ver, allow_redirects=True)
         checked_version=str(checked_version.content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
         
-        if checked_version>settings.version:
-            if settings.language=="de":
-                print(f"Da ist eine neue version: {checked_version}\nDa ist der download link:↓{settings.dl_link}\n")
+        if checked_version>version.version:
+            if config.language=="de":
+                print(f"Da ist eine neue version: {checked_version}\nDa ist der download link:↓{info.release_site}\n")
             else:
-                print(f"There is a new version: {checked_version}\nThere is the download link:↓{settings.dl_link}\n")
+                print(f"There is a new version: {checked_version}\nThere is the download link:↓{info.release_site}\n")
             return
         
-        elif checked_version==settings.version:
-            if settings.language == "de":
-                print(f"\nDie version {settings.version} ist die neuste im moment.\n")
+        elif checked_version==version.version:
+            if config.language == "de":
+                print(f"\nDie version {version.version} ist die neuste im moment.\n")
             else:
-                print(f"\nThe version {settings.version} is the latest version at the moment.\n")
+                print(f"\nThe version {version.version} is the latest version at the moment.\n")
             return
         
-        elif checked_version<settings.version:
-            if settings.language=="de":
-                print(f"Man muss sich nicht schämen, ein Entwickler zu sein \n")
+        elif checked_version<version.version:
+            if config.language=="de":
+                print(f"Yay, Dev gefunden :D\n")
             else:
-                print(f"No need to be ashamed to be a dev \n")
+                print(f"Yay, found a Dev :D\n")
             return
         
         else:
-            if settings.language=="de":
+            if config.language=="de":
                 print(f"Eine unbekannte version wurde gefunden. :(\n")
             else:
                 print(f"An unknown version was found. :(\n")
             return
     
-    elif settings.release==False:
+    elif version.release==False:
         #print("BETA RELEASE") Says if it is a Beta version.
         link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/betaversion.txt"
         checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
         checked_version=str(checked_version.content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
 
-        if checked_version>settings.beta_version:
-            if settings.language=="de":
-                print(f"Da ist eine neue beta version: {checked_version}\nDa ist der Download link: {variables.beta_site}\n")
+        if checked_version>version.beta_version:
+            if config.language=="de":
+                print(f"Da ist eine neue beta version: {checked_version}\nDa ist der Download link: {info.beta_site}\n")
             else:
-                print(f"There is a new beta version, Download it here: {checked_version}\nThere is the download link: {variables.beta_site}\n")
+                print(f"There is a new beta version, Download it here: {checked_version}\nThere is the download link: {info.beta_site}\n")
             return
         
-        elif checked_version==settings.beta_version:
-            if settings.language=="de":
-                print(f"Die version {settings.beta_version} ist die neuste Beta version.\n")
+        elif checked_version==version.beta_version:
+            if config.language=="de":
+                print(f"Die version {version.beta_version} ist die neuste Beta version.\n")
             else:
-                print(f"The beta verision {settings.beta_version} is the latest version right now.\n")
+                print(f"The beta verision {version.beta_version} is the latest version right now.\n")
             return
         
-        elif checked_version<settings.beta_version:
-            if settings.language=="de":
-                print(f"Hallo Mitprogrammierer :)")
+        elif checked_version<version.beta_version:
+            if config.language=="de":
+                print(f"Yay, Dev gefunden :D\n")
             else:
-                print(f"Hello fellow coder :)\n")
+                print(f"Yay, found a Dev :D\n")
             return
         
         else:
-            if settings.language=="de":
+            if config.language=="de":
                 print(f"Eine unbekannte beta version wurde gefunden :(\n")
             else:
                 print(f"An unknown beta version was found :(\n")
             return
 
+def title_time(stop_event):
+    try:
+        if sysinf.system=="Windows":
+            while not stop_event.is_set():
+                now=datetime.datetime.now()
+                if config.language=="de":
+                    now=now.strftime("%d/%m/%Y, %H:%M:%S") #%H:%M:%S.%f
+                if config.language=="en":
+                    now=now.strftime("%m/%d/%Y, %r")
+                
+                if version.release==True:
+                    os.system(f"title Text Converter V{version.version} {now}")
+                else:
+                    os.system(f"title Text Converter Beta V{version.beta_version} {now}")
+                time.sleep(0.125)
+            return   
+
+
+        if sysinf.system=="Linux":
+            sys.stdout.write(f"\x1b]2;Text Converter V2.3\x07")
+            return
+        
+        else:
+            print("I sadly don't know how to handle the title of that System. :( )")
+            return
+                
+    except:
+        traced=traceback.format_exc()
+        print(f"There has been an exception:\n{traced}")
+        text=f"There has been an exception:\n{traced}"
+        log_system(text)
+        if sysinf.system=="Linux":
+            sys.stdout.write(f"\x1b]2;Text Converter V2.3\x07")
+        if sysinf.system=="Windows":
+            if version.release==True:
+                os.system(f"title Text Converter V{version.version}")
+            elif version.release==False:
+                os.system(f"title Text Converter V{version.beta_version}")
+        return
+
 class threads:
-    updatethread=Thread(target=updatecheck)
-    stop_event=Event()
-    if settings.timeread_module_ok==True:
-        titletime=""
+    updatethread=threading.Thread(target=updatecheck)
+    stop_event=threading.Event()
+    time_thread=threading.Thread(target=title_time, args=(stop_event, ))
 
-text=f"The platform uses: \n                {SysInf.complete_system} build {SysInf.detail_version}\n                With the architecture: {SysInf.cpu_architecture}\n"
-if settings.log_module_ok==True:
+text=f"The platform uses: \n                {sysinf.system_desc} build {sysinf.build}\n                With the architecture: {sysinf.cpu}\n"
+if modules.logg_module==True:
     log_system(text)
-
-elif SysInf.system=="'Linux'":
-    print("[WARNING] Linux may not work on all versions...")
-
-elif SysInf.system=="'Darwin'":
-    print(f"[WARNING] MacOS and other Darwin based systems can't be tested, it may not work!\n")
-
 else:
-    print("I can't gauge how good the code runs, I don't know what system that is. ")
+    backupfunc.backup_logg(mode="logg", text=text)
+
+if  sysinf.system=="Linux":
+    print("INFO: I know that my project might be not too great for linux, but I might in the future test it more often after the big refactoring and merge.")
+
+if sysinf.system=="Darwin":
+    print("WARNING: You're on your own. I (the creator) do not test the code if it runs on MacOS/Darwin. Good luck.")
 
 def init():
     while True:
-        try: #If there is a invalid string in the settings and the Default settings are required
-            while True:
-                try: #Trying to load the settings file.
-                    with open("settings.json", "r") as file:
-                        settings.config=json.load(file)
-                    
-                    settings.language=settings.config.get("language")
-                    settings.ad=settings.config.get("advert")
-                    settings.prompt=settings.config.get("prompt")
-                    settings.upcheck=settings.config.get("update")
-                    settings.logg=settings.config.get("logging")
-                    pwgen.autopwgen=settings.config.get("autopwgen")
-                    pwgen.excluded_chars=settings.config.get("excludechars")
-                    #if pwgen.excluded_chars==None:
-                    #    pwgen.excluded_chars=""
-                    pwgen.include_uppercase=settings.config.get("includeuppercase")
-                    pwgen.include_numbers=settings.config.get("includenumbers")
-                    pwgen.include_specials=settings.config.get("includespecials")
-                    break
-                
-                except FileNotFoundError: #If the File didn't exist
-                    settings.prompt, settings.language, settings.ad, settings.upcheck = settings_init(name=settings.name, host=settings.host)
-        
-        except: #if the Default settings are required
-            error=traceback.format_exc()
-            formatted_error=f"There has been a settings Specific settings error that is currently unable to be fixed. Please manually repair the settings file if possible. THere is more information about the crash:\n{error}"
-            print(formatted_error)
-            if settings.log_module_ok==True:
-                log_system(formatted_error)
-            
-            print(f"\nThere is the option to report it to the GitHub page as an problem, Do you wanna open the site?")
-            while True:
-                if input("Yes or No? ").lower()=="yes":
-                    if settings.release==True:
-                        webbrowser.open(variables.release_site)
-                        break
+        try:
+            with open("settings.json", "r") as load:
+                config.config=json.load(load)
+        except FileNotFoundError:
+            settings_init(name=config.name, host=config.host)
 
-                    elif settings.release==False:
-                        webbrowser.open(variables.beta_site)
-                        break
+        try:
+            config.language=config.config.get("language")
+            print(config.language)
+            if config.language not in ("de", "en"):
+                config.language="en"
+            config.ad=config.config.get("advert")
+            if config.ad not in (True, False):
+                config.ad=True
+            config.prompt=config.config.get("prompt")
+            config.upcheck=config.config.get("update-check")
+            if config.upcheck not in (True, False):
+                config.upcheck=True
+            config.logg=config.config.get("logging")
+            if config.logg not in (True, False):
+                config.logg=True
+            config.gui=config.config.get("gui")
+            if config.gui not in (True, False):
+                config.gui=False
+            break
 
-                    else:
-                        print("I'm sorry, there is only Yes or No... :( )")
-
-            print(f"Due to a Settings error the Default settings are used.\n")
-
-            settings.language="en"
-            settings.ad=False
-            settings.prompt="Input: "
-            settings.upcheck=True
-            settings.logg=True
-            pwgen.autopwgen=False
-            pwgen.excluded_chars=""
-            pwgen.include_uppercase=True
-            pwgen.include_numbers=True
-            pwgen.include_specials=True
-
-        if settings.ad==True:
-            if settings.init==True:
-                if settings.advert_module_ok==True:
-                    free_ad(settings.language, settings.logg)
-                else:
-                    continue
-
-        if settings.init==False:
-            if settings.timeread_module_ok==True:
-                threads.titletime=Thread(target=title_time, args=(settings, SysInf.system, threads.stop_event, ))
-                threads.titletime.start()
-            else:
-                continue
-
-        if settings.init==False:
-            if settings.upcheck==True:
-                threads.updatethread.start()
-            else:
-                continue
-
-        if SysInf.system=="Linux":
-            print("I'M aware that some issues may come at a few versions on that Project...")
-        
-        if settings.release==False:
-            if settings.language=="de":
-                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.beta_site}\n[BETA] Split It Integration. Split it ist von ingenarel: {variables.ingenarel}")
-            
-            else:
-                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {variables.beta_site}\n[BETA] Split It integration. Split it was made by ingenarel: {variables.ingenarel}")
-        
-        elif settings.release==True:
-            if settings.language=="de":
-                print(f"Willkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {variables.release_site}")
+        except:
+            exception=traceback.format_exc()
+            text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
+            if modules.logg_module==True:
+                log_error(text)
+            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+                break
     
-            else:
-                print(f"Welcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {variables.release_site}")
-        
-        else:
-            print("There are some settings issues, Please delete the settings.json and restart the program.")
-        
-        main()
+    if stopvars.is_exit==False:
+        if config.ad==True:
+            if startup.init==False:
+                if modules.advert_module==True:
+                    free_ad(config)
 
-# Hauptprogramm anpassen, um den neuen Befehl zu integrieren
+        if startup.init==False:
+            threads.time_thread.start()
+        
+        if startup.init==False:
+            if config.upcheck==True:
+                threads.updatethread.start()
+        
+        if version.release==True:
+            if config.language=="de":
+                print(f"\nWillkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
+            else:
+                print(f"\nWelcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
+        
+        elif version.release==False:
+            if config.language=="de":
+                print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
+Da ich meinen code neu geschrieben habe das ein Merge vorbereitet, Kann es aktuell sein das es momentan mein code mehr bugs hat.
+Im moment da könnten mehr fehler sein.
+Und es würde mir echt helfen wenn du ein issue bei meinem github geben würdest.
+Wenn möglich wäre es gut einen log mit den schritten wie es passierte beim link zu beschreiben.
+{info.issues_site}
+
+Willkommen zur Beta version vom Text converter.\n""")
+
+            else:
+                print(f"""\n[WARNING] This is a BETA version, It could be unstable.
+Since I'm Re-writing the code to prepare it for a merge, it could be that there are more bugs.
+At the moment there could be errors.
+And it would really help me if you could make an issue on my github.
+If possible please provide a log and the way it happened on the link.
+{info.issues_site}
+
+Welcome to the Beta version of the Text Converter.\n""")
+        if stopvars.is_exit==False:
+            main()
+
 def main():
     try:
         try:
-            try:
-                if settings.upcheck == True:
-                    if settings.init == False:
-                        threads.updatethread.join()
+            if config.upcheck==True:
+                if startup.init==False:
+                    threads.updatethread.join()
 
-                if settings.start_time_check == True:
-                    settings.start_time = datetime.now() - settings.start
-                    if settings.language == "de":
-                        print(f"Der Start brauchte {settings.start_time} Sekunden.\n")
+            if startup.init==True:
+                if startup.Startup_time_check==True:
+                    startup.start= datetime.datetime.now()-startup.start
+                    if config.language=="de":
+                        print(f"Das programm hat so viel zeit gebraucht: {startup.start}")
                     else:
-                        print(f"The startup needed {settings.start_time} seconds.\n")
+                        print(f"The programm needed that much to start: {startup.start}")
 
-                    text = f"The program needed {settings.start_time} seconds to start up."
-                    log_system(text)
-
-                while True:
-                    settings.init = True
-                    command = input(settings.prompt).lower()
-                    if command == "":
-                        if settings.language == "de":
-                            print("Nope, da ist nicht ein command wo nichts als input ist.")
-                        else:
-                            print("Nope, there is not a command that has 0 Characters.")
-                    else:
-                        text = f"Command used was: {command}"
-                        log_info(text=text, logg=settings.logg)
-
-                    if command == "test":
-                        print(f"\nTest OK\n")
-                        text = "Test Successful"
-                        log_info(text=text, logg=settings.logg)
-
-                    elif command == "leetspeak" or command == "leetcode":
-                        if settings.language == "de":
-                            print(f"\nDieses Feature wurde permanent entfernt!\n")
-                        else:
-                            print(f"\nThis feature is permanently removed!\n")
-
-                    elif command == "phex" or command == "pbin" or command == "legacy pbin" or command == "hex" or command == "bin" or command == "ascii" or command == "brainfuck" or command == "base64" or command == "symbenc":
-                        if settings.convert_module_ok==True:
-                            variables.converted_text = convert(command, settings.language, settings.logg)
-                        else:
-                            if settings.language=="de":
-                                print("Das converter modul fehlt.")
-                            else:
-                                print("The converter module is missing.")
-
-                    elif command == "last conversion":
-                        print(variables.converted_text)
-
-                    elif command == "help" or command == "helpsite" or command=="hilfe":
-                        mainhelp(command, settings.language)
-
-                    elif command == "language" or command == "prompt" or command == "ad" or command == "update" or command == "logging" or command=="auto password" or command=="excluded chars" or command=="include uppercase" or command=="include numbers" or command=="include specials":
-                        settings.prompt, settings.language, settings.ad, settings.upcheck, settings.logg, pwgen.autopwgen, pwgen.excluded_chars, pwgen.include_uppercase, pwgen.include_numbers, pwgen.include_specials = change_settings(
-                            target=command, prom=settings.prompt, language=settings.language, logging=settings.logg,
-                            host=settings.host, name=settings.name, version=SysInf.version, system=SysInf.complete_system
-                        )
-
-                    elif command == "reset settings":
-                        settings_init(name=settings.name, host=settings.host)
-                    
-                    elif command == "reload settings":
-                        while True:
-                            try:
-                                with open("settings.json", "r") as file:
-                                    settings_file=json.load(file)
-                                settings.language=settings_file.get("language")
-                                settings.ad=settings_file.get("ad")
-                                settings.prompt=settings_file.get("prompt")
-                                settings.upcheck=settings_file.get("update")
-                                settings.logg=settings_file.get("logging")
-                                break
-
-                            except FileNotFoundError:
-                                settings.prompt, settings.language, settings.ad, settings.upcheck = settings_init(settings.name, settings.host)
-
-                    elif command == "check update":
-                        if settings.upcheck==True:
-                            updatecheck()
-                        else:
-                            print("The requests module isn't installed.")
-                    
-                    elif command == "password generator" or command == "passwort generator" or command == "passwordgen" or command == "pwgen":
-                        if settings.password_module_ok==True:
-                            pwgen.e, pwgen.password=password_generator(settings, pwgen, variables)  # Neuer Passwort-Generator-Befehl
-                        else:
-                            continue
-                    
-                    elif command == "manualtraceback":
-                        text = f"There as an unexpected error, There is a traceback:\n{traceback.format_exc()}"
+                    text=f"The programm needed that much to start: {startup.start}"
+                    if modules.logg_module==True:
                         log_system(text)
-                    
-                    elif command == "split it test module":
-                        if settings.split_module_ok==True:
-                            print(f"This is a hidden Module test! Use with caution!!!\nThere is only Yes, No and Skip")
-                            while True:
-                                standalone=input("Test Standalone or Module?").lower()
-                                if standalone=="yes" or standalone=="ja":
-                                    standalone=True
-                                    break
-                                elif standalone=="no" or standalone=="nein":
-                                    standalone=False
-                                    break
-                                elif standalone=="skip":
-                                    break
-                                else:
-                                    if settings.language=="de":
-                                        print("Nope, Da gibt es nur Ja oder Nein oder Skip.")
-                                    else:
-                                        print("Nope, There is only Yes or No or Skip.")
-                        
-                            if standalone==True or standalone==False:
-                                split(standalone=standalone)
-                            else:
-                                split(standalone=False)
-                    
-                    elif command == "split it":
-                        if settings.split_module_ok==True:
-                            split(standalone=False)
-                        else:
-                            continue
-                        
-            except AttributeError:
-                pass
+                    else:
+                        backupfunc.backup_logg(mode="logg", text=text)
+
+            while True:
+                startup.init=True
+                command=input(config.prompt).lower()
+                if command=="test":
+                    print(f"\nTestOK!!\n")
+                    if modules.logg_module==True:
+                        log_system(text="The test went ok.")
         except KeyboardInterrupt:
+            print()
             close()
     except:
-            traced = traceback.format_exc()
-            if settings.language == "de":
-                print(f"\n Ein unerwarteter Fehler erschien, Hier ist was passierte:\n{traced}\n")
-            else:
-                print(f"\nAn unexpected error occurred... there is a trace:\n{traced}\n")
-
-            text = f"There as an unexpected error, There is a traceback:\n{traced}"
-            log_system(text)
+        print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
+        error=traceback.format_exc()
+        text=f"There was an error, This is the traceback:\n{error}"
+        if modules.logg_module==True:
+            log_error(text)
+        else:
+            backupfunc.backup_logg(mode="logg", text=text)
 
 def close():
-    if SysInf.system=="'Linux'":
+    if sysinf.system=="Linux":
         os.system("clear")
-    elif SysInf.system=="'Windows'":
+    elif sysinf.system=="Windows":
         os.system("cls")
 
-    if settings.language=="de":
-        print(f"Willst du das Program beenden?\n")
-        if input("Ja/Nein: ").lower()=="ja":
-            threads.stop_event.set()
-            exit()
+    while True:
+        if config.language=="de":
+            text=input("Willst du das Programm beenden? (Ja/Nein) ").lower()
         else:
-            return
-    
-    else:
-        print(f"\nDo you wanna close the Program?\n")
-        if input("Yes/No: ").lower()=="yes":
+            text=input("Do you wanna close the Programm? (Yes/No) ").lower()
+        
+        if text in ("ja", "j", "yes", "y"):
             threads.stop_event.set()
-            exit()
-        else:
-            return
-    return
 
-if __name__ == "__main__":
+            if config.language=="de":
+                print("Programm schließt...")
+            else:
+                print("Closing program...")
+            
+            time.sleep(1)
+            stopvars.exit_code=0
+            stopvars.is_exit=True
+            text=f"The programm successfully closed with the exit code: {stopvars.exit_code}"
+            if modules.logg_module==True:
+                log_system(text)
+            else:
+                backupfunc.backup_logg(mode="logg", text=text)
+            return
+        
+        else:
+            if config.language=="de":
+                print("Schließen gestopt.")
+            else:
+                print("Stopped closing.")
+            return
+
+def timereader(language, logg):
+    text=datetime.datetime.now()
+    if language == "de":
+        print(f"\nDie zeit ist:", text.strftime("%d/%m/%Y, %H:%M:%S"), "\n")
+
+        log_info(text, logg)
+
+    else:
+        print(f"\nThe time is:", text.strftime("%m/%d/%Y, %r"), "\n")
+
+        log_info(text, logg)
+
+        return
+
+if __name__=="__main__":
     init()

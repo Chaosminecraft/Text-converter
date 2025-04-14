@@ -1,23 +1,23 @@
-def converterhelp(command, language):
-    if language=="de":
+def converterhelp(config, **kwargs):
+    if config.language=="de":
         print(f"""
 Allgemeine commands:
     help zeigt diese seite
-    convert convertiert den text zu {command} (Bei meinen eigenen methoden nur ascii)
-    deconvert convertiert von {command} zu text
+    convert convertiert den text zu {kwargs["mode"]} (Bei meinen eigenen methoden nur ascii)
+    deconvert convertiert von {kwargs["mode"]} zu text
     exit bringt dich zum hauptmenü\n""")
 
     else:
         print(f"""
 Common commands:
     help shows that site
-    convert converts from text to {command} (My own formats have a limit to ascii only)
-    deconvert converts from {command} to text
+    convert converts from text to {kwargs["mode"]} (My own formats have a limit to ascii only)
+    deconvert converts from {kwargs["mode"]} to text
     exit returns to the main menu\n""")
     
     return
 
-def mainhelp(command, language):
+def mainhelp(language):
     if language=="de":
         print(f"""
 Allgemeine commands:
@@ -59,3 +59,7 @@ Additional info:
     logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)\n""")
         
         return
+
+if __name__=="__main__":
+    input("Please don't open that file on it's own. This is a module!")
+    exit()
