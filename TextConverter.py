@@ -22,7 +22,7 @@ class config:
 
 #The Startup variables in a class
 class startup:
-    init=False                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
+    init=True                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
     Startup_time_check=True       #That is if the Startup time should be checked
     start=datetime.datetime.now() #that is taking the time when the code got started
     stop=""                       #that is the time needed that the code got to the prompt part (including update checking)
