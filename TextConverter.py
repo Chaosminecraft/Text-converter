@@ -513,13 +513,16 @@ def main():
                 if stopvars.is_exit==True:
                     break
     except:
-        print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
         error=traceback.format_exc()
-        text=f"There was an error, This is the traceback:\n{error}"
-        if modules.logg_module==True:
-            log_error(text)
+        if version.release==False:
+            print(f"An error happened, there it is:\n{error}")
         else:
-            backupfunc.backup_logg(mode="logg", text=text)
+            print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
+            text=f"There was an error, This is the traceback:\n{error}"
+            if modules.logg_module==True:
+                log_error(text)
+            else:
+                backupfunc.backup_logg(mode="logg", text=text)
 
 def close():
     if sysinf.system=="Linux":

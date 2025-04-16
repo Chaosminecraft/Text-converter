@@ -67,9 +67,9 @@ class lists:
                 'z': '00011000',    'Z': '00110001',
                 '?': '10110110' }
     
-    convert = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j", " ": "4", ",": "0", ".": "1", "?": "2", "!": "3", "a": "!", "b": "@", "c": "#", "d": "$", "e": "%", "f": "^", "g": "&", "h": "*", "i": "(", "j": ")", "k": "-", "l": "_", "m": "=", "n": "+", "o": "[", "p": "]", "q": "{", "r": "}", "s": ":", "t": ";", "u": "<", "v": ">", "w": ",", "x": ".", "y": "/", "z": "?"}
+    convert = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j", " ": "4", ",": "0", ".": "1", "?": "2", "!": "3", "a": "!", "b": "@", "c": "#", "d": "$", "e": "%", "f": "^", "g": "&", "h": "*", "i": "(", "j": ")", "k": "-", "l": "_", "m": "=", "n": "+", "o": "[", "p": "]", "q": "{", "r": "}", "s": ":", "t": ";", "u": "<", "v": ">", "w": ",", "x": ".", "y": "/", "z": "?", "'": "©"}
 
-    deconvert = {"a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6", "g": "7", "h": "8", "i": "9", "j": "0", "\"": "\"", " ": " ", "4": " ", "0": ",", "1": ".", "2": "?", "3": "!", "!": "a", "@": "b", "#": "c", "$": "d", "%": "e", "^": "f", "&": "g", "*": "h", "(": "i", ")": "j", "-": "k", "_": "l", "=": "m", "+": "n", "[": "o", "]": "p", "{": "q", "}": "r", ":": "s", ";": "t", "<": "u", ">": "v", ",": "w", ".": "x", "/": "y", "?": "z"}
+    deconvert = {"a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6", "g": "7", "h": "8", "i": "9", "j": "0", " ": " ", "4": " ", "0": ",", "1": ".", "2": "?", "3": "!", "!": "a", "@": "b", "#": "c", "$": "d", "%": "e", "^": "f", "&": "g", "*": "h", "(": "i", ")": "j", "-": "k", "_": "l", "=": "m", "+": "n", "[": "o", "]": "p", "{": "q", "}": "r", ":": "s", ";": "t", "<": "u", ">": "v", ",": "w", ".": "x", "/": "y", "?": "z", "©": "'"}
 
 try:
     import more_itertools
@@ -163,7 +163,7 @@ def process(config, **kwargs):
             variables.out=" ".join(["{0:b}".format(x) for x in part1])
             print(variables.out)
                 
-        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="legacy pbin":
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
             variables.out=" ".join(kwargs["charset"][c] for c in kwargs["content"])
             print(variables.out)
                 
@@ -182,20 +182,20 @@ def process(config, **kwargs):
             print(variables.out)
             
         elif kwargs["convert"]=="symbenc":
-            content=kwargs["content"].lower()
+            data=kwargs["content"].lower()
             unsupported_symbols=""
-            for i in range(len(content)):
-                if content[i] not in lists.convert:
-                    unsupported_symbols += f"{content[i]}, "
+            for i in range(len(data)):
+                if data[i] not in lists.convert:
+                    unsupported_symbols += f"{data[i]}, "
             unsupported_symbols = unsupported_symbols[:-2]
             if unsupported_symbols=="":
                 variables.out=""
-                for e in range(len(variables.content)):
-                    variables.out += str(lists.convert[variables.content[e]])
+                for e in range(len(data)):
+                    variables.out += str(lists.convert[data[e]])
                 print(variables.out)
                 unsupported_symbols=""
             else:
-                print(f"Haha, not supported: {unsupported_symbols}")
+                print(f"That symbol is not supported: {unsupported_symbols}")
             unsupported_symbols=""
             
         else:
@@ -210,14 +210,15 @@ def process(config, **kwargs):
             print(variables.out)
             
         elif kwargs["convert"]=="bin":
-            part1=variables.content.split()
-            for content in part1:
-                content=int(content, 2)
-                content=chr(content)
-                variables.out+=content
-                print(variables.out)
+            part1=kwargs["content"].split()
+            for data in part1:
+                data=int(data, 2)
+                data=chr(data)
+                variables.out+=data
+
+            print(variables.out)
             
-        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="legacy bin":
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
             variables.out="".join(list(kwargs["charset"].keys())[list(kwargs["charset"].values()).index(c)] for c in kwargs["content"].split())
             print(variables.out)
             
@@ -236,14 +237,15 @@ def process(config, **kwargs):
             print(variables.out)
             
         elif kwargs["convert"]=="symbenc":
+            data=kwargs["content"]
             unsupported_symbols=""
-            for i in range(len(kwargs["content"])):
-                if  kwargs["content"][i] not in lists.deconvert:
-                    unsupported_symbols += f'{kwargs["content"][i]}, '
+            for i in range(len(data)):
+                if data[i] not in lists.deconvert:
+                    unsupported_symbols += f'{data[i]}, '
             unsupported_symbols = unsupported_symbols[:-2]
             if unsupported_symbols=="":
-                for _ in range(len(kwargs["content"])):
-                    variables.out += str(lists.deconvert[kwargs["content"][_]])
+                for _ in range(len(data)):
+                    variables.out += str(lists.deconvert[data[_]])
                 print(variables.out)
                 unsupported_symbols=""
             else:
