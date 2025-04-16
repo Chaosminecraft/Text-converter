@@ -40,6 +40,7 @@ class modules:
     advert_module=True
     splitit_module=True
     logg_module=True
+    gui_module=True
 
 #Other General variables or links or E-Mail (For the project)
 class info:
@@ -53,6 +54,7 @@ class info:
 
 class VariableData:
     converted_text="No text was converted." #The last converted string
+    command=""                              #The command variable
 
 #Basic system info for the log
 class sysinf:
@@ -216,6 +218,12 @@ try:
     from advert import free_ad, get_game
 except ImportError:
     modules.advert_module=False
+
+try:
+    from gui import cli_to_gui
+except ImportError:
+    modules.gui_module=False
+    print("The GUI module is unable to be loaded. If you want teh GUI too, please download the beta again. (and if you downloaded it before, re-extract it maybe.)")
 
 try:
     from SplitIt.backend import split
@@ -428,6 +436,8 @@ Und es würde mir echt helfen wenn du ein issue bei meinem github geben würdest
 Wenn möglich wäre es gut einen log mit den schritten wie es passierte beim link zu beschreiben.
 {info.issues_site}
 
+Info: GUI ist bis jetzt nur bei Windows 10 getestet
+
 Willkommen zur Beta version vom Text converter.\n""")
 
             else:
@@ -438,9 +448,12 @@ And it would really help me if you could make an issue on my github.
 If possible please provide a log and the way it happened on the link.
 {info.issues_site}
 
+Info: GUI is for now only tested on Windows 10.
+
 Welcome to the Beta version of the Text Converter.\n""")
-        if stopvars.is_exit==False:
-            main()
+        while stopvars.is_exit is not True:
+            if stopvars.is_exit==False:
+                main()
 
 def main():
     try:
@@ -465,53 +478,61 @@ def main():
                             backupfunc.backup_logg(mode="logg", text=text)
 
                 startup.init=True
-                command=input(config.prompt).lower()
-                if command=="":
+                if config.gui==True:
+                    if modules.gui_module==True:
+                        cli_to_gui(config)
+                        return
+                    else:
+                        config.gui=False
+                else:
+                    VariableData.command=input(config.prompt).lower()
+
+                if VariableData.command=="":
                     if modules.logg_module==True:
                         log_info(config, text=f"The user didn't use a command")
                     else:
                         backupfunc.backup_logg(mode="logg", text=f"The user didn't use a command")
                 else:
                     if modules.logg_module==True:
-                        log_info(config, text=f"The user used the command: {command}")
+                        log_info(config, text=f"The user used the command: {VariableData.command}")
                     else:
-                        backupfunc.backup_logg(mode="logg", text=f"The user used the command: {command}")
-                if command=="":
+                        backupfunc.backup_logg(mode="logg", text=f"The user used the command: {VariableData.command}")
+                if VariableData.command=="":
                     if config.language=="de":
                         print("Kein command gefunden.")
                     else:
                         print("No command found.")
 
-                elif command=="test":
+                elif VariableData.command=="test":
                     print(f"\nTestOK!!\n")
                     if modules.logg_module==True:
                         log_system(text="The test went ok.")
 
-                elif command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
+                elif VariableData.command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
                     if modules.convert_module==True:
-                        VariableData.converted_text=parse_input(config, mode=command)
+                        VariableData.converted_text=parse_input(config, mode=VariableData.command)
                     else:
                         if config.language=="de":
                             print("Das convert modul ist nicht verfügbar.")
                         else:
                             print("The convert module is unavailable.")
 
-                elif command=="last conversion":
+                elif VariableData.command=="last conversion":
                     print(VariableData.converted_text)
                 
-                elif command in ("help", "hilfe"):
+                elif VariableData.command in ("help", "hilfe"):
                     if modules.helpsite_module==True:
                         mainhelp(config.language)
                     else:
                         backupfunc.backuphelp()
                 
-                elif command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=command)
+                elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
 
-                elif command=="reset settings":
+                elif VariableData.command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
                 
-                elif command=="reload settings":
+                elif VariableData.command=="reload settings":
                     while True:
                         try:
                             with open("settings.json", "r") as load:
@@ -557,7 +578,7 @@ def main():
                             if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
                                 return
 
-                elif command=="check update":
+                elif VariableData.command=="check update":
                     if config.upcheck==True:
                         updatecheck()
                     else:
@@ -566,19 +587,25 @@ def main():
                         else:
                             print("requests is not installed.")
 
-                elif command=="split it":
+                elif VariableData.command=="split it":
                     print("Command comming up ;)")
+                
+                elif VariableData.command=="start gui":
+                    if modules.gui_module==True:
+                        cli_to_gui(config)
+                    else:
+                        print("The gui module is missing.")
 
-                elif command=="exit":
+                elif VariableData.command=="exit":
                     close()
                     if stopvars.is_exit==True:
                         break
                 
                 else:
                     if config.language=="de":
-                        print(f"Upsi, der 'command' {command} ist nicht ein command.")
+                        print(f"Upsi, der 'command' {VariableData.command} ist nicht ein command.")
                     else:
-                        print(f"Oops, the 'command' {command} isn't a command.")
+                        print(f"Oops, the 'command' {VariableData.command} isn't a command.")
 
             except KeyboardInterrupt:
                 print()
