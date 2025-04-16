@@ -2,7 +2,7 @@ import getpass, os, platform, socket, json, traceback, webbrowser, locale, time,
 
 #The version variables in a class
 class version:
-    release=True        #if that version is a release or beta version
+    release=False        #if that version is a release or beta version
     version="3.1.0"      #The release version
     beta_version="3.1.0" #The Beta version
 
@@ -369,6 +369,8 @@ def init():
                 config.config=json.load(load)
         except FileNotFoundError:
             settings_init(name=config.name, host=config.host)
+            with open("settings.json", "r") as load:
+                config.config=json.load(load)
 
         try:
             config.language=config.config.get("language")
@@ -510,6 +512,9 @@ def main():
                 
                 elif command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=command)
+
+                elif command=="reset settings":
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
                 
                 elif command=="exit":
                     close()

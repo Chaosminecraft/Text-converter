@@ -15,7 +15,7 @@ def settings_init(**kwargs):
     upcheck=True #the update check setting (Defaulting to true)
 
     prompt="{name}@{host}:~$ "
-    for r in (("{name}", kwargs.get("name")), ("{host}", kwargs.get("host"))):
+    for r in (("{name}", kwargs["name"]), ("{host}", kwargs["host"])):
         prompt=prompt.replace(*r)
     
     gui=False      #starting the project in CLI or GUI
@@ -34,7 +34,7 @@ def settings_init(**kwargs):
     with open("settings.json", "w") as save:
         json.dump(settings, save)
     
-    return prompt, language, ad, upcheck
+    return prompt, language, ad, upcheck, logg, gui, theme
 
 def change_settings(config, sysinf, **kwargs):
     try:
