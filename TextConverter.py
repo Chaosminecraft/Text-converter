@@ -1,4 +1,4 @@
-import getpass, os, platform, socket, json, traceback, webbrowser, locale, time, datetime, threading, logging, subprocess, sys
+import getpass, os, platform, socket, json, traceback, locale, time, datetime, threading, logging, subprocess, sys
 
 #The version variables in a class
 class version:
@@ -95,18 +95,12 @@ class backupfunc:
         upcheck=True
     
         prompt="{name}@{host}:~$ "
-        for r in (("{name}", kwargs["name"]), ("{host}", kwargs["host"])):
+        for r in (("{name}", config.name), ("{host}", config.host)):
             prompt=prompt.replace(*r)
     
-        autopwgen=False
-    
-        exclude_chars=""
-    
-        include_uppercase=True
-    
-        include_numbers=True
-    
-        include_specials=True
+        gui=False
+        
+        theme="bright"
     
         settings_file={
             "language":language,
@@ -114,17 +108,14 @@ class backupfunc:
             "prompt":prompt,
             "update":upcheck,
             "logging":logg,
-            "autopwgen":autopwgen,
-            "excludechars":exclude_chars,
-            "includeuppercase":include_uppercase,
-            "includenumbers":include_numbers,
-            "includespecials":include_specials
+            "gui":gui,
+            "theme":theme
             }
     
         with open("settings.json", "w") as save:
             json.dump(settings_file, save)
     
-        return prompt, language, ad, upcheck
+        return prompt, language, ad, upcheck, theme
     
     def backuphelp():
         if config.language=="de":
@@ -368,7 +359,10 @@ def init():
             with open("settings.json", "r") as load:
                 config.config=json.load(load)
         except FileNotFoundError:
-            settings_init(name=config.name, host=config.host)
+            if modules.settings_module==True:
+                settings_init(name=config.name, host=config.host)
+            else:
+                backupfunc.backup_setting_init()
             with open("settings.json", "r") as load:
                 config.config=json.load(load)
 
@@ -412,7 +406,8 @@ def init():
                     free_ad(config)
 
         if startup.init==False:
-            threads.time_thread.start()
+            if config.gui==False:
+                threads.time_thread.start()
         
         if startup.init==False:
             if config.upcheck==True:
@@ -516,8 +511,68 @@ def main():
                 elif command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
                 
+                elif command=="reload settings":
+                    while True:
+                        try:
+                            with open("settings.json", "r") as load:
+                                config.config=json.load(load)
+                        except FileNotFoundError:
+                            if modules.settings_module==True:
+                                settings_init(name=config.name, host=config.host)
+                            else:
+                                backupfunc.backup_setting_init()
+                            with open("settings.json", "r") as load:
+                                config.config=json.load(load)
+
+                        try:
+                            config.language=config.config.get("language")
+                            #print(config.language) #Debugging purposes
+                            if config.language not in ("de", "en"):
+                                config.language="en"
+                            config.ad=config.config.get("advert")
+                            if config.ad not in (True, False):
+                                config.ad=True
+                            config.prompt=config.config.get("prompt")
+                            if config.prompt==None:
+                                config.prompt=f"{config.name}@{config.host}:~$ "
+                            config.upcheck=config.config.get("update-check")
+                            if config.upcheck not in (True, False):
+                                config.upcheck=True
+                            config.logg=config.config.get("logging")
+                            if config.logg not in (True, False):
+                                config.logg=True
+                            config.gui=config.config.get("gui")
+                            if config.gui not in (True, False):
+                                config.gui=False
+                            config.theme=config.config.get("theme")
+                            if config.theme!="bright" or config.theme!="dark":
+                                config.theme="bright"
+                            break
+
+                        except:
+                            exception=traceback.format_exc()
+                            text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
+                            if modules.logg_module==True:
+                                log_error(text)
+                            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+                                return
+
+                elif command=="check update":
+                    if config.upcheck==True:
+                        updatecheck()
+                    else:
+                        if config.language=="de":
+                            print("requests ist nicht installiert.")
+                        else:
+                            print("requests is not installed.")
+
+                elif command=="split it":
+                    print("Command comming up ;)")
+
                 elif command=="exit":
                     close()
+                    if stopvars.is_exit==True:
+                        break
                 
                 else:
                     if config.language=="de":
