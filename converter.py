@@ -146,7 +146,6 @@ def parse_input(config, **kwargs):
             process(config, charset=convert_list, mode=convert_mode, content=content, convert=kwargs["mode"])
 
         print()
-        return
                     
     except KeyboardInterrupt:
         print()

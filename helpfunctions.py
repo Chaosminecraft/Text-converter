@@ -18,6 +18,7 @@ Common commands:
     return
 
 def mainhelp(language):
+    print(language)
     if language=="de":
         print(f"""
 Allgemeine commands:

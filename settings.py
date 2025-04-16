@@ -18,7 +18,8 @@ def settings_init(**kwargs):
     for r in (("{name}", kwargs.get("name")), ("{host}", kwargs.get("host"))):
         prompt=prompt.replace(*r)
     
-    gui=False #starting the project in CLI or GUI
+    gui=False      #starting the project in CLI or GUI
+    theme="bright" #the default theme of gui
 
     settings={
         "language":language,
@@ -26,7 +27,8 @@ def settings_init(**kwargs):
         "prompt":prompt,
         "update-check":upcheck,
         "logging":logg,
-        "gui":gui
+        "gui":gui,
+        "theme":theme
     }
     
     with open("settings.json", "w") as save:
@@ -40,7 +42,7 @@ def change_settings(config, sysinf, **kwargs):
             with open("settings.json", "r") as load:
                 settings_file=json.load(load)
         except FileNotFoundError:
-            settings_init(name=kwargs["name"], host=kwargs["host"])
+            settings_init(name=config.name, host=config.host)
             with open("settings.json", "r") as load:
                 settings_file=json.load(load)
         
@@ -50,6 +52,7 @@ def change_settings(config, sysinf, **kwargs):
         upcheck=settings_file.get("update-check")
         logg=settings_file.get("logging")
         gui=settings_file.get("gui")
+        theme=settings_file.get("theme")
         
         if kwargs["option"] == "language":
             while True:
@@ -59,7 +62,7 @@ def change_settings(config, sysinf, **kwargs):
                     text=input("What language? (DE/EN) ").lower()
             
                 if text=="en" or text=="de":
-                    config.language=text
+                    language=text
                     break
 
                 else:
@@ -114,7 +117,7 @@ def change_settings(config, sysinf, **kwargs):
             for r in (("{name}", config.name), ("{host}", config.host), ("{system}", sysinf.system_desc)):
                 prompt=prompt.replace(*r)
         
-        elif kwargs["option"]=="logg":
+        elif kwargs["option"]=="logging":
             while True:
                 if config.language=="de":
                     text=input("Willst du nicht kritische sachen loggen? (J/N) ").lower()
@@ -174,14 +177,41 @@ def change_settings(config, sysinf, **kwargs):
                 else:
                     print("Only CLI or GUI")
         
+        elif kwargs["option"]=="theme":
+            while True:
+                if config.language=="de":
+                    text=input("Willst du die Bright theme oder Dark theme benutzen? (bright/dark) ").lower()
+                else:
+                    text=input("Do you wanna use the Bright theme or Dark theme? (bright/dark) ").lower()
+
+                if text=="bright":
+                    theme="bright"
+                    break
+
+                elif text=="dark":
+                    theme="dark"
+                    break
+
+                else:
+                    if config.language=="de":
+                        print("Ne, es gibt nur bright oder dark im moment, Custom themes werden bald dazu kommen.")
+                    else:
+                        print("nope, there is only bright or dark in the moment, Custom themes are soon there.")
+        
         settings_file={
         "language":language,
         "advert":ad,
         "prompt":prompt,
         "update-check":upcheck,
         "logging":logg,
-        "gui":gui
+        "gui":gui,
+        "theme":theme
     }
+        
+        with open("settings.json", "w") as save:
+            json.dump(settings_file, save)
+        
+        return prompt, language, ad, upcheck, logg, gui, theme
 
     except KeyboardInterrupt:
         print()

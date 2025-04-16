@@ -15,6 +15,7 @@ class config:
     ad=True                   #This is if the ad for the game while true: learn(), But I'm not getting any ad money to show that, so feel free to just set it to false if you wanna.
     logg=True                 #This is a optional thing, But I'm redoing the logging part. So that is to be seen what happens to it.
     gui=False                 #The default setting of the CLI/GUI setting is False
+    theme="bright"            #The default theme setting
     log_name=""               #The log name in case of a error
     name=getpass.getuser()    #The Username
     host=socket.gethostname() #The PC name
@@ -125,8 +126,8 @@ class backupfunc:
     
         return prompt, language, ad, upcheck
     
-    def backuphelp(language):
-        if language=="de":
+    def backuphelp():
+        if config.language=="de":
             print(f"""
 Allgemeine commands:
     Help gibt den Hilfetext aus
@@ -389,6 +390,9 @@ def init():
             config.gui=config.config.get("gui")
             if config.gui not in (True, False):
                 config.gui=False
+            config.theme=config.config.get("theme")
+            if config.theme!="bright" or config.theme!="dark":
+                config.theme="bright"
             break
 
         except:
@@ -497,6 +501,15 @@ def main():
 
                 elif command=="last conversion":
                     print(VariableData.converted_text)
+                
+                elif command in ("help", "hilfe"):
+                    if modules.helpsite_module==True:
+                        mainhelp(config.language)
+                    else:
+                        backupfunc.backuphelp()
+                
+                elif command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=command)
                 
                 elif command=="exit":
                     close()
