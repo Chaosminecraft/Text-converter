@@ -1,11 +1,13 @@
-#importing modules
-import more_itertools, base64
-from brainfuckery import Brainfuckery
+import subprocess, sys, base64
 
-#importing the logger module
-from logger import log_system, log_info, log_error
-from helpfunctions import converterhelp
+class modules:
+    more_itertools_module=True
+    brainfuckery_module=True
+    helpfunctions_module=True
 
+class variables:
+    exit=False
+    out=""
 
 class lists:
     #the tables For some other conversion methods.
@@ -65,173 +67,195 @@ class lists:
                 'z': '00011000',    'Z': '00110001',
                 '?': '10110110' }
     
-    convert = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j", " ": "4", ",": "0", ".": "1", "?": "2", "!": "3", "a": "!", "b": "@", "c": "#", "d": "$", "e": "%", "f": "^", "g": "&", "h": "*", "i": "(", "j": ")", "k": "-", "l": "_", "m": "=", "n": "+", "o": "[", "p": "]", "q": "{", "r": "}", "s": ":", "t": ";", "u": "<", "v": ">", "w": ",", "x": ".", "y": "/", "z": "?"}
+    convert = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j", " ": "4", ",": "0", ".": "1", "?": "2", "!": "3", "a": "!", "b": "@", "c": "#", "d": "$", "e": "%", "f": "^", "g": "&", "h": "*", "i": "(", "j": ")", "k": "-", "l": "_", "m": "=", "n": "+", "o": "[", "p": "]", "q": "{", "r": "}", "s": ":", "t": ";", "u": "<", "v": ">", "w": ",", "x": ".", "y": "/", "z": "?", "'": "©"}
 
-    deconvert = {"a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6", "g": "7", "h": "8", "i": "9", "j": "0", "\"": "\"", " ": " ", "4": " ", "0": ",", "1": ".", "2": "?", "3": "!", "!": "a", "@": "b", "#": "c", "$": "d", "%": "e", "^": "f", "&": "g", "*": "h", "(": "i", ")": "j", "-": "k", "_": "l", "=": "m", "+": "n", "[": "o", "]": "p", "{": "q", "}": "r", ":": "s", ";": "t", "<": "u", ">": "v", ",": "w", ".": "x", "/": "y", "?": "z"}
-    
+    deconvert = {"a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6", "g": "7", "h": "8", "i": "9", "j": "0", " ": " ", "4": " ", "0": ",", "1": ".", "2": "?", "3": "!", "!": "a", "@": "b", "#": "c", "$": "d", "%": "e", "^": "f", "&": "g", "*": "h", "(": "i", ")": "j", "-": "k", "_": "l", "=": "m", "+": "n", "[": "o", "]": "p", "{": "q", "}": "r", ":": "s", ";": "t", "<": "u", ">": "v", ",": "w", ".": "x", "/": "y", "?": "z", "©": "'"}
 
-#Variables
-class variables:
-    content=""
-    out=""
-    detailed_converted_text=""
-
-#the main function of the converter
-def convert(command, language, logg):
-    variables.content=""
-    variables.out=""
+try:
+    import more_itertools
+except ImportError:
     try:
-        while True:
-            if command=="phex":
-                text_list=lists.phex
-            elif command=="pbin":
-                text_list=lists.pbinary
-            elif command=="legacy pbin":
-                text_list=lists.pbinary_legacy
-
-            while True:
-                if language=="de":
-                    answer=input("Convert oder Deconvert? ").lower()
-                elif language=="en":
-                    answer=input("Convert or Deconvert? ").lower()
-                else:
-                    answer=input("Convert or Deconvert? ").lower()
-
-                text=f"The user wanted to: {answer}"
-                log_info(text=text, logg=logg)
-            
-                if answer=="help":
-                    converterhelp(command, language, answer)
-            
-                elif answer=="convert" or answer=="deconvert":
-                    variables.content=input(">> ")
-                    break
-            
-                elif answer=="exit" or answer=="go back":
-                    break
-
-            if answer=="convert":
-                if command=="hex":
-                    variables.out="".join(more_itertools.intersperse(" ", variables.content.encode().hex(), n=2))
-                    print(variables.out)
-                
-                elif command=="bin":
-                    part1=bytes(variables.content, "ascii")
-                    variables.out=" ".join(["{0:b}".format(x) for x in part1])
-                    print(variables.out)
-                
-                elif command=="phex" or command=="pbin" or command=="legacy pbin":
-                    variables.out=" ".join(text_list[c] for c in variables.content)
-                    print(variables.out)
-                
-                elif command=="ascii":
-                    variables.out=" ".join(str(ord(c)) for c in variables.content)
-                    print(variables.out)
-                
-                elif command=="brainfuck":
-                    variables.out=Brainfuckery().convert(variables.content)
-                    print(variables.out)
-                
-                elif command=="base64":
-                    part1=variables.content.encode("ascii")
-                    part2=base64.b64encode(part1)
-                    variables.out=bytes.decode(part2)
-                    print(variables.out)
-            
-                elif command=="symbenc":
-                    variables.content=variables.content.lower()
-                    unsupported_symbols=""
-                    for i in range(len(variables.content)):
-                        if variables.content[i] not in lists.convert:
-                            unsupported_symbols += f"{variables.content[i]}, "
-                    unsupported_symbols = unsupported_symbols[:-2]
-                    if unsupported_symbols=="":
-                        variables.out=""
-                        for e in range(len(variables.content)):
-                            variables.out += str(lists.convert[variables.content[e]])
-                        print(variables.out)
-                        unsupported_symbols=""
-                    else:
-                        print(f"Haha, not supported: {unsupported_symbols}")
-                    unsupported_symbols=""
-            
-                else:
-                    if language=="en":
-                        print(f"\nThat option is not there however you got that in.\n")
-                    elif language=="de":
-                        print(f"\nDiese option ist nicht da, wie auch immer du es geschafft hast.\n")
-                    else:
-                        print(f"\nThat option is not there however you got that in.\n")
-
-            elif answer=="deconvert":
-                if command=="hex":
-                    variables.out=bytes([int(x, 16) for x in variables.content.split()]).decode()
-                    print(variables.out)
-            
-                elif command=="bin":
-                    part1=variables.content.split()
-                    for content in part1:
-                        content=int(content, 2)
-                        content=chr(content)
-                        variables.out+=content
-                    print(variables.out)
-            
-                elif command=="phex" or command=="pbin" or command=="legacy bin":
-                    variables.out="".join(list(text_list.keys())[list(text_list.values()).index(c)] for c in variables.content.split())
-                    print(variables.out)
-            
-                elif command=="ascii":
-                    variables.out="".join(map(lambda x: chr(int(x)), variables.content.split()))
-                    print(variables.out)
-            
-                elif command=="brainfuck":
-                    variables.out=Brainfuckery().interpret(variables.content)
-                    print(variables.out)
-            
-                elif command=="base64":
-                    part1=bytes(variables.content, encoding="utf-8")
-                    part2=base64.b64decode(part1)
-                    variables.out=str(part2, encoding="utf-8")
-                    print(variables.out)
-            
-                elif command=="symbenc":
-                    unsupported_symbols=""
-                    for i in range(len(variables.content)):
-                        if  variables.content[i] not in lists.deconvert:
-                            unsupported_symbols += f"{variables.content[i]}, "
-                    unsupported_symbols = unsupported_symbols[:-2]
-                    if unsupported_symbols=="":
-                        for _ in range(len(variables.content)):
-                            variables.out += str(lists.deconvert[variables.content[_]])
-                        print(variables.out)
-                        unsupported_symbols=""
-                    else:
-                        print(f"Error: the symbols are not supported: {unsupported_symbols}")
-                        unsupported_symbols=""
-            
-                else:
-                    if language=="en":
-                        print(f"\nThat option is not there however you got that in.\n")
-                    elif language=="de":
-                        print(f"\nDiese option ist nicht da, wie auch immer du es geschafft hast.\n")
-                    else:
-                        print(f"\nThat option is not there however you got that in.\n")
-
-            try:
-                del part1
-            except:
-                pass
-
-            try:
-                del part2
-            except:
-                pass
+        if input("The 'more_itertools' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "more_itertools"])
+            import more_itertools
         
-            variables.detailed_converted_text=f"{variables.content} → {variables.out}"
+        else:
+            print("The more_itertools module isn't installed, that simply means that there is no Hex conversion.")
+            modules.more_itertools_module=False
 
-            return variables.detailed_converted_text
+    except subprocess.CalledProcessError:
+        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        modules.more_itertools_module=False
+
+try:
+    import brainfuckery
+except ImportError:
+    try:
+        if input("The 'brainfuckery' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "brainfuckery"])
+            import brainfuckery
+        
+        else:
+            print("The brainfuckery module isn't installed, that simply means that there is no brainfuck conversion.")
+            modules.brainfuckery_module=False
+
+    except subprocess.CalledProcessError:
+        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        modules.brainfuckery_module=False
+
+try:
+    from helpfunctions import converterhelp
+except ImportError:
+    print("The help page module can't be loaded, that is currently then not available. I might move the Help site to the relevant modules.")
+    modules.helpfunctions_module=False
+
+def parse_input(config, **kwargs):
+    convert_list=""
+    try:
+        if kwargs["mode"]=="phex":
+            convert_list=lists.phex
+        elif kwargs["mode"]=="pbin":
+            convert_list=lists.pbinary
+        elif kwargs["mode"]=="lpbin":
+            convert_list=lists.pbinary_legacy
+
+        if config.gui==False:
+            while True:
+                if config.language=="de":
+                    convert_mode=input("Convert oder Deconvert? ").lower()
+                else:
+                    convert_mode=input("Convert or Deconvert? ").lower()
+
+                if convert_mode=="help":
+                    if modules.helpfunctions_module==True:
+                        converterhelp(config, mode=kwargs["mode"])
+
+                elif convert_mode=="convert" or convert_mode=="deconvert":
+                    content=input(">> ")
+                    break
+
+                elif convert_mode=="exit" or convert_mode=="go back":
+                    variables.exit=True
+                    break
+
+        elif config.gui==True:
+            convert_mode=kwargs["mode"]
+            content=kwargs["content"]
+
+        if variables.exit==False:
+            process(config, charset=convert_list, mode=convert_mode, content=content, convert=kwargs["mode"])
+
+        print()
+                    
     except KeyboardInterrupt:
         print()
         return
-        
-        
+
+def process(config, **kwargs):
+    if kwargs["mode"]=="convert":
+        if kwargs["convert"]=="hex":
+            variables.out="".join(more_itertools.intersperse(" ", kwargs["content"].encode().hex(), n=2))
+            print(variables.out)
+                
+        elif kwargs["convert"]=="bin":
+            part1=bytes(kwargs["content"], "ascii")
+            variables.out=" ".join(["{0:b}".format(x) for x in part1])
+            print(variables.out)
+                
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
+            variables.out=" ".join(kwargs["charset"][c] for c in kwargs["content"])
+            print(variables.out)
+                
+        elif kwargs["convert"]=="ascii":
+            variables.out=" ".join(str(ord(c)) for c in kwargs["charset"])
+            print(variables.out)
+                
+        elif kwargs["convert"]=="brainfuck":
+            variables.out=brainfuckery.Brainfuckery().convert(kwargs["charset"])
+            print(variables.out)
+                
+        elif kwargs["convert"]=="base64":
+            part1=kwargs["content"].encode("ascii")
+            part2=base64.b64encode(part1)
+            variables.out=bytes.decode(part2)
+            print(variables.out)
+            
+        elif kwargs["convert"]=="symbenc":
+            data=kwargs["content"].lower()
+            unsupported_symbols=""
+            for i in range(len(data)):
+                if data[i] not in lists.convert:
+                    unsupported_symbols += f"{data[i]}, "
+            unsupported_symbols = unsupported_symbols[:-2]
+            if unsupported_symbols=="":
+                variables.out=""
+                for e in range(len(data)):
+                    variables.out += str(lists.convert[data[e]])
+                print(variables.out)
+                unsupported_symbols=""
+            else:
+                print(f"That symbol is not supported: {unsupported_symbols}")
+            unsupported_symbols=""
+            
+        else:
+            if config.language=="de":
+                print(f"\nDiese option ist nicht da, wie auch immer du es geschafft hast.\n")
+            else:
+                print(f"\nThat option is not there however you got that in.\n")
+
+    elif kwargs["mode"]=="deconvert":
+        if kwargs["convert"]=="hex":
+            variables.out=bytes([int(x, 16) for x in kwargs["content"].split()]).decode()
+            print(variables.out)
+            
+        elif kwargs["convert"]=="bin":
+            part1=kwargs["content"].split()
+            for data in part1:
+                data=int(data, 2)
+                data=chr(data)
+                variables.out+=data
+
+            print(variables.out)
+            
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
+            variables.out="".join(list(kwargs["charset"].keys())[list(kwargs["charset"].values()).index(c)] for c in kwargs["content"].split())
+            print(variables.out)
+            
+        elif kwargs["convert"]=="ascii":
+            variables.out="".join(map(lambda x: chr(int(x)), kwargs["content"].split()))
+            print(variables.out)
+            
+        elif kwargs["convert"]=="brainfuck":
+            variables.out=brainfuckery.Brainfuckery().interpret(variables.content)
+            print(variables.out)
+            
+        elif kwargs["convert"]=="base64":
+            part1=bytes(kwargs["content"], encoding="utf-8")
+            part2=base64.b64decode(part1)
+            variables.out=str(part2, encoding="utf-8")
+            print(variables.out)
+            
+        elif kwargs["convert"]=="symbenc":
+            data=kwargs["content"]
+            unsupported_symbols=""
+            for i in range(len(data)):
+                if data[i] not in lists.deconvert:
+                    unsupported_symbols += f'{data[i]}, '
+            unsupported_symbols = unsupported_symbols[:-2]
+            if unsupported_symbols=="":
+                for _ in range(len(data)):
+                    variables.out += str(lists.deconvert[data[_]])
+                print(variables.out)
+                unsupported_symbols=""
+            else:
+                print(f"Error: the symbols are not supported: {unsupported_symbols}")
+                unsupported_symbols=""
+        else:
+            if config.language=="de":
+                print(f"\nDiese option ist nicht da, wie auch immer du es geschafft hast.\n")
+            else:
+                print(f"\nThat option is not there however you got that in.\n")
+
+if __name__=="__main__":
+    input("Please don't open that file on it's own. This is a module!")
+    exit()

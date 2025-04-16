@@ -1,16 +1,17 @@
 import webbrowser as web
-from logger import log_info, log_system
+from logger import log_info
 from random import randint
 
-def free_ad(language, logg):
-    if language=="de":
+def free_ad(config):
+    #print(config.language) #Debugging
+    if config.language=="de":
         print(f"\n[AD] Spiel mal while True: learn(), es ist ein gutes spiel.\nWo man das Spiel holen kann sieht man mit dem command: get game\nWenn du diese werbung nicht mer sehen willst, schreib: ad setting")
     else:
         print(f"\n[AD] Play while True: learn(), it's a good game.\nYou can see where you can get the game with the command: get game\nIf you don't want to see this ad again, write: ad setting")
 
-    if logg==True:
+    if config.logg==True:
         text=randomtext()
-        log_info(text=text, logg=logg)
+        log_info(config, text)
     return
 
 # that function is just to do a little joking on the log
@@ -18,21 +19,21 @@ def randomtext():
     random=randint(1, 5)
     if random==1:
         text="Why do i deliver that ad? i won't get paid anyways. [Sigh]... i delivered it anyways."
-    if random==2:
+    elif random==2:
         text="A... Ad delivered, please just don't disable it... Just kidding, i don't get paid for that."
-    if random==3:
+    elif random==3:
         text="HAHAHAHHAHHAHHAHHHA, Thanks for using that ad. i won'd get paid tho for that."
-    if random==4:
+    elif random==4:
         text="Thanks for running the ad i don't get paid for. :)"
-    if random==5:
+    elif random==5:
         text="Don... DON'T CODE WHILE HALF ASLEEP FOR THE LOVE OF GOD! there is an ad tho."
     return text
 
 #that is the stores where the game is Available at
-def get_game(language, logg, name):
+def get_game(config):
     while True:
         try:
-            if language=="de": #The German question of what store (some may be uncaught that are not working)
+            if config.language=="de": #The German question of what store (some may be uncaught that are not working)
                 print("Da sind diese Stores:\n1. steam\n2. epic games store\n3. humble\n4. Google Play\n5. Apple Store\n6. Nintendo\n7. Playstation 4\n8. Galaxy Store\n9. gog\n10. luden.io\n11. Exit geht zurück zum text converter Projekt.")
                 ans=input("Von welchem store möchtest du es: ")
                 ans=ans.lower()
@@ -40,10 +41,6 @@ def get_game(language, logg, name):
             else:#The English question of what store (some may be uncaught that are not working)
                 print("there are those stores:\n1. steam\n2. epic games store\n3. humble\n4. Google Play\n5. Apple Store\n6. Nintendo\n7. Playstation 4\n8. Galaxy Store\n9. gog\n10. Exit goes to the Text converter Project.")
                 ans=input("from what store do you want it: ")
-            
-            if logg==True:#If the logging module is okay
-                text=f"the user {name} chose the store: {ans}"
-                log_info(text, logg)
 
             #The list of the Stores
             if ans=="steam" or ans=="1":
@@ -70,7 +67,7 @@ def get_game(language, logg, name):
                 print()
                 return
             else:
-                if language=="de":
+                if config.language=="de":
                     print(f"i'm sorry, that shop has in that module version not the game. :(\n")
                 else:
                     print(f"sorry, dieser store hat das spiel in der version von diesem Werbung modul. :(\n")
@@ -79,5 +76,6 @@ def get_game(language, logg, name):
             print()
             return
 
-#if __name__=="__main__":
-#    free_ad(language="en", logg=False)
+if __name__=="__main__":
+    input("Please don't open that file on it's own. This is a module!")
+    exit()
