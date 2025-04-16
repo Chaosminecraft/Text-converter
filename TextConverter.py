@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, webbrowser, locale, time,
 class version:
     release=False        #if that version is a release or beta version
     version="3.0.0"      #The release version
-    beta_version="3.0.3" #The Beta version
+    beta_version="3.0.4" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -497,6 +497,15 @@ def main():
 
                 elif command=="last conversion":
                     print(VariableData.converted_text)
+                
+                elif command=="exit":
+                    close()
+                
+                else:
+                    if config.language=="de":
+                        print(f"Upsi, der 'command' {command} ist nicht ein command.")
+                    else:
+                        print(f"Oops, the 'command' {command} isn't a command.")
 
             except KeyboardInterrupt:
                 print()
