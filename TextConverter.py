@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.1.0"      #The release version
-    beta_version="3.1.3" #The Beta version
+    beta_version="3.1.4" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -590,9 +590,12 @@ def main():
                 elif VariableData.command=="split it":
                     print("Command comming up ;)")
                 
-                elif VariableData.command=="start gui":
+                elif VariableData.command=="start gui" or VariableData.command=="sg":
                     if modules.gui_module==True:
+                        backup=config.gui
+                        config.gui=True
                         cli_to_gui(config)
+                        config.gui=backup
                     else:
                         print("The gui module is missing.")
 

@@ -22,16 +22,15 @@ class GuiConfig:
     deconvert=""
     optionsvar=""
     messagevar=""
-    convert_var=""
-    deconvert_var=""
+    converted="Something went wrong, Fix it Chaosminecraft!!"
     isexit=False
     stop_event=Event()
 
 class theme:
     deconvert_msg=""
     convert_msg=""
-    input_deconvert=""
-    input_convert=""
+    convert_var=""
+    deconvert_var=""
     settings_warn=""
     convert_check=""
     deconvert_check=""
@@ -57,8 +56,8 @@ def set_theme(config):
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF")
         theme.convert_msg.config(bg="#EFEFEF")
-        theme.input_deconvert.config(bg="#EFEFEF")
-        theme.input_convert.config(bg="#EFEFEF")
+        theme.deconvert_var.config(bg="#EFEFEF")
+        theme.convert_var.config(bg="#EFEFEF")
         theme.settings_warn.config(bg="#EFEFEF")
         theme.convert_check.config(bg="#EFEFEF")
         theme.deconvert_check.config(bg="#EFEFEF")
@@ -72,8 +71,8 @@ def set_theme(config):
         GuiConfig.window.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.deconvert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.convert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
-        theme.input_deconvert.config(bg="#1F1F1F", fg="#FFFFFF")
-        theme.input_convert.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.deconvert_var.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.convert_var.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.settings_warn.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.convert_check.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.deconvert_check.config(bg="#1F1F1F", fg="#FFFFFF")
@@ -93,11 +92,11 @@ def main(config):
         theme.convert_msg=Label(GuiConfig.window, text="Text to convert:", padx=5, pady=5)
         theme.convert_msg.place(x=160, y=35)
 
-        theme.input_deconvert=Entry(GuiConfig.window, width=50)
-        theme.input_deconvert.place(x=160, y=20)
+        theme.deconvert_var=Entry(GuiConfig.window, width=50)
+        theme.deconvert_var.place(x=160, y=20)
 
-        theme.input_convert=Entry(GuiConfig.window, width=50)
-        theme.input_convert.place(x=160, y=60)
+        theme.convert_var=Entry(GuiConfig.window, width=50)
+        theme.convert_var.place(x=160, y=60)
 
         theme.settings_warn=Label(GuiConfig.window, text="This settings Window may not work in the Beta Version!")
         theme.settings_warn.place(x=70, y=100)
@@ -112,10 +111,10 @@ def main(config):
         theme.deconvert_check=Checkbutton(GuiConfig.window, text="Deconvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
         theme.deconvert_check.place(x=70, y=17)
 
-        theme.convert_butt=Button(GuiConfig.window, text="Go.", padx=5, pady=5, command=lambda:prep_convert(config, ))
+        theme.convert_butt=Button(GuiConfig.window, text="Go.", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var))
         theme.convert_butt.place(x=70, y=120)
 
-        theme.settings_butt=Button(GuiConfig.window, text="Settings", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, ))
+        theme.settings_butt=Button(GuiConfig.window, text="Settings", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, ))
         theme.settings_butt.place(x=115, y=120) 
 
         theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
@@ -123,7 +122,7 @@ def main(config):
 
         GuiConfig.optionsvar=StringVar(GuiConfig.window)
         GuiConfig.optionsvar.set("Hex")
-        theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "leetspeak", "brainfuck", "base64")
+        theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
         theme.options.place(x=220, y=160)
 
         GuiConfig.messagevar=StringVar(GuiConfig.window)
@@ -138,9 +137,16 @@ def main(config):
 
         GuiConfig.window.mainloop()
 
-def prep_convert(config):
-    if GuiConfig.convert==1:
-        conv_thread=threading.Thread(target=parse_input, args=(config, ))
+def prep_convert(config, convert_var, deconvert_var):
+    if GuiConfig.convert.get()==1:
+        convert_mode="convert"
+        GuiConfig.converted=parse_input(config, guimode=convert_mode, mode=GuiConfig.optionsvar.get().lower(), convdata=convert_var.get())
+        ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
+    
+    if GuiConfig.deconvert.get()==1:
+        convert_mode="deconvert"
+        GuiConfig.converted=parse_input(config, guimode=convert_mode, mode=GuiConfig.optionsvar.get().lower(), convdata=deconvert_var.get())
+        ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
 
 def ui_exit(config):
     result=ctypes.windll.user32.MessageBoxW(0, "If you press Ok, the Program will close, but if you press Cancel it stays open.", "Do you wanna close that?", 1)
