@@ -1,4 +1,5 @@
 import locale, json
+from tkinter import *
 
 #The function that makes the Settings file
 def settings_init(**kwargs):
@@ -217,8 +218,64 @@ def change_settings(config, sysinf, **kwargs):
         print()
         return
 
-def gui_settings():
-    tmp="" #pls add the GUI settings functionality while adding the GUI code.
+class variables:
+    log_var=""
+    language_entry=""
+    theme_var=""
+
+def gui_settings(GuiConfig, config, theme):
+    if GuiConfig.options_window_count == 0:
+        GuiConfig.options_window_count+=1
+
+        settingsgui=Toplevel()
+        settingsgui.title("Settings")
+        settingsgui.geometry("400x300")
+        settingsgui.resizable(width=False, height=False)
+
+        def on_close():
+            #print("I'M USEFUL!!!!") #for some goddamn debugging if that shi stops working.
+            GuiConfig.options_window_count=0
+            settingsgui.destroy()
+        
+        settingsgui.protocol("WM_DELETE_WINDOW", on_close)
+
+        variables.log_var=IntVar()
+        log_checkbox=Checkbutton(settingsgui, text="Activate non critical logging?", variable=variables.log_var)
+        log_checkbox.pack()
+
+        language_label=Label(settingsgui, text="Language setting (Only DE/EN)")
+        language_label.pack()
+        variables.language_entry=Entry(settingsgui)
+        variables.language_entry.pack()
+
+        variables.theme_var=StringVar(value=config.theme)
+        theme_bright_radio=Radiobutton(settingsgui, text="Bright", variable=variables.theme_var, value="light", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
+        theme_bright_radio.pack()
+        theme_dark_radio=Radiobutton(settingsgui, text="dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
+        theme_dark_radio.pack()
+
+        save_butt=Button(settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
+        save_butt.pack()
+        load_butt=Button(settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
+        load_butt.pack()
+    else:
+        return
+
+def change_theme(GuiConfig, theme, theme_var):
+    temp=""
+
+def save_settings(GuiConfig, config, theme):
+    if config.language not in ("en", "de"):
+        config.language="en"
+    settings={
+        "language":config.language,
+        "advert":config.ad
+    }
+    with open("settings_test.json", "w") as save:
+        json.dump(settings, save)
+
+def load_settings(GuiConfig, config, theme):
+    temp=""
 
 if __name__=="__main__":
     input("Please don't open that file on it's own. This is a module!")

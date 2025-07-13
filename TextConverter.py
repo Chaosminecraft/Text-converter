@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.1.0"      #The release version
-    beta_version="3.1.4" #The Beta version
+    beta_version="3.1.5" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -22,7 +22,7 @@ class config:
 
 #The Startup variables in a class
 class startup:
-    init=True                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
+    init=False                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
     Startup_time_check=True       #That is if the Startup time should be checked
     start=datetime.datetime.now() #that is taking the time when the code got started
     stop=""                       #that is the time needed that the code got to the prompt part (including update checking)
@@ -167,7 +167,10 @@ try:
 except ImportError: #If the module isn't installed.
     try:
         if input("The 'requests' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes": #asking if installing the module is wanted.
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+            if sysinf.system=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+            elif sysinf.system=="Linux":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "--user","requests", "--break-system-packages"])
             import requests
         
         else:
@@ -308,6 +311,7 @@ def title_time(stop_event):
     try:
         if sysinf.system=="Windows":
             while not stop_event.is_set():
+                start=time.time()
                 now=datetime.datetime.now()
                 if config.language=="de":
                     now=now.strftime("%d/%m/%Y, %H:%M:%S") #%H:%M:%S.%f
@@ -318,7 +322,9 @@ def title_time(stop_event):
                     os.system(f"title Text Converter V{version.version} {now}")
                 else:
                     os.system(f"title Text Converter Beta V{version.beta_version} {now}")
-                time.sleep(0.125)
+                elapsed_time=time.time()-start
+                wait_time=max(0.5, elapsed_time * 2)
+                time.sleep(wait_time)
             return   
 
 
@@ -395,7 +401,7 @@ def init():
             if config.gui not in (True, False):
                 config.gui=False
             config.theme=config.config.get("theme")
-            if config.theme!="bright" or config.theme!="dark":
+            if config.theme not in ("bright", "dark"):
                 config.theme="bright"
             break
 
@@ -414,8 +420,7 @@ def init():
                     free_ad(config)
 
         if startup.init==False:
-            if config.gui==False:
-                threads.time_thread.start()
+            threads.time_thread.start()
         
         if startup.init==False:
             if config.upcheck==True:
@@ -480,7 +485,7 @@ def main():
                 startup.init=True
                 if config.gui==True:
                     if modules.gui_module==True:
-                        cli_to_gui(config)
+                        cli_to_gui(config, sysinf, version)
                         return
                     else:
                         config.gui=False
@@ -526,7 +531,7 @@ def main():
                     else:
                         backupfunc.backuphelp()
                 
-                elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
+                elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
 
                 elif VariableData.command=="reset settings":
@@ -594,10 +599,13 @@ def main():
                     if modules.gui_module==True:
                         backup=config.gui
                         config.gui=True
-                        cli_to_gui(config)
+                        cli_to_gui(config, sysinf, version)
                         config.gui=backup
                     else:
                         print("The gui module is missing.")
+                
+                elif VariableData.command=="time":
+                    timereader()
 
                 elif VariableData.command=="exit":
                     close()
@@ -670,19 +678,15 @@ def close():
                 print("Stopped closing.")
             return
 
-def timereader(language, logg):
-    text=datetime.datetime.now()
-    if language == "de":
-        print(f"\nDie zeit ist:", text.strftime("%d/%m/%Y, %H:%M:%S"), "\n")
-
-        log_info(text, logg)
+def timereader():
+    current_time=datetime.datetime.now()
+    if config.language == "de":
+        print(f"\nDie zeit ist:", current_time.strftime("%d/%m/%Y, %H:%M:%S"), "\n")
 
     else:
-        print(f"\nThe time is:", text.strftime("%m/%d/%Y, %r"), "\n")
+        print(f"\nThe time is:", current_time.strftime("%m/%d/%Y, %r"), "\n")
 
-        log_info(text, logg)
-
-        return
+    return
 
 if __name__=="__main__":
     init()

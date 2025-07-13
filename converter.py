@@ -1,4 +1,4 @@
-import subprocess, sys, base64
+import subprocess, sys, base64, platform
 
 class modules:
     more_itertools_module=True
@@ -76,7 +76,10 @@ try:
 except ImportError:
     try:
         if input("The 'more_itertools' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "more_itertools"])
+            if platform.system()=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "more_itertools"])
+            elif platform.system()=="Linux":
+                subprocess.check_call(["sudo", "apt", "install", "python3-pip", "more_itertools"])
             import more_itertools
         
         else:
@@ -84,7 +87,7 @@ except ImportError:
             modules.more_itertools_module=False
 
     except subprocess.CalledProcessError:
-        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        print("There is no internet connection, or some other problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
         modules.more_itertools_module=False
 
 try:
@@ -92,7 +95,10 @@ try:
 except ImportError:
     try:
         if input("The 'brainfuckery' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "brainfuckery"])
+            if platform.system()=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "brainfuckery"])
+            elif platform.system()=="Linux":
+                subprocess.check_call(["sudo", "apt", "install", "python3-pip", "brainfuckery"])
             import brainfuckery
         
         else:
@@ -100,7 +106,7 @@ except ImportError:
             modules.brainfuckery_module=False
 
     except subprocess.CalledProcessError:
-        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        print("There is no internet connection, or some other problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
         modules.brainfuckery_module=False
 
 try:
