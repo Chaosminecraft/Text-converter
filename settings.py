@@ -308,7 +308,7 @@ def save_settings(GuiConfig, config, theme):
         "gui":gui_var,
         "theme":variables.theme_var.get()
     }
-    with open("settings_test.json", "w") as save:
+    with open("settings.json", "w") as save:
         json.dump(settings, save)
 
 def load_settings(GuiConfig, config, theme):
