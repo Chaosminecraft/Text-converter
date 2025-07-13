@@ -220,7 +220,9 @@ def change_settings(config, sysinf, **kwargs):
 
 class variables:
     log_var=""
-    language_entry=""
+    language_var=""
+    update_var=""
+    gui_var=""
     theme_var=""
 
 def gui_settings(GuiConfig, config, theme):
@@ -239,19 +241,36 @@ def gui_settings(GuiConfig, config, theme):
         
         settingsgui.protocol("WM_DELETE_WINDOW", on_close)
 
-        variables.log_var=IntVar()
+        variables.log_var=IntVar(value=1 if config.logg else 0)
+        print(variables.log_var.get())
         log_checkbox=Checkbutton(settingsgui, text="Activate non critical logging?", variable=variables.log_var)
         log_checkbox.pack()
 
-        language_label=Label(settingsgui, text="Language setting (Only DE/EN)")
+        variables.update_var=IntVar(value=1 if config.upcheck else 0)
+
+        update_checkbox=Checkbutton(settingsgui, text="Check for updates?", variable=variables.update_var)
+        update_checkbox.pack()
+
+        variables.gui_var=IntVar(value=1 if config.gui else 0)
+
+        gui_checkbox=Checkbutton(settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
+        gui_checkbox.pack()
+
+        language_label=Label(settingsgui, text="Language setting:")
         language_label.pack()
-        variables.language_entry=Entry(settingsgui)
-        variables.language_entry.pack()
+
+        variables.language_var=StringVar(value=config.language)
+
+        language_radio_de = Radiobutton(settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+        language_radio_de.pack()
+
+        language_radio_en = Radiobutton(settingsgui, text="English", variable=variables.language_var, value="en")
+        language_radio_en.pack()
 
         variables.theme_var=StringVar(value=config.theme)
         theme_bright_radio=Radiobutton(settingsgui, text="Bright", variable=variables.theme_var, value="light", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
         theme_bright_radio.pack()
-        theme_dark_radio=Radiobutton(settingsgui, text="dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
+        theme_dark_radio=Radiobutton(settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
         theme_dark_radio.pack()
 
         save_butt=Button(settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
@@ -265,11 +284,29 @@ def change_theme(GuiConfig, theme, theme_var):
     temp=""
 
 def save_settings(GuiConfig, config, theme):
-    if config.language not in ("en", "de"):
-        config.language="en"
+    if variables.update_var.get()==1:
+        update_var=True
+    else:
+        update_var=False
+    
+    if variables.log_var.get()==1:
+        log_var=True
+    else:
+        log_var=False
+    
+    if variables.gui_var.get()==1:
+        gui_var=True
+    else:
+        gui_var=False
+    
     settings={
-        "language":config.language,
-        "advert":config.ad
+        "language":variables.language_var.get(),
+        "advert":config.ad,
+        "prompt":config.prompt,
+        "update-check":update_var,
+        "logging":log_var,
+        "gui":gui_var,
+        "theme":variables.theme_var.get()
     }
     with open("settings_test.json", "w") as save:
         json.dump(settings, save)
