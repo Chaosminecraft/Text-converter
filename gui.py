@@ -134,16 +134,19 @@ def main(config, sysinf, version):
         GuiConfig.window.after(50, lambda:GuiConfig.window.attributes("-topmost", False))
         GuiConfig.window.mainloop()
 
+def display_conversion():
+    ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
+
 def prep_convert(config, convert_var, deconvert_var):
     if GuiConfig.convert.get()==1:
         convert_mode="convert"
         GuiConfig.converted=parse_input(config, guimode=convert_mode, mode=GuiConfig.optionsvar.get().lower(), convdata=convert_var.get())
-        ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
     
     if GuiConfig.deconvert.get()==1:
         convert_mode="deconvert"
         GuiConfig.converted=parse_input(config, guimode=convert_mode, mode=GuiConfig.optionsvar.get().lower(), convdata=deconvert_var.get())
-        ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
+    
+    ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
 
 def start_thread(config, sysinf, version):
     GuiConfig.stop_event=threading.Event()
@@ -162,12 +165,12 @@ def title_time(config, sysinf, version):
                         if version.release==True:
                             GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
                         else:
-                            GuiConfig.window.title(f"Text Converter GUI V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
+                            GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
                     else:
-                        if version.release==False:
+                        if version.release==True:
                             GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%m/%d/%Y, %r")}")
                         else:
-                            GuiConfig.window.title(f"Text Converter GUI V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}")
+                            GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}")
                     elapsed_time=time.time()-start
                     wait_time=max(0.5, elapsed_time * 2)
                     time.sleep(wait_time)

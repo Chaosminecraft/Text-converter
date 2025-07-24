@@ -435,10 +435,7 @@ def init():
         elif version.release==False:
             if config.language=="de":
                 print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
-Da ich meinen code neu geschrieben habe das ein Merge vorbereitet, Kann es aktuell sein das es momentan mein code mehr bugs hat.
-Im moment da könnten mehr fehler sein.
-Und es würde mir echt helfen wenn du ein issue bei meinem github geben würdest.
-Wenn möglich wäre es gut einen log mit den schritten wie es passierte beim link zu beschreiben.
+Bitte meldet dies bei:
 {info.issues_site}
 
 Info: GUI ist bis jetzt nur bei Windows 10 getestet
@@ -446,11 +443,9 @@ Info: GUI ist bis jetzt nur bei Windows 10 getestet
 Willkommen zur Beta version vom Text converter.\n""")
 
             else:
-                print(f"""\n[WARNING] This is a BETA version, It could be unstable.
-Since I'm Re-writing the code to prepare it for a merge, it could be that there are more bugs.
-At the moment there could be errors.
-And it would really help me if you could make an issue on my github.
-If possible please provide a log and the way it happened on the link.
+                print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
+So please report it to:
+
 {info.issues_site}
 
 Info: GUI is for now only tested on Windows 10.
@@ -459,6 +454,7 @@ Welcome to the Beta version of the Text Converter.\n""")
         while stopvars.is_exit is not True:
             if stopvars.is_exit==False:
                 main()
+
 
 def main():
     try:
@@ -533,6 +529,7 @@ def main():
                 
                 elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
+                    print(config.prompt)
 
                 elif VariableData.command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)

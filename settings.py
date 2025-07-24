@@ -102,21 +102,24 @@ def change_settings(config, sysinf, **kwargs):
                 print("What prompt style do you want? {host} is the PC name, {name} is the username, {system} is the name of the Operating System.")
                 print("There are 3 prompt presets:\n1. Linux\n2. Windows\n3. macos\n4. templeos")
                 text=input("What prompt look? ")
+
+            prompt=text
             
             if text=="Linux" or text=="1":
                 prompt="{name}@{host}:~$ "
 
-            elif text=="Windows" or text=="2":
+            if text=="Windows" or text=="2":
                 prompt="C:\\Users\\{name}> "
 
-            elif text=="macos" or text=="3":
+            if text=="macos" or text=="3":
                 prompt="{name}@{host} ~ % "
 
-            elif text=="templeos" or text=="4":
+            if text=="templeos" or text=="4":
                 prompt="C:/Home "
             
-            for r in (("{name}", config.name), ("{host}", config.host), ("{system}", sysinf.system_desc)):
+            for r in (("{host}", config.host), ("{system}", sysinf.system_desc), ("{name}", config.name)):
                 prompt=prompt.replace(*r)
+                #print(prompt) #for when I break shit again.
         
         elif kwargs["option"]=="logging":
             while True:
