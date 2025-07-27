@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.1.0"      #The release version
-    beta_version="3.1.8" #The Beta version
+    beta_version="3.1.9" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -143,7 +143,8 @@ Zusätzliche Informationen:
     prompt ändert den prompt look (direkt nach start den prompt)
     ad gibt dir die option ob du die Werbung sehen willst oder nicht
     update gibt dir die option nach updates zu schauen am start.
-    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.\n""")
+    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.
+    ping ist ein simpler ping command\n""")
         
             return
     
@@ -164,7 +165,8 @@ Additional info:
     prompt let's you change the prompt look. (After startup the prompt)
     ad let's you change if you wanna see the ad (currently broken)
     update let's you change the setting if you want to check for updates.
-    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)\n""")
+    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)
+    ping is a simple ping command\n""")
         
             return
 

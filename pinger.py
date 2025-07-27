@@ -1,5 +1,20 @@
-import concurrent.futures
+import concurrent.futures, platform, subprocess
+
 import ping3
+
+try:
+    import ping3 #Trying to import requests
+except ImportError: #If the module isn't installed.
+    try:
+        if input("The 'ping3' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes": #asking if installing the module is wanted.
+            if platform.system=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "ping3"])
+            elif platform.system=="Linux":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "--user","ping3", "--break-system-packages"])
+            import ping3
+
+    except subprocess.CalledProcessError:
+        pass
 
 #ideas: Add a optional graph function maybe.
 
