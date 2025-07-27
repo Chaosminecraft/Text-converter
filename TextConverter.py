@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.1.0"      #The release version
-    beta_version="3.1.7" #The Beta version
+    beta_version="3.1.8" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -41,6 +41,7 @@ class modules:
     splitit_module=True
     logg_module=True
     gui_module=True
+    ping_module=True
 
 #Other General variables or links or E-Mail (For the project)
 class info:
@@ -63,6 +64,11 @@ class sysinf:
     build=platform.version()
     cpu=platform.machine()
     system_desc=f"{system} {release}"
+
+class PingDataModule:
+    host=""
+    maxpings=100
+    last_ping="No ping done."
 
 #backup functions (Experimental)
 class backupfunc:
@@ -233,6 +239,12 @@ try:
 except ImportError:
     print("The project SplitIt is unable to be imported. That means it can't be ran.")
     modules.splitit_module=False
+
+try:
+    from pinger import init_ping
+except ImportError:
+    print("The ping module is unable to be imported. That means there is no pinging :(")
+    modules.ping_module=False
 
 #The update checking function
 def updatecheck():
@@ -603,6 +615,19 @@ def main():
                 
                 elif VariableData.command=="time":
                     timereader()
+                
+                elif VariableData.command=="ping":
+                    PingDataModule.host=input(f"\nWhat host? ")
+                    while True:
+                        try:
+                            PingDataModule.last_ping=PingDataModule.maxpings=int(input("How many?(don't do too many if slow internet) "))
+                            break
+                        except ValueError:
+                            print(f"Nope, that ain't a number.\n")
+                    init_ping(PingDataModule)
+                
+                elif VariableData.command=="last ping" or VariableData.command=="lp":
+                    print(f"\n{PingDataModule.last_ping}\n")
 
                 elif VariableData.command=="exit":
                     close()
