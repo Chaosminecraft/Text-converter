@@ -38,7 +38,7 @@ class theme:
     settings_butt=""
     exit_butt=""
     options=""
-    warning_label=""
+    show_last_convert_butt=""
 
 
 def cli_to_gui(config, sysinf, version):
@@ -68,7 +68,7 @@ def set_theme(config):
         theme.settings_butt.config(bg="#EFEFEF")
         theme.exit_butt.config(bg="#EFEFEF")
         theme.options.config(bg="#EFEFEF")
-        theme.warning_label.config(bg="#EFEFEF")
+        theme.show_last_convert_butt.config(bg="#EFEFEF")
     elif config.theme=="dark":
         GuiConfig.window.config(bg="#1F1F1F")
         theme.deconvert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
@@ -82,7 +82,7 @@ def set_theme(config):
         theme.settings_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.exit_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.options.config(bg="#1F1F1F", fg="#FFFFFF")
-        theme.warning_label.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.show_last_convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
 
     return
 
@@ -121,17 +121,17 @@ def main(config, sysinf, version):
         theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
         theme.exit_butt.place(x=185, y=120)
 
+        theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion)
+        theme.show_last_convert_butt.place(x=235, y=120)
+
         GuiConfig.optionsvar=StringVar(GuiConfig.window)
         GuiConfig.optionsvar.set("Hex")
         theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
         theme.options.place(x=220, y=160)
 
-        theme.warning_label=Label(GuiConfig.window, text="↑ Warning: the QR Code can't be Viewed and only Generated!")
-        theme.warning_label.place(x=110, y=280)
-
-        GuiConfig.window.after(25, lambda:set_theme(config))
-        GuiConfig.window.after(25, lambda:start_thread(config, sysinf, version))
-        GuiConfig.window.after(50, lambda:GuiConfig.window.attributes("-topmost", False))
+        GuiConfig.window.after(5, lambda:set_theme(config))
+        GuiConfig.window.after(5, lambda:start_thread(config, sysinf, version))
+        GuiConfig.window.after(25, lambda:GuiConfig.window.attributes("-topmost", False))
         GuiConfig.window.mainloop()
 
 def display_conversion():

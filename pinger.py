@@ -1,7 +1,5 @@
 import concurrent.futures, platform, subprocess
 
-import ping3
-
 try:
     import ping3 #Trying to import requests
 except ImportError: #If the module isn't installed.
