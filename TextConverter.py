@@ -3,7 +3,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 #The version variables in a class
 class version:
     release=True        #if that version is a release or beta version
-    version="3.1.0"      #The release version
+    version="3.2.0"      #The release version
     beta_version="3.1.9" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
@@ -442,9 +442,9 @@ def init():
         
         if version.release==True:
             if config.language=="de":
-                print(f"\nWillkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
+                print(f"\nWillkommen zur Release version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
             else:
-                print(f"\nWelcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
+                print(f"\nWelcome to the currently Release version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
         
         elif version.release==False:
             if config.language=="de":
