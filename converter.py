@@ -1,4 +1,4 @@
-import subprocess, sys, base64
+import subprocess, sys, base64, platform
 
 class modules:
     more_itertools_module=True
@@ -76,7 +76,10 @@ try:
 except ImportError:
     try:
         if input("The 'more_itertools' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "more_itertools"])
+            if platform.system()=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "more_itertools"])
+            elif platform.system()=="Linux":
+                subprocess.check_call(["sudo", "apt", "install", "python3-pip", "more_itertools"])
             import more_itertools
         
         else:
@@ -84,7 +87,7 @@ except ImportError:
             modules.more_itertools_module=False
 
     except subprocess.CalledProcessError:
-        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        print("There is no internet connection, or some other problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
         modules.more_itertools_module=False
 
 try:
@@ -92,7 +95,10 @@ try:
 except ImportError:
     try:
         if input("The 'brainfuckery' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes":
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "brainfuckery"])
+            if platform.system()=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "brainfuckery"])
+            elif platform.system()=="Linux":
+                subprocess.check_call(["sudo", "apt", "install", "python3-pip", "brainfuckery"])
             import brainfuckery
         
         else:
@@ -100,7 +106,7 @@ except ImportError:
             modules.brainfuckery_module=False
 
     except subprocess.CalledProcessError:
-        print("There is no internet connection, or some other connection problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
+        print("There is no internet connection, or some other problem, Please retstart the program later. (Manual retry attempts may be implemented in the future.)")
         modules.brainfuckery_module=False
 
 try:
@@ -112,11 +118,11 @@ except ImportError:
 def parse_input(config, **kwargs):
     convert_list=""
     try:
-        if kwargs["mode"]=="phex":
+        if kwargs["mode"]=="phex" or kwargs["mode"]=="pseudo hex":
             convert_list=lists.phex
-        elif kwargs["mode"]=="pbin":
+        elif kwargs["mode"]=="pbin" or kwargs["mode"]=="pseudo binary":
             convert_list=lists.pbinary
-        elif kwargs["mode"]=="lpbin":
+        elif kwargs["mode"]=="lpbin" or kwargs["mode"]=="legacy pseudo binary":
             convert_list=lists.pbinary_legacy
 
         if config.gui==False:
@@ -139,39 +145,43 @@ def parse_input(config, **kwargs):
                     break
 
         elif config.gui==True:
-            convert_mode=kwargs["mode"]
-            content=kwargs["content"]
+            convert_mode=kwargs["guimode"]
+            content=kwargs["convdata"]
 
         if variables.exit==False:
             process(config, charset=convert_list, mode=convert_mode, content=content, convert=kwargs["mode"])
 
         print()
+        
+        return variables.out
                     
     except KeyboardInterrupt:
         print()
         return
 
 def process(config, **kwargs):
+    #print(kwargs["mode"], kwargs["convert"], kwargs["content"]) #Debugging während ich die GUI version erneuert habe
     if kwargs["mode"]=="convert":
         if kwargs["convert"]=="hex":
             variables.out="".join(more_itertools.intersperse(" ", kwargs["content"].encode().hex(), n=2))
             print(variables.out)
                 
-        elif kwargs["convert"]=="bin":
+        elif kwargs["convert"]=="bin" or kwargs["convert"]=="binary":
+            variables.out=""
             part1=bytes(kwargs["content"], "ascii")
             variables.out=" ".join(["{0:b}".format(x) for x in part1])
             print(variables.out)
                 
-        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pseudo hex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="pseudo binary" or kwargs["convert"]=="lpbin" or kwargs["convert"]=="legacy pseudo binary":
             variables.out=" ".join(kwargs["charset"][c] for c in kwargs["content"])
             print(variables.out)
                 
         elif kwargs["convert"]=="ascii":
-            variables.out=" ".join(str(ord(c)) for c in kwargs["charset"])
+            variables.out=" ".join(str(ord(c)) for c in kwargs["content"])
             print(variables.out)
                 
         elif kwargs["convert"]=="brainfuck":
-            variables.out=brainfuckery.Brainfuckery().convert(kwargs["charset"])
+            variables.out=brainfuckery.Brainfuckery().convert(kwargs["content"])
             print(variables.out)
                 
         elif kwargs["convert"]=="base64":
@@ -208,16 +218,21 @@ def process(config, **kwargs):
             variables.out=bytes([int(x, 16) for x in kwargs["content"].split()]).decode()
             print(variables.out)
             
-        elif kwargs["convert"]=="bin":
+        elif kwargs["convert"]=="bin" or kwargs["convert"]=="binary":
+            variables.out=""
             part1=kwargs["content"].split()
             for data in part1:
                 data=int(data, 2)
                 data=chr(data)
                 variables.out+=data
+                print(data)
+                print(variables.out)
+            
+            print(part1, data)
 
             print(variables.out)
             
-        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="lpbin":
+        elif kwargs["convert"]=="phex" or kwargs["convert"]=="pseudo hex" or kwargs["convert"]=="pbin" or kwargs["convert"]=="pseudo binary" or kwargs["convert"]=="lpbin" or kwargs["convert"]=="legacy pseudo binary":
             variables.out="".join(list(kwargs["charset"].keys())[list(kwargs["charset"].values()).index(c)] for c in kwargs["content"].split())
             print(variables.out)
             
@@ -226,7 +241,7 @@ def process(config, **kwargs):
             print(variables.out)
             
         elif kwargs["convert"]=="brainfuck":
-            variables.out=brainfuckery.Brainfuckery().interpret(variables.content)
+            variables.out=brainfuckery.Brainfuckery().interpret(kwargs["content"])
             print(variables.out)
             
         elif kwargs["convert"]=="base64":

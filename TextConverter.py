@@ -1,10 +1,10 @@
-import getpass, os, platform, socket, json, traceback, webbrowser, locale, time, datetime, threading, logging, subprocess, sys
+import getpass, os, platform, socket, json, traceback, locale, time, datetime, threading, logging, subprocess, sys
 
 #The version variables in a class
 class version:
     release=True        #if that version is a release or beta version
     version="3.1.0"      #The release version
-    beta_version="3.1.0" #The Beta version
+    beta_version="3.1.9" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -22,7 +22,7 @@ class config:
 
 #The Startup variables in a class
 class startup:
-    init=True                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
+    init=False                    #That is a variable that is soon to be used for logging if the code at least got to the prompt part
     Startup_time_check=True       #That is if the Startup time should be checked
     start=datetime.datetime.now() #that is taking the time when the code got started
     stop=""                       #that is the time needed that the code got to the prompt part (including update checking)
@@ -40,6 +40,8 @@ class modules:
     advert_module=True
     splitit_module=True
     logg_module=True
+    gui_module=True
+    ping_module=True
 
 #Other General variables or links or E-Mail (For the project)
 class info:
@@ -53,6 +55,7 @@ class info:
 
 class VariableData:
     converted_text="No text was converted." #The last converted string
+    command=""                              #The command variable
 
 #Basic system info for the log
 class sysinf:
@@ -61,6 +64,11 @@ class sysinf:
     build=platform.version()
     cpu=platform.machine()
     system_desc=f"{system} {release}"
+
+class PingDataModule:
+    host=""
+    maxpings=100
+    last_ping="No ping done."
 
 #backup functions (Experimental)
 class backupfunc:
@@ -95,18 +103,12 @@ class backupfunc:
         upcheck=True
     
         prompt="{name}@{host}:~$ "
-        for r in (("{name}", kwargs["name"]), ("{host}", kwargs["host"])):
+        for r in (("{name}", config.name), ("{host}", config.host)):
             prompt=prompt.replace(*r)
     
-        autopwgen=False
-    
-        exclude_chars=""
-    
-        include_uppercase=True
-    
-        include_numbers=True
-    
-        include_specials=True
+        gui=False
+        
+        theme="bright"
     
         settings_file={
             "language":language,
@@ -114,17 +116,14 @@ class backupfunc:
             "prompt":prompt,
             "update":upcheck,
             "logging":logg,
-            "autopwgen":autopwgen,
-            "excludechars":exclude_chars,
-            "includeuppercase":include_uppercase,
-            "includenumbers":include_numbers,
-            "includespecials":include_specials
+            "gui":gui,
+            "theme":theme
             }
     
         with open("settings.json", "w") as save:
             json.dump(settings_file, save)
     
-        return prompt, language, ad, upcheck
+        return prompt, language, ad, upcheck, theme
     
     def backuphelp():
         if config.language=="de":
@@ -135,7 +134,7 @@ Allgemeine commands:
     phex konvertiert zwischen Pseudo-Hex und Text
     bin konvertiert zwischen Binär und Text
     pbin konvertiert zwischen Pseudobinärdatei und Text
-    Legacy Pbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
+    lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
@@ -144,7 +143,8 @@ Zusätzliche Informationen:
     prompt ändert den prompt look (direkt nach start den prompt)
     ad gibt dir die option ob du die Werbung sehen willst oder nicht
     update gibt dir die option nach updates zu schauen am start.
-    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.\n""")
+    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.
+    ping ist ein simpler ping command\n""")
         
             return
     
@@ -156,7 +156,7 @@ Common commands:
     phex converts between pseudo hex and text
     bin converts between Binary and text
     pbin converts between pseudo binary and text
-    legagy pbin converts between an older version of Pseudo Binary and text
+    lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)\n
@@ -165,7 +165,8 @@ Additional info:
     prompt let's you change the prompt look. (After startup the prompt)
     ad let's you change if you wanna see the ad (currently broken)
     update let's you change the setting if you want to check for updates.
-    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)\n""")
+    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)
+    ping is a simple ping command\n""")
         
             return
 
@@ -174,7 +175,10 @@ try:
 except ImportError: #If the module isn't installed.
     try:
         if input("The 'requests' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes": #asking if installing the module is wanted.
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+            if sysinf.system=="Windows":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+            elif sysinf.system=="Linux":
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "--user","requests", "--break-system-packages"])
             import requests
         
         else:
@@ -227,10 +231,22 @@ except ImportError:
     modules.advert_module=False
 
 try:
+    from gui import cli_to_gui
+except ImportError:
+    modules.gui_module=False
+    print("The GUI module is unable to be loaded. If you want teh GUI too, please download the beta again. (and if you downloaded it before, re-extract it maybe.)")
+
+try:
     from SplitIt.backend import split
 except ImportError:
     print("The project SplitIt is unable to be imported. That means it can't be ran.")
     modules.splitit_module=False
+
+try:
+    from pinger import init_ping
+except ImportError:
+    print("The ping module is unable to be imported. That means there is no pinging :(")
+    modules.ping_module=False
 
 #The update checking function
 def updatecheck():
@@ -309,6 +325,7 @@ def title_time(stop_event):
     try:
         if sysinf.system=="Windows":
             while not stop_event.is_set():
+                start=time.time()
                 now=datetime.datetime.now()
                 if config.language=="de":
                     now=now.strftime("%d/%m/%Y, %H:%M:%S") #%H:%M:%S.%f
@@ -319,7 +336,9 @@ def title_time(stop_event):
                     os.system(f"title Text Converter V{version.version} {now}")
                 else:
                     os.system(f"title Text Converter Beta V{version.beta_version} {now}")
-                time.sleep(0.125)
+                elapsed_time=time.time()-start
+                wait_time=max(0.5, elapsed_time * 2)
+                time.sleep(wait_time)
             return   
 
 
@@ -368,7 +387,12 @@ def init():
             with open("settings.json", "r") as load:
                 config.config=json.load(load)
         except FileNotFoundError:
-            settings_init(name=config.name, host=config.host)
+            if modules.settings_module==True:
+                settings_init(name=config.name, host=config.host)
+            else:
+                backupfunc.backup_setting_init()
+            with open("settings.json", "r") as load:
+                config.config=json.load(load)
 
         try:
             config.language=config.config.get("language")
@@ -391,7 +415,7 @@ def init():
             if config.gui not in (True, False):
                 config.gui=False
             config.theme=config.config.get("theme")
-            if config.theme!="bright" or config.theme!="dark":
+            if config.theme not in ("bright", "dark"):
                 config.theme="bright"
             break
 
@@ -425,25 +449,26 @@ def init():
         elif version.release==False:
             if config.language=="de":
                 print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
-Da ich meinen code neu geschrieben habe das ein Merge vorbereitet, Kann es aktuell sein das es momentan mein code mehr bugs hat.
-Im moment da könnten mehr fehler sein.
-Und es würde mir echt helfen wenn du ein issue bei meinem github geben würdest.
-Wenn möglich wäre es gut einen log mit den schritten wie es passierte beim link zu beschreiben.
+Bitte meldet dies bei:
 {info.issues_site}
+
+Info: GUI ist bis jetzt nur bei Windows 10 getestet
 
 Willkommen zur Beta version vom Text converter.\n""")
 
             else:
-                print(f"""\n[WARNING] This is a BETA version, It could be unstable.
-Since I'm Re-writing the code to prepare it for a merge, it could be that there are more bugs.
-At the moment there could be errors.
-And it would really help me if you could make an issue on my github.
-If possible please provide a log and the way it happened on the link.
+                print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
+So please report it to:
+
 {info.issues_site}
 
+Info: GUI is for now only tested on Windows 10.
+
 Welcome to the Beta version of the Text Converter.\n""")
-        if stopvars.is_exit==False:
-            main()
+        while stopvars.is_exit is not True:
+            if stopvars.is_exit==False:
+                main()
+
 
 def main():
     try:
@@ -468,57 +493,153 @@ def main():
                             backupfunc.backup_logg(mode="logg", text=text)
 
                 startup.init=True
-                command=input(config.prompt).lower()
-                if command=="":
+                if config.gui==True:
+                    if modules.gui_module==True:
+                        cli_to_gui(config, sysinf, version)
+                        return
+                    else:
+                        config.gui=False
+                else:
+                    VariableData.command=input(config.prompt).lower()
+
+                if VariableData.command=="":
                     if modules.logg_module==True:
                         log_info(config, text=f"The user didn't use a command")
                     else:
                         backupfunc.backup_logg(mode="logg", text=f"The user didn't use a command")
                 else:
                     if modules.logg_module==True:
-                        log_info(config, text=f"The user used the command: {command}")
+                        log_info(config, text=f"The user used the command: {VariableData.command}")
                     else:
-                        backupfunc.backup_logg(mode="logg", text=f"The user used the command: {command}")
-                if command=="":
+                        backupfunc.backup_logg(mode="logg", text=f"The user used the command: {VariableData.command}")
+                if VariableData.command=="":
                     if config.language=="de":
                         print("Kein command gefunden.")
                     else:
                         print("No command found.")
 
-                elif command=="test":
+                elif VariableData.command=="test":
                     print(f"\nTestOK!!\n")
                     if modules.logg_module==True:
                         log_system(text="The test went ok.")
 
-                elif command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
+                elif VariableData.command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
                     if modules.convert_module==True:
-                        VariableData.converted_text=parse_input(config, mode=command)
+                        VariableData.converted_text=parse_input(config, mode=VariableData.command)
                     else:
                         if config.language=="de":
                             print("Das convert modul ist nicht verfügbar.")
                         else:
                             print("The convert module is unavailable.")
 
-                elif command=="last conversion":
+                elif VariableData.command=="last conversion":
                     print(VariableData.converted_text)
                 
-                elif command in ("help", "hilfe"):
+                elif VariableData.command in ("help", "hilfe"):
                     if modules.helpsite_module==True:
                         mainhelp(config.language)
                     else:
                         backupfunc.backuphelp()
                 
-                elif command in ("language", "prompt", "ad", "update", "logging", "setgui", "theme"):
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=command)
+                elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
+
+                elif VariableData.command=="reset settings":
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
                 
-                elif command=="exit":
+                elif VariableData.command=="reload settings":
+                    while True:
+                        try:
+                            with open("settings.json", "r") as load:
+                                config.config=json.load(load)
+                        except FileNotFoundError:
+                            if modules.settings_module==True:
+                                settings_init(name=config.name, host=config.host)
+                            else:
+                                backupfunc.backup_setting_init()
+                            with open("settings.json", "r") as load:
+                                config.config=json.load(load)
+
+                        try:
+                            config.language=config.config.get("language")
+                            #print(config.language) #Debugging purposes
+                            if config.language not in ("de", "en"):
+                                config.language="en"
+                            config.ad=config.config.get("advert")
+                            if config.ad not in (True, False):
+                                config.ad=True
+                            config.prompt=config.config.get("prompt")
+                            if config.prompt==None:
+                                config.prompt=f"{config.name}@{config.host}:~$ "
+                            config.upcheck=config.config.get("update-check")
+                            if config.upcheck not in (True, False):
+                                config.upcheck=True
+                            config.logg=config.config.get("logging")
+                            if config.logg not in (True, False):
+                                config.logg=True
+                            config.gui=config.config.get("gui")
+                            if config.gui not in (True, False):
+                                config.gui=False
+                            config.theme=config.config.get("theme")
+                            if config.theme!="bright" or config.theme!="dark":
+                                config.theme="bright"
+                            break
+
+                        except:
+                            exception=traceback.format_exc()
+                            text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
+                            if modules.logg_module==True:
+                                log_error(text)
+                            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+                                return
+
+                elif VariableData.command=="check update":
+                    if config.upcheck==True:
+                        updatecheck()
+                    else:
+                        if config.language=="de":
+                            print("requests ist nicht installiert.")
+                        else:
+                            print("requests is not installed.")
+
+                elif VariableData.command=="split it":
+                    print("Command comming up ;)")
+                
+                elif VariableData.command=="start gui" or VariableData.command=="sg":
+                    if modules.gui_module==True:
+                        backup=config.gui
+                        config.gui=True
+                        cli_to_gui(config, sysinf, version)
+                        config.gui=backup
+                    else:
+                        print("The gui module is missing.")
+                
+                elif VariableData.command=="time":
+                    timereader()
+                
+                elif VariableData.command=="ping":
+                    PingDataModule.host=input(f"\nWhat host? ")
+                    while True:
+                        try:
+                            PingDataModule.last_ping=PingDataModule.maxpings=int(input("How many?(don't do too many if slow internet) "))
+                            break
+                        except ValueError:
+                            print(f"Nope, that ain't a number.\n")
+                    init_ping(PingDataModule)
+                
+                elif VariableData.command=="last ping" or VariableData.command=="lp":
+                    print(f"\n{PingDataModule.last_ping}\n")
+
+                elif VariableData.command=="exit":
                     close()
+                    if stopvars.is_exit==True:
+                        break
                 
                 else:
                     if config.language=="de":
-                        print(f"Upsi, der 'command' {command} ist nicht ein command.")
+                        print(f"Upsi, der 'command' {VariableData.command} ist nicht ein command.")
                     else:
-                        print(f"Oops, the 'command' {command} isn't a command.")
+                        print(f"Oops, the 'command' {VariableData.command} isn't a command.")
 
             except KeyboardInterrupt:
                 print()
@@ -580,19 +701,15 @@ def close():
                 print("Stopped closing.")
             return
 
-def timereader(language, logg):
-    text=datetime.datetime.now()
-    if language == "de":
-        print(f"\nDie zeit ist:", text.strftime("%d/%m/%Y, %H:%M:%S"), "\n")
-
-        log_info(text, logg)
+def timereader():
+    current_time=datetime.datetime.now()
+    if config.language == "de":
+        print(f"\nDie zeit ist:", current_time.strftime("%d/%m/%Y, %H:%M:%S"), "\n")
 
     else:
-        print(f"\nThe time is:", text.strftime("%m/%d/%Y, %r"), "\n")
+        print(f"\nThe time is:", current_time.strftime("%m/%d/%Y, %r"), "\n")
 
-        log_info(text, logg)
-
-        return
+    return
 
 if __name__=="__main__":
     init()

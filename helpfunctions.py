@@ -18,7 +18,7 @@ Common commands:
     return
 
 def mainhelp(language):
-    print(language)
+    #print(language) #debugging
     if language=="de":
         print(f"""
 Allgemeine commands:
@@ -27,7 +27,7 @@ Allgemeine commands:
     phex konvertiert zwischen Pseudo-Hex und Text
     bin konvertiert zwischen Binär und Text
     pbin konvertiert zwischen Pseudobinärdatei und Text
-    Legacy Pbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
+    lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
@@ -36,7 +36,8 @@ Zusätzliche Informationen:
     prompt ändert den prompt look (direkt nach start den prompt)
     ad gibt dir die option ob du die Werbung sehen willst oder nicht
     update gibt dir die option nach updates zu schauen am start.
-    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.\n""")
+    logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.
+    ping ist ein einfacher ping command.\n""")
         
         return
     
@@ -48,7 +49,7 @@ Common commands:
     phex converts between pseudo hex and text
     bin converts between Binary and text
     pbin converts between pseudo binary and text
-    legagy pbin converts between an older version of Pseudo Binary and text
+    lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)\n
@@ -57,7 +58,8 @@ Additional info:
     prompt let's you change the prompt look. (After startup the prompt)
     ad let's you change if you wanna see the ad (currently broken)
     update let's you change the setting if you want to check for updates.
-    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)\n""")
+    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)
+    ping is a simple ping command.\n""")
         
         return
 

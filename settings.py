@@ -1,4 +1,5 @@
 import locale, json
+from tkinter import *
 
 #The function that makes the Settings file
 def settings_init(**kwargs):
@@ -15,7 +16,7 @@ def settings_init(**kwargs):
     upcheck=True #the update check setting (Defaulting to true)
 
     prompt="{name}@{host}:~$ "
-    for r in (("{name}", kwargs.get("name")), ("{host}", kwargs.get("host"))):
+    for r in (("{name}", kwargs["name"]), ("{host}", kwargs["host"])):
         prompt=prompt.replace(*r)
     
     gui=False      #starting the project in CLI or GUI
@@ -34,7 +35,7 @@ def settings_init(**kwargs):
     with open("settings.json", "w") as save:
         json.dump(settings, save)
     
-    return prompt, language, ad, upcheck
+    return prompt, language, ad, upcheck, logg, gui, theme
 
 def change_settings(config, sysinf, **kwargs):
     try:
@@ -101,21 +102,24 @@ def change_settings(config, sysinf, **kwargs):
                 print("What prompt style do you want? {host} is the PC name, {name} is the username, {system} is the name of the Operating System.")
                 print("There are 3 prompt presets:\n1. Linux\n2. Windows\n3. macos\n4. templeos")
                 text=input("What prompt look? ")
+
+            prompt=text
             
             if text=="Linux" or text=="1":
                 prompt="{name}@{host}:~$ "
 
-            elif text=="Windows" or text=="2":
+            if text=="Windows" or text=="2":
                 prompt="C:\\Users\\{name}> "
 
-            elif text=="macos" or text=="3":
+            if text=="macos" or text=="3":
                 prompt="{name}@{host} ~ % "
 
-            elif text=="templeos" or text=="4":
+            if text=="templeos" or text=="4":
                 prompt="C:/Home "
             
-            for r in (("{name}", config.name), ("{host}", config.host), ("{system}", sysinf.system_desc)):
+            for r in (("{host}", config.host), ("{system}", sysinf.system_desc), ("{name}", config.name)):
                 prompt=prompt.replace(*r)
+                #print(prompt) #for when I break shit again.
         
         elif kwargs["option"]=="logging":
             while True:
@@ -217,8 +221,101 @@ def change_settings(config, sysinf, **kwargs):
         print()
         return
 
-def gui_settings():
-    tmp="" #pls add the GUI settings functionality while adding the GUI code.
+class variables:
+    log_var=""
+    language_var=""
+    update_var=""
+    gui_var=""
+    theme_var=""
+
+def gui_settings(GuiConfig, config, theme):
+    if GuiConfig.options_window_count == 0:
+        GuiConfig.options_window_count+=1
+
+        settingsgui=Toplevel()
+        settingsgui.title("Settings")
+        settingsgui.geometry("400x300")
+        settingsgui.resizable(width=False, height=False)
+
+        def on_close():
+            #print("I'M USEFUL!!!!") #for some goddamn debugging if that shi stops working.
+            GuiConfig.options_window_count=0
+            settingsgui.destroy()
+        
+        settingsgui.protocol("WM_DELETE_WINDOW", on_close)
+
+        variables.log_var=IntVar(value=1 if config.logg else 0)
+        print(variables.log_var.get())
+        log_checkbox=Checkbutton(settingsgui, text="Activate non critical logging?", variable=variables.log_var)
+        log_checkbox.pack()
+
+        variables.update_var=IntVar(value=1 if config.upcheck else 0)
+
+        update_checkbox=Checkbutton(settingsgui, text="Check for updates?", variable=variables.update_var)
+        update_checkbox.pack()
+
+        variables.gui_var=IntVar(value=1 if config.gui else 0)
+
+        gui_checkbox=Checkbutton(settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
+        gui_checkbox.pack()
+
+        language_label=Label(settingsgui, text="Language setting:")
+        language_label.pack()
+
+        variables.language_var=StringVar(value=config.language)
+
+        language_radio_de = Radiobutton(settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+        language_radio_de.pack()
+
+        language_radio_en = Radiobutton(settingsgui, text="English", variable=variables.language_var, value="en")
+        language_radio_en.pack()
+
+        variables.theme_var=StringVar(value=config.theme)
+        theme_bright_radio=Radiobutton(settingsgui, text="Bright", variable=variables.theme_var, value="light", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
+        theme_bright_radio.pack()
+        theme_dark_radio=Radiobutton(settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
+        theme_dark_radio.pack()
+
+        save_butt=Button(settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
+        save_butt.pack()
+        load_butt=Button(settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
+        load_butt.pack()
+    else:
+        return
+
+def change_theme(GuiConfig, theme, theme_var):
+    temp=""
+
+def save_settings(GuiConfig, config, theme):
+    if variables.update_var.get()==1:
+        update_var=True
+    else:
+        update_var=False
+    
+    if variables.log_var.get()==1:
+        log_var=True
+    else:
+        log_var=False
+    
+    if variables.gui_var.get()==1:
+        gui_var=True
+    else:
+        gui_var=False
+    
+    settings={
+        "language":variables.language_var.get(),
+        "advert":config.ad,
+        "prompt":config.prompt,
+        "update-check":update_var,
+        "logging":log_var,
+        "gui":gui_var,
+        "theme":variables.theme_var.get()
+    }
+    with open("settings.json", "w") as save:
+        json.dump(settings, save)
+
+def load_settings(GuiConfig, config, theme):
+    temp=""
 
 if __name__=="__main__":
     input("Please don't open that file on it's own. This is a module!")
