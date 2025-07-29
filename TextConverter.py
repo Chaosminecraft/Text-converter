@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.0" #The Beta version
+    beta_version="3.2.1" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -74,8 +74,8 @@ class PingDataModule:
 class backupfunc:
     def backup_logg(**kwargs):
         if kwargs["mode"]=="init":
-            if not os.path.exists('meinOrdner'):
-                os.mkdir('meinOrdner')
+            if not os.path.exists('logs'):
+                os.mkdir('logs')
             loggfile=datetime.datetime.now().strftime("%d.%m.%Y %H.%M.%S")
             config.logg_path=f"logs/{loggfile} logg.txt"
             logging.basicConfig(filename=config.logg_path, filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
