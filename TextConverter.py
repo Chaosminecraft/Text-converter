@@ -134,7 +134,7 @@ Allgemeine commands:
     phex konvertiert zwischen Pseudo-Hex und Text
     bin konvertiert zwischen Binär und Text
     pbin konvertiert zwischen Pseudobinärdatei und Text
-    Legacy Pbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
+    lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
@@ -156,7 +156,7 @@ Common commands:
     phex converts between pseudo hex and text
     bin converts between Binary and text
     pbin converts between pseudo binary and text
-    legagy pbin converts between an older version of Pseudo Binary and text
+    lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)\n
@@ -543,7 +543,6 @@ def main():
                 
                 elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
-                    print(config.prompt)
 
                 elif VariableData.command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)

@@ -167,6 +167,7 @@ def process(config, **kwargs):
             print(variables.out)
                 
         elif kwargs["convert"]=="bin" or kwargs["convert"]=="binary":
+            variables.out=""
             part1=bytes(kwargs["content"], "ascii")
             variables.out=" ".join(["{0:b}".format(x) for x in part1])
             print(variables.out)
@@ -218,11 +219,16 @@ def process(config, **kwargs):
             print(variables.out)
             
         elif kwargs["convert"]=="bin" or kwargs["convert"]=="binary":
+            variables.out=""
             part1=kwargs["content"].split()
             for data in part1:
                 data=int(data, 2)
                 data=chr(data)
                 variables.out+=data
+                print(data)
+                print(variables.out)
+            
+            print(part1, data)
 
             print(variables.out)
             
