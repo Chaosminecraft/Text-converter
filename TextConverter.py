@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.3" #The Beta version
+    beta_version="3.2.4" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -450,6 +450,7 @@ def init():
             if config.language=="de":
                 print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
 Bitte meldet dies bei:
+                      
 {info.issues_site}
 
 Info: GUI ist bis jetzt nur bei Windows 10 getestet
@@ -460,7 +461,7 @@ Willkommen zur Beta version vom Text converter.\n""")
                 print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
 So please report it to:
 
-{info.issues_site}
+[LINK]
 
 Info: GUI is for now only tested on Windows 10.
 
@@ -474,11 +475,10 @@ def main():
     try:
         while stopvars.exit_code is not True:
             try:
-                if config.upcheck==True:
-                    if startup.init==False:
+                if startup.init==False:
+                    if config.upcheck==True:
                         threads.updatethread.join()
 
-                if startup.init==False:
                     if startup.Startup_time_check==True:
                         startup.start= datetime.datetime.now()-startup.start
                         if config.language=="de":

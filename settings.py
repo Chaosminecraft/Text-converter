@@ -303,7 +303,6 @@ def gui_settings(GuiConfig, config, theme):
         return
 
 def change_theme(GuiConfig, config, theme):
-    print(variables.theme_var.get())
     if variables.theme_var.get().lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF", fg="#000000")
@@ -389,7 +388,40 @@ def save_settings(GuiConfig, config, theme):
         json.dump(settings, save)
 
 def load_settings(GuiConfig, config, theme):
-    temp=""
+    with open("settings.json", "r") as file:
+        config.config=json.load(file)
+    
+    config.language=config.config.get("language")
+    #print(config.language) #Debugging purposes
+    if config.language not in ("de", "en"):
+        config.language="en"
+    config.ad=config.config.get("advert")
+    if config.ad not in (True, False):
+        config.ad=True
+    config.prompt=config.config.get("prompt")
+    if config.prompt==None:
+        config.prompt=f"{config.name}@{config.host}:~$ "
+    config.upcheck=config.config.get("update-check")
+    if config.upcheck not in (True, False):
+        config.upcheck=True
+    config.logg=config.config.get("logging")
+    if config.logg not in (True, False):
+        config.logg=True
+    config.gui=config.config.get("gui")
+    if config.gui not in (True, False):
+        config.gui=False
+    config.theme=config.config.get("theme")
+    if config.theme not in ("bright", "dark"):
+        config.theme="bright"
+    
+    variables.log_var.set(config.logg)
+    variables.language_var.set(config.language)
+    variables.update_var.set(config.upcheck)
+    variables.gui_var.set(config.gui)
+    variables.theme_var.set(config.theme)
+
+    change_theme(GuiConfig, config, theme)
+    return
 
 if __name__=="__main__":
     input("Please don't open that file on it's own. This is a module!")
