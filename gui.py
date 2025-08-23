@@ -82,6 +82,7 @@ def set_theme(config):
         theme.settings_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.exit_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.options.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.options["menu"].config(bg="#1F1F1F", fg="#FFFFFF")
         theme.show_last_convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
 
     return

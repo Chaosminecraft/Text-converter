@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.4" #The Beta version
+    beta_version="3.2.5" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -137,7 +137,8 @@ Allgemeine commands:
     lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
-    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
+    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
+    symbenc\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
     prompt ändert den prompt look (direkt nach start den prompt)

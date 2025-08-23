@@ -1,4 +1,4 @@
-import concurrent.futures, platform, subprocess
+import concurrent.futures, platform, subprocess, sys
 
 try:
     import ping3 #Trying to import requests
@@ -19,6 +19,7 @@ except ImportError: #If the module isn't installed.
 class pingdata:
     host=""
     maxpings=100
+    limit=20
 
 def do_ping(i):
     ping_time = ping3.ping(pingdata.host)
@@ -38,9 +39,8 @@ def run_pings(total_pings, max_threads):
 
 def init_ping(PingDataModule):
     pingdata.host=PingDataModule.host
-    Y = 20  # max threads simultaneously
-    print(f"Running {PingDataModule.maxpings} pings with max {Y} threads at once...\n")
-    ping_times = run_pings(PingDataModule.maxpings, Y)
+    print(f"Running {PingDataModule.maxpings} pings with max {pingdata.limit} threads at once...\n")
+    ping_times = run_pings(PingDataModule.maxpings, pingdata.limit)
 
     filtered = [p for p in ping_times if p != float('inf')]
     if filtered:
@@ -69,9 +69,9 @@ if __name__ == "__main__":
         except ValueError:
             print(f"Nope, that ain't a number.\n")
     print("done init")
-    Y = 20  # max threads simultaneously
-    print(f"Running {pingdata.maxpings} pings with max {Y} threads at once...\n")
-    ping_times = run_pings(pingdata.maxpings, Y)
+
+    print(f"Running {pingdata.maxpings} pings with max {pingdata.limit} threads at once...\n")
+    ping_times = run_pings(pingdata.maxpings, pingdata.limit)
 
     filtered = [p for p in ping_times if p != float('inf')]
     if filtered:
