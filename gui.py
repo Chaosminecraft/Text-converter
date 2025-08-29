@@ -54,7 +54,6 @@ def cli_to_gui(config, sysinf, version):
         return
 
 def set_theme(config):
-    print("fUcK")
     if config.theme.lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF")
