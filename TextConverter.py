@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.5" #The Beta version
+    beta_version="3.2.6" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -138,7 +138,7 @@ Allgemeine commands:
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
-    symbenc\n
+    symbenc ist eine custom Convertier methode wo zwischen Text und SymbEnc konvertiert. (Methode von voxjgithub)\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
     prompt ändert den prompt look (direkt nach start den prompt)
@@ -160,7 +160,8 @@ Common commands:
     lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
-    base64 converts between base64 and text (only normal text for now)\n
+    base64 converts between base64 and text (only normal text for now)
+    Symbenc is a custom conversion method that converts between Text and symbenc. (Method by voxjgithub\n
 Additional info:
     language let's you change between English(en) or German(de).
     prompt let's you change the prompt look. (After startup the prompt)
@@ -456,6 +457,8 @@ Bitte meldet dies bei:
 
 Info: GUI ist bis jetzt nur bei Windows 10 getestet
 
+Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
+
 Willkommen zur Beta version vom Text converter.\n""")
 
             else:
@@ -465,6 +468,8 @@ So please report it to:
 [LINK]
 
 Info: GUI is for now only tested on Windows 10.
+
+Info: I work on the GUI code now, so it could not work quite right.
 
 Welcome to the Beta version of the Text Converter.\n""")
         while stopvars.is_exit is not True:
