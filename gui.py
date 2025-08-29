@@ -54,7 +54,8 @@ def cli_to_gui(config, sysinf, version):
         return
 
 def set_theme(config):
-    if config.theme=="bright":
+    print("fUcK")
+    if config.theme.lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF")
         theme.convert_msg.config(bg="#EFEFEF")
@@ -67,7 +68,7 @@ def set_theme(config):
         theme.exit_butt.config(bg="#EFEFEF")
         theme.options.config(bg="#EFEFEF")
         theme.show_last_convert_butt.config(bg="#EFEFEF")
-    elif config.theme=="dark":
+    elif config.theme.lower()=="dark":
         GuiConfig.window.config(bg="#1F1F1F")
         theme.deconvert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.convert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
@@ -81,6 +82,19 @@ def set_theme(config):
         theme.options.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.options["menu"].config(bg="#1F1F1F", fg="#FFFFFF")
         theme.show_last_convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+    elif config.theme.lower()=="violet":
+        GuiConfig.window.config(bg="#7F00FF")
+        theme.deconvert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.deconvert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.deconvert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.convert_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.settings_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.exit_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.options.config(bg="#7F00FF", fg="#00FF00")
+        theme.show_last_convert_butt.config(bg="#7F00FF", fg="#00FF00")
 
     return
 
@@ -129,7 +143,7 @@ def main(config, sysinf, version):
             GuiConfig.window.after(5, lambda:start_thread(config, sysinf, version))
             GuiConfig.window.after(25, lambda:GuiConfig.window.attributes("-topmost", False))
         
-        elif config.language=="en":
+        elif config.language=="de":
             theme.deconvert_msg=Label(GuiConfig.window, text="Text zum deconvertieren:", padx=5, pady=5)
             theme.deconvert_msg.place(x=160, y=0)
 
@@ -144,25 +158,25 @@ def main(config, sysinf, version):
         
             GuiConfig.convert=IntVar()
         
-            theme.convert_check=Checkbutton(GuiConfig.window, text="Convert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
-            theme.convert_check.place(x=70, y=57)
+            theme.convert_check=Checkbutton(GuiConfig.window, text="Konvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
+            theme.convert_check.place(x=80, y=57)
         
             GuiConfig.deconvert=IntVar()
         
-            theme.deconvert_check=Checkbutton(GuiConfig.window, text="Deconvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
-            theme.deconvert_check.place(x=70, y=17)
+            theme.deconvert_check=Checkbutton(GuiConfig.window, text="Dekonvertieren", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
+            theme.deconvert_check.place(x=40, y=17)
 
-            theme.convert_butt=Button(GuiConfig.window, text="Go.", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var))
+            theme.convert_butt=Button(GuiConfig.window, text="Start", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var))
             theme.convert_butt.place(x=70, y=120)
 
-            theme.settings_butt=Button(GuiConfig.window, text="Settings", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
-            theme.settings_butt.place(x=115, y=120) 
+            theme.settings_butt=Button(GuiConfig.window, text="Einstellungen", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
+            theme.settings_butt.place(x=120, y=120) 
 
             theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
-            theme.exit_butt.place(x=185, y=120)
+            theme.exit_butt.place(x=217, y=120)
 
-            theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion)
-            theme.show_last_convert_butt.place(x=235, y=120)
+            theme.show_last_convert_butt=Button(GuiConfig.window, text="Letzte Konvertierung", pady=5, padx=5, command=lambda:display_conversion)
+            theme.show_last_convert_butt.place(x=262, y=120)
 
             GuiConfig.optionsvar=StringVar(GuiConfig.window)
             GuiConfig.optionsvar.set("Hex")

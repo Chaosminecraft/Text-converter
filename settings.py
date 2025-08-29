@@ -238,9 +238,15 @@ class SettingTheme:
     language_radio_en=""
     theme_bright_radio=""
     theme_dark_radio=""
+    theme_violet_radio=""
     save_butt=""
     load_butt=""
     infolabel=""
+
+class colors:
+    bright_theme={"bg":"#EFEFEF", "fg":"#000000", "select":"#EFEFEF"}
+    dark_theme={"bg":"#1F1F1F", "fg":"#FFFFFF", "select":"#333333"}
+    taco={"bg":"7F00FF"}
 
 def gui_settings(GuiConfig, config, theme):
     variables.theme_var=config.theme
@@ -287,6 +293,8 @@ def gui_settings(GuiConfig, config, theme):
         variables.theme_var=StringVar(value=config.theme)
         SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
         SettingTheme.theme_bright_radio.pack()
+        SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="voilet", command=lambda:change_theme(GuiConfig, config, theme))
+        SettingTheme.theme_violet_radio.pack()
         SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
         SettingTheme.theme_dark_radio.pack()
 
@@ -303,6 +311,7 @@ def gui_settings(GuiConfig, config, theme):
         return
 
 def change_theme(GuiConfig, config, theme):
+    print(variables.theme_var.get())
     if variables.theme_var.get().lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF", fg="#000000")
@@ -325,6 +334,7 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.language_radio_en.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
         SettingTheme.theme_bright_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
         SettingTheme.theme_dark_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.theme_violet_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
         SettingTheme.save_butt.config(bg="#EFEFEF", fg="#000000")
         SettingTheme.load_butt.config(bg="#EFEFEF", fg="#000000")
         SettingTheme.infolabel.config(bg="#EFEFEF", fg="#000000")
@@ -350,12 +360,37 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.language_radio_de.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
         SettingTheme.language_radio_en.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
         SettingTheme.theme_bright_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.theme_violet_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
         SettingTheme.theme_dark_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
         SettingTheme.save_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         SettingTheme.load_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         SettingTheme.infolabel.config(bg="#1F1F1F", fg="#FFFFFF")
 
-    
+    elif variables.theme_var.get().lower()=="violet":
+        GuiConfig.window.config(bg="#7F00FF")
+        theme.deconvert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.deconvert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.deconvert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.convert_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.settings_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.exit_butt.config(bg="#7F00FF", fg="#7F00FF0000FF")
+        theme.options.config(bg="#7F00FF", fg="#00FF00")
+        theme.show_last_convert_butt.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.settingsgui.config(bg="#7F00FF")
+        SettingTheme.log_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.update_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.gui_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.language_label.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.language_radio_de.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.language_radio_en.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_bright_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_dark_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.save_butt.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.load_butt.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.infolabel.config(bg="#7F00FF", fg="#00FF00")
 
 def save_settings(GuiConfig, config, theme):
     if variables.update_var.get()==1:

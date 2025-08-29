@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.6" #The Beta version
+    beta_version="3.2.7" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -417,7 +417,7 @@ def init():
             if config.gui not in (True, False):
                 config.gui=False
             config.theme=config.config.get("theme")
-            if config.theme not in ("bright", "dark"):
+            if config.theme not in ("bright", "dark", "violet", "custom"):
                 config.theme="bright"
             break
 
@@ -587,8 +587,8 @@ def main():
                             if config.gui not in (True, False):
                                 config.gui=False
                             config.theme=config.config.get("theme")
-                            if config.theme!="bright" or config.theme!="dark":
-                                config.theme="bright"
+                            if config.theme!="bright" or config.theme!="dark" or config.theme!="violet" or config.theme!="custom":
+                                config.theme="dark"
                             break
 
                         except:
