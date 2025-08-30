@@ -20,7 +20,7 @@ def settings_init(**kwargs):
         prompt=prompt.replace(*r)
     
     gui=False      #starting the project in CLI or GUI
-    theme="bright" #the default theme of gui
+    theme="dark"   #the default theme of gui
 
     settings={
         "language":language,
@@ -293,7 +293,7 @@ def gui_settings(GuiConfig, config, theme):
         variables.theme_var=StringVar(value=config.theme)
         SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
         SettingTheme.theme_bright_radio.pack()
-        SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="voilet", command=lambda:change_theme(GuiConfig, config, theme))
+        SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
         SettingTheme.theme_violet_radio.pack()
         SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
         SettingTheme.theme_dark_radio.pack()
@@ -311,7 +311,7 @@ def gui_settings(GuiConfig, config, theme):
         return
 
 def change_theme(GuiConfig, config, theme):
-    print(variables.theme_var.get())
+    #print(variables.theme_var.get()) #Debugging shiz
     if variables.theme_var.get().lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
         theme.deconvert_msg.config(bg="#EFEFEF", fg="#000000")
@@ -387,6 +387,7 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.language_radio_de.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
         SettingTheme.language_radio_en.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
         SettingTheme.theme_bright_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_violet_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
         SettingTheme.theme_dark_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
         SettingTheme.save_butt.config(bg="#7F00FF", fg="#00FF00")
         SettingTheme.load_butt.config(bg="#7F00FF", fg="#00FF00")
@@ -444,8 +445,8 @@ def load_settings(GuiConfig, config, theme):
     if config.gui not in (True, False):
         config.gui=False
     config.theme=config.config.get("theme")
-    if config.theme not in ("bright", "dark"):
-        config.theme="bright"
+    if config.theme not in ("bright", "dark", "violet", "custom"):
+        config.theme="dark"
     
     variables.log_var.set(config.logg)
     variables.language_var.set(config.language)

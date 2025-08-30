@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.2.0"      #The release version
-    beta_version="3.2.7" #The Beta version
+    beta_version="3.2.8" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -418,7 +418,7 @@ def init():
                 config.gui=False
             config.theme=config.config.get("theme")
             if config.theme not in ("bright", "dark", "violet", "custom"):
-                config.theme="bright"
+                config.theme="dark"
             break
 
         except:
@@ -501,7 +501,7 @@ def main():
                 startup.init=True
                 if config.gui==True:
                     if modules.gui_module==True:
-                        cli_to_gui(config, sysinf, version)
+                        cli_to_gui(config, sysinf, version, backupfunc)
                         return
                     else:
                         config.gui=False
@@ -587,7 +587,7 @@ def main():
                             if config.gui not in (True, False):
                                 config.gui=False
                             config.theme=config.config.get("theme")
-                            if config.theme!="bright" or config.theme!="dark" or config.theme!="violet" or config.theme!="custom":
+                            if config.theme not in ("bright", "dark", "violet", "custom"):
                                 config.theme="dark"
                             break
 
@@ -615,7 +615,7 @@ def main():
                     if modules.gui_module==True:
                         backup=config.gui
                         config.gui=True
-                        cli_to_gui(config, sysinf, version)
+                        cli_to_gui(config, sysinf, version, backupfunc)
                         config.gui=backup
                     else:
                         print("The gui module is missing.")
@@ -655,14 +655,15 @@ def main():
     except:
         error=traceback.format_exc()
         if version.release==False:
-            print(f"An error happened, there it is:\n{error}")
+            print(f"An error happened, there is a traceback:\n{error}")
+            text=f"An error happened, there is a traceback:\n{error}"
         else:
             print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
             text=f"There was an error, This is the traceback:\n{error}"
-            if modules.logg_module==True:
-                log_error(text)
-            else:
-                backupfunc.backup_logg(mode="logg", text=text)
+        if modules.logg_module==True:
+            log_error(text)
+        else:
+            backupfunc.backup_logg(mode="logg", text=text)
 
 def close():
     if sysinf.system=="Linux":
