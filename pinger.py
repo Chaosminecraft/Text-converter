@@ -57,27 +57,26 @@ def init_ping(PingDataModule):
     return 
 
 if __name__ == "__main__":
-    pingdata.host=input("What host? ")
-    if pingdata.host=="":
-        pingdata.host="127.0.0.1"
-
-    print("init amount")
     while True:
-        try:
-            pingdata.maxpings=int(input("How many?(don't do too many if slow internet) "))
-            break
-        except ValueError:
-            print(f"Nope, that ain't a number.\n")
-    print("done init")
+        pingdata.host=input("What host? ")
+        if pingdata.host=="":
+            pingdata.host="127.0.0.1"
 
-    print(f"Running {pingdata.maxpings} pings with max {pingdata.limit} threads at once...\n")
-    ping_times = run_pings(pingdata.maxpings, pingdata.limit)
+        while True:
+            try:
+                pingdata.maxpings=int(input("How many?(don't do too many if slow internet) "))
+                break
+            except ValueError:
+                print(f"Nope, that ain't a number.\n")
 
-    filtered = [p for p in ping_times if p != float('inf')]
-    if filtered:
-        print("\nAll done!")
-        print(f"Minimum Ping: {min(filtered):.3f}s")
-        print(f"Maximum Ping: {max(filtered):.3f}s")
-        print(f"Average Ping: {sum(filtered)/len(filtered):.3f}s")
-    else:
-        print("No successful pings!")
+        print(f"Running {pingdata.maxpings} pings with max {pingdata.limit} threads at once...\n")
+        ping_times = run_pings(pingdata.maxpings, pingdata.limit)
+
+        filtered = [p for p in ping_times if p != float('inf')]
+        if filtered:
+            print("\nAll done!")
+            print(f"Minimum Ping: {min(filtered):.3f}s")
+            print(f"Maximum Ping: {max(filtered):.3f}s")
+            print(f"Average Ping: {sum(filtered)/len(filtered):.3f}s")
+        else:
+            print("No successful pings!")

@@ -241,12 +241,9 @@ class SettingTheme:
     theme_violet_radio=""
     save_butt=""
     load_butt=""
-    infolabel=""
-
-class colors:
-    bright_theme={"bg":"#EFEFEF", "fg":"#000000", "select":"#EFEFEF"}
-    dark_theme={"bg":"#1F1F1F", "fg":"#FFFFFF", "select":"#333333"}
-    taco={"bg":"7F00FF"}
+    bg_color=""
+    text_color=""
+    select_color=""
 
 def gui_settings(GuiConfig, config, theme):
     variables.theme_var=config.theme
@@ -265,46 +262,85 @@ def gui_settings(GuiConfig, config, theme):
         
         SettingTheme.settingsgui.protocol("WM_DELETE_WINDOW", on_close)
 
-        variables.log_var=IntVar(value=1 if config.logg else 0)
-        SettingTheme.log_checkbox=Checkbutton(SettingTheme.settingsgui, text="Activate non critical logging?", variable=variables.log_var)
-        SettingTheme.log_checkbox.pack()
+        if config.language=="en":
+            variables.log_var=IntVar(value=1 if config.logg else 0)
+            SettingTheme.log_checkbox=Checkbutton(SettingTheme.settingsgui, text="Activate non critical logging?", variable=variables.log_var)
+            SettingTheme.log_checkbox.pack()
 
-        variables.update_var=IntVar(value=1 if config.upcheck else 0)
+            variables.update_var=IntVar(value=1 if config.upcheck else 0)
 
-        SettingTheme.update_checkbox=Checkbutton(SettingTheme.settingsgui, text="Check for updates?", variable=variables.update_var)
-        SettingTheme.update_checkbox.pack()
+            SettingTheme.update_checkbox=Checkbutton(SettingTheme.settingsgui, text="Check for updates?", variable=variables.update_var)
+            SettingTheme.update_checkbox.pack()
 
-        variables.gui_var=IntVar(value=1 if config.gui else 0)
+            variables.gui_var=IntVar(value=1 if config.gui else 0)
 
-        SettingTheme.gui_checkbox=Checkbutton(SettingTheme.settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
-        SettingTheme.gui_checkbox.pack()
+            SettingTheme.gui_checkbox=Checkbutton(SettingTheme.settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
+            SettingTheme.gui_checkbox.pack()
 
-        SettingTheme.language_label=Label(SettingTheme.settingsgui, text="Language setting:")
-        SettingTheme.language_label.pack()
+            SettingTheme.language_label=Label(SettingTheme.settingsgui, text="Language setting:")
+            SettingTheme.language_label.pack()
 
-        variables.language_var=StringVar(value=config.language)
+            variables.language_var=StringVar(value=config.language)
 
-        SettingTheme.language_radio_de = Radiobutton(SettingTheme.settingsgui, text="Deutsch", variable=variables.language_var, value="de")
-        SettingTheme.language_radio_de.pack()
+            SettingTheme.language_radio_de = Radiobutton(SettingTheme.settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+            SettingTheme.language_radio_de.pack()
 
-        SettingTheme.language_radio_en = Radiobutton(SettingTheme.settingsgui, text="English", variable=variables.language_var, value="en")
-        SettingTheme.language_radio_en.pack()
+            SettingTheme.language_radio_en = Radiobutton(SettingTheme.settingsgui, text="English", variable=variables.language_var, value="en")
+            SettingTheme.language_radio_en.pack()
 
-        variables.theme_var=StringVar(value=config.theme)
-        SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
-        SettingTheme.theme_bright_radio.pack()
-        SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
-        SettingTheme.theme_violet_radio.pack()
-        SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
-        SettingTheme.theme_dark_radio.pack()
+            variables.theme_var=StringVar(value=config.theme)
+            SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_bright_radio.pack()
+            SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_violet_radio.pack()
+            SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_dark_radio.pack()
 
-        SettingTheme.save_butt=Button(SettingTheme.settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
-        SettingTheme.save_butt.pack()
-        SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
-        SettingTheme.load_butt.pack()
+            SettingTheme.save_butt=Button(SettingTheme.settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
+            SettingTheme.save_butt.pack()
+            SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
+            SettingTheme.load_butt.pack()
 
-        SettingTheme.infolabel=Label(SettingTheme.settingsgui, text="Reload doesn't work right now.")
-        SettingTheme.infolabel.pack()
+            print(SettingTheme.bg_color.get())
+        
+        if config.language=="de":
+            variables.log_var=IntVar(value=1 if config.logg else 0)
+            SettingTheme.log_checkbox=Checkbutton(SettingTheme.settingsgui, text="Nicht kritisches logging aktivieren?", variable=variables.log_var)
+            SettingTheme.log_checkbox.pack()
+
+            variables.update_var=IntVar(value=1 if config.upcheck else 0)
+
+            SettingTheme.update_checkbox=Checkbutton(SettingTheme.settingsgui, text="Nach updates schauen?", variable=variables.update_var)
+            SettingTheme.update_checkbox.pack()
+
+            variables.gui_var=IntVar(value=1 if config.gui else 0)
+
+            SettingTheme.gui_checkbox=Checkbutton(SettingTheme.settingsgui, text="Die GUI beim starten öffnen?", variable=variables.gui_var)
+            SettingTheme.gui_checkbox.pack()
+
+            SettingTheme.language_label=Label(SettingTheme.settingsgui, text="Spracheinstellung:")
+            SettingTheme.language_label.pack()
+
+            variables.language_var=StringVar(value=config.language)
+
+            SettingTheme.language_radio_de = Radiobutton(SettingTheme.settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+            SettingTheme.language_radio_de.pack()
+
+            SettingTheme.language_radio_en = Radiobutton(SettingTheme.settingsgui, text="English", variable=variables.language_var, value="en")
+            SettingTheme.language_radio_en.pack()
+
+            variables.theme_var=StringVar(value=config.theme)
+            SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_bright_radio.pack()
+            SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_violet_radio.pack()
+            SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_dark_radio.pack()
+
+            SettingTheme.save_butt=Button(SettingTheme.settingsgui, text="Speichern", command=lambda:save_settings(GuiConfig, config, theme))
+            SettingTheme.save_butt.pack()
+            SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="Neu laden", command=lambda:load_settings(GuiConfig, config, theme))
+            SettingTheme.load_butt.pack()
 
         SettingTheme.settingsgui.after(5, lambda:change_theme(GuiConfig, config, theme))
     else:
@@ -324,6 +360,7 @@ def change_theme(GuiConfig, config, theme):
         theme.settings_butt.config(bg="#EFEFEF", fg="#000000")
         theme.exit_butt.config(bg="#EFEFEF", fg="#000000")
         theme.options.config(bg="#EFEFEF", fg="#000000")
+        theme.options["menu"].config(bg="#EFEFEF", fg="#000000")
         theme.show_last_convert_butt.config(bg="#EFEFEF", fg="#000000")
         SettingTheme.settingsgui.config(bg="#EFEFEF" )
         SettingTheme.log_checkbox.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
@@ -337,7 +374,6 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.theme_violet_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
         SettingTheme.save_butt.config(bg="#EFEFEF", fg="#000000")
         SettingTheme.load_butt.config(bg="#EFEFEF", fg="#000000")
-        SettingTheme.infolabel.config(bg="#EFEFEF", fg="#000000")
 
     elif variables.theme_var.get().lower()=="dark":
         GuiConfig.window.config(bg="#1F1F1F")
@@ -351,6 +387,7 @@ def change_theme(GuiConfig, config, theme):
         theme.settings_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.exit_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         theme.options.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.options["menu"].config(bg="#1F1F1F", fg="#FFFFFF")
         theme.show_last_convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         SettingTheme.settingsgui.config(bg="#1F1F1F")
         SettingTheme.log_checkbox.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
@@ -364,7 +401,6 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.theme_dark_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
         SettingTheme.save_butt.config(bg="#1F1F1F", fg="#FFFFFF")
         SettingTheme.load_butt.config(bg="#1F1F1F", fg="#FFFFFF")
-        SettingTheme.infolabel.config(bg="#1F1F1F", fg="#FFFFFF")
 
     elif variables.theme_var.get().lower()=="violet":
         GuiConfig.window.config(bg="#7F00FF")
@@ -378,6 +414,7 @@ def change_theme(GuiConfig, config, theme):
         theme.settings_butt.config(bg="#7F00FF", fg="#00FF00")
         theme.exit_butt.config(bg="#7F00FF", fg="#7F00FF0000FF")
         theme.options.config(bg="#7F00FF", fg="#00FF00")
+        theme.options["menu"].config(bg="#7F00FF", fg="#00FF00")
         theme.show_last_convert_butt.config(bg="#7F00FF", fg="#00FF00")
         SettingTheme.settingsgui.config(bg="#7F00FF")
         SettingTheme.log_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
@@ -391,7 +428,9 @@ def change_theme(GuiConfig, config, theme):
         SettingTheme.theme_dark_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
         SettingTheme.save_butt.config(bg="#7F00FF", fg="#00FF00")
         SettingTheme.load_butt.config(bg="#7F00FF", fg="#00FF00")
-        SettingTheme.infolabel.config(bg="#7F00FF", fg="#00FF00")
+    
+    elif variables.theme_var.get()=="custom":
+        temp=""
 
 def save_settings(GuiConfig, config, theme):
     if variables.update_var.get()==1:
