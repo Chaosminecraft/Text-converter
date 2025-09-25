@@ -426,7 +426,7 @@ def init():
             text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
             if modules.logg_module==True:
                 log_error(text)
-            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+            if input("Press enter to retry, to close this program, write exit").lower()=="exit":
                 break
     
     if stopvars.is_exit==False:
@@ -488,11 +488,11 @@ def main():
                     if startup.Startup_time_check==True:
                         startup.start= datetime.datetime.now()-startup.start
                         if config.language=="de":
-                            print(f"Das programm hat so viel zeit gebraucht: {startup.start}")
+                            print(f"Das program hat so viel zeit gebraucht: {startup.start}")
                         else:
-                            print(f"The programm needed that much to start: {startup.start}")
+                            print(f"The program needed that much to start: {startup.start}")
 
-                        text=f"The programm needed that much to start: {startup.start}"
+                        text=f"The program needed that much to start: {startup.start}"
                         if modules.logg_module==True:
                             log_system(text)
                         else:
@@ -596,7 +596,7 @@ def main():
                             text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
                             if modules.logg_module==True:
                                 log_error(text)
-                            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+                            if input("Press enter to retry, to close this , write exit").lower()=="exit":
                                 return
 
                 elif VariableData.command=="check update":
@@ -673,22 +673,22 @@ def close():
 
     while True:
         if config.language=="de":
-            text=input("Willst du das Programm beenden? (Ja/Nein) ").lower()
+            text=input("Willst du das Program beenden? (Ja/Nein) ").lower()
         else:
-            text=input("Do you wanna close the Programm? (Yes/No) ").lower()
+            text=input("Do you wanna close the Program? (Yes/No) ").lower()
         
         if text in ("ja", "j", "yes", "y"):
             threads.stop_event.set()
 
             if config.language=="de":
-                print("Programm schließt...")
+                print("Program schließt...")
             else:
                 print("Closing program...")
             
             time.sleep(1)
             stopvars.exit_code=0
             stopvars.is_exit=True
-            text=f"The programm successfully closed with the exit code: {stopvars.exit_code}"
+            text=f"The program successfully closed with the exit code: {stopvars.exit_code}"
             if modules.logg_module==True:
                 log_system(text)
             else:
