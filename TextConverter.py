@@ -306,7 +306,7 @@ def updatecheck():
             if config.language=="de":
                 print(f"Die version {version.beta_version} ist die neuste Beta version.\n")
             else:
-                print(f"The beta verision {version.beta_version} is the latest version right now.\n")
+                print(f"The beta version {version.beta_version} is the latest version right now.\n")
             return
         
         elif checked_version<version.beta_version:
