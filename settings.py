@@ -20,7 +20,7 @@ def settings_init(**kwargs):
         prompt=prompt.replace(*r)
     
     gui=False      #starting the project in CLI or GUI
-    theme="bright" #the default theme of gui
+    theme="dark"   #the default theme of gui
 
     settings={
         "language":language,
@@ -228,63 +228,213 @@ class variables:
     gui_var=""
     theme_var=""
 
+class SettingTheme:
+    settingsgui=""
+    log_checkbox=""
+    update_checkbox=""
+    gui_checkbox=""
+    language_label=""
+    language_radio_de=""
+    language_radio_en=""
+    theme_bright_radio=""
+    theme_dark_radio=""
+    theme_violet_radio=""
+    save_butt=""
+    load_butt=""
+    bg_color=""
+    text_color=""
+    select_color=""
+
 def gui_settings(GuiConfig, config, theme):
+    variables.theme_var=config.theme
     if GuiConfig.options_window_count == 0:
         GuiConfig.options_window_count+=1
 
-        settingsgui=Toplevel()
-        settingsgui.title("Settings")
-        settingsgui.geometry("400x300")
-        settingsgui.resizable(width=False, height=False)
+        SettingTheme.settingsgui=Toplevel()
+        SettingTheme.settingsgui.title("Settings")
+        SettingTheme.settingsgui.geometry("400x300")
+        SettingTheme.settingsgui.resizable(width=False, height=False)
 
         def on_close():
             #print("I'M USEFUL!!!!") #for some goddamn debugging if that shi stops working.
             GuiConfig.options_window_count=0
-            settingsgui.destroy()
+            SettingTheme.settingsgui.destroy()
         
-        settingsgui.protocol("WM_DELETE_WINDOW", on_close)
+        SettingTheme.settingsgui.protocol("WM_DELETE_WINDOW", on_close)
 
-        variables.log_var=IntVar(value=1 if config.logg else 0)
-        print(variables.log_var.get())
-        log_checkbox=Checkbutton(settingsgui, text="Activate non critical logging?", variable=variables.log_var)
-        log_checkbox.pack()
+        if config.language=="en":
+            variables.log_var=IntVar(value=1 if config.logg else 0)
+            SettingTheme.log_checkbox=Checkbutton(SettingTheme.settingsgui, text="Activate non critical logging?", variable=variables.log_var)
+            SettingTheme.log_checkbox.pack()
 
-        variables.update_var=IntVar(value=1 if config.upcheck else 0)
+            variables.update_var=IntVar(value=1 if config.upcheck else 0)
 
-        update_checkbox=Checkbutton(settingsgui, text="Check for updates?", variable=variables.update_var)
-        update_checkbox.pack()
+            SettingTheme.update_checkbox=Checkbutton(SettingTheme.settingsgui, text="Check for updates?", variable=variables.update_var)
+            SettingTheme.update_checkbox.pack()
 
-        variables.gui_var=IntVar(value=1 if config.gui else 0)
+            variables.gui_var=IntVar(value=1 if config.gui else 0)
 
-        gui_checkbox=Checkbutton(settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
-        gui_checkbox.pack()
+            SettingTheme.gui_checkbox=Checkbutton(SettingTheme.settingsgui, text="Start the GUI on startup", variable=variables.gui_var)
+            SettingTheme.gui_checkbox.pack()
 
-        language_label=Label(settingsgui, text="Language setting:")
-        language_label.pack()
+            SettingTheme.language_label=Label(SettingTheme.settingsgui, text="Language setting:")
+            SettingTheme.language_label.pack()
 
-        variables.language_var=StringVar(value=config.language)
+            variables.language_var=StringVar(value=config.language)
 
-        language_radio_de = Radiobutton(settingsgui, text="Deutsch", variable=variables.language_var, value="de")
-        language_radio_de.pack()
+            SettingTheme.language_radio_de = Radiobutton(SettingTheme.settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+            SettingTheme.language_radio_de.pack()
 
-        language_radio_en = Radiobutton(settingsgui, text="English", variable=variables.language_var, value="en")
-        language_radio_en.pack()
+            SettingTheme.language_radio_en = Radiobutton(SettingTheme.settingsgui, text="English", variable=variables.language_var, value="en")
+            SettingTheme.language_radio_en.pack()
 
-        variables.theme_var=StringVar(value=config.theme)
-        theme_bright_radio=Radiobutton(settingsgui, text="Bright", variable=variables.theme_var, value="light", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
-        theme_bright_radio.pack()
-        theme_dark_radio=Radiobutton(settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, theme, variables.theme_var.get()))
-        theme_dark_radio.pack()
+            variables.theme_var=StringVar(value=config.theme)
+            SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_bright_radio.pack()
+            SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_violet_radio.pack()
+            SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_dark_radio.pack()
 
-        save_butt=Button(settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
-        save_butt.pack()
-        load_butt=Button(settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
-        load_butt.pack()
+            SettingTheme.save_butt=Button(SettingTheme.settingsgui, text="Save", command=lambda:save_settings(GuiConfig, config, theme))
+            SettingTheme.save_butt.pack()
+            SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
+            SettingTheme.load_butt.pack()
+
+            try:
+                print(SettingTheme.bg_color.get())
+            except:
+                print(SettingTheme.bg_color)
+                print(test)
+        
+        if config.language=="de":
+            variables.log_var=IntVar(value=1 if config.logg else 0)
+            SettingTheme.log_checkbox=Checkbutton(SettingTheme.settingsgui, text="Nicht kritisches logging aktivieren?", variable=variables.log_var)
+            SettingTheme.log_checkbox.pack()
+
+            variables.update_var=IntVar(value=1 if config.upcheck else 0)
+
+            SettingTheme.update_checkbox=Checkbutton(SettingTheme.settingsgui, text="Nach updates schauen?", variable=variables.update_var)
+            SettingTheme.update_checkbox.pack()
+
+            variables.gui_var=IntVar(value=1 if config.gui else 0)
+
+            SettingTheme.gui_checkbox=Checkbutton(SettingTheme.settingsgui, text="Die GUI beim starten öffnen?", variable=variables.gui_var)
+            SettingTheme.gui_checkbox.pack()
+
+            SettingTheme.language_label=Label(SettingTheme.settingsgui, text="Spracheinstellung:")
+            SettingTheme.language_label.pack()
+
+            variables.language_var=StringVar(value=config.language)
+
+            SettingTheme.language_radio_de = Radiobutton(SettingTheme.settingsgui, text="Deutsch", variable=variables.language_var, value="de")
+            SettingTheme.language_radio_de.pack()
+
+            SettingTheme.language_radio_en = Radiobutton(SettingTheme.settingsgui, text="English", variable=variables.language_var, value="en")
+            SettingTheme.language_radio_en.pack()
+
+            variables.theme_var=StringVar(value=config.theme)
+            SettingTheme.theme_bright_radio=Radiobutton(SettingTheme.settingsgui, text="Bright", variable=variables.theme_var, value="bright", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_bright_radio.pack()
+            SettingTheme.theme_violet_radio=Radiobutton(SettingTheme.settingsgui, text="Taco style.", variable=variables.theme_var, value="violet", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_violet_radio.pack()
+            SettingTheme.theme_dark_radio=Radiobutton(SettingTheme.settingsgui, text="Dark", variable=variables.theme_var, value="dark", command=lambda:change_theme(GuiConfig, config, theme))
+            SettingTheme.theme_dark_radio.pack()
+
+            SettingTheme.save_butt=Button(SettingTheme.settingsgui, text="Speichern", command=lambda:save_settings(GuiConfig, config, theme))
+            SettingTheme.save_butt.pack()
+            SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="Neu laden", command=lambda:load_settings(GuiConfig, config, theme))
+            SettingTheme.load_butt.pack()
+
+        SettingTheme.settingsgui.after(5, lambda:change_theme(GuiConfig, config, theme))
     else:
         return
 
-def change_theme(GuiConfig, theme, theme_var):
-    temp=""
+def change_theme(GuiConfig, config, theme):
+    #print(variables.theme_var.get()) #Debugging shiz
+    if variables.theme_var.get().lower()=="bright":
+        GuiConfig.window.config(bg="#EFEFEF")
+        theme.deconvert_msg.config(bg="#EFEFEF", fg="#000000")
+        theme.convert_msg.config(bg="#EFEFEF", fg="#000000")
+        theme.deconvert_var.config(bg="#EFEFEF", fg="#000000")
+        theme.convert_var.config(bg="#EFEFEF", fg="#000000")
+        theme.convert_check.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        theme.deconvert_check.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        theme.convert_butt.config(bg="#EFEFEF", fg="#000000")
+        theme.settings_butt.config(bg="#EFEFEF", fg="#000000")
+        theme.exit_butt.config(bg="#EFEFEF", fg="#000000")
+        theme.options.config(bg="#EFEFEF", fg="#000000")
+        theme.options["menu"].config(bg="#EFEFEF", fg="#000000")
+        theme.show_last_convert_butt.config(bg="#EFEFEF", fg="#000000")
+        SettingTheme.settingsgui.config(bg="#EFEFEF" )
+        SettingTheme.log_checkbox.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.update_checkbox.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.gui_checkbox.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.language_label.config(bg="#EFEFEF", fg="#000000")
+        SettingTheme.language_radio_de.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.language_radio_en.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.theme_bright_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.theme_dark_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.theme_violet_radio.config(bg="#EFEFEF", fg="#000000", selectcolor="#EFEFEF")
+        SettingTheme.save_butt.config(bg="#EFEFEF", fg="#000000")
+        SettingTheme.load_butt.config(bg="#EFEFEF", fg="#000000")
+
+    elif variables.theme_var.get().lower()=="dark":
+        GuiConfig.window.config(bg="#1F1F1F")
+        theme.deconvert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.convert_msg.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.deconvert_var.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.convert_var.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.convert_check.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        theme.deconvert_check.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        theme.convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.settings_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.exit_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.options.config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.options["menu"].config(bg="#1F1F1F", fg="#FFFFFF")
+        theme.show_last_convert_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+        SettingTheme.settingsgui.config(bg="#1F1F1F")
+        SettingTheme.log_checkbox.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.update_checkbox.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.gui_checkbox.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.language_label.config(bg="#1F1F1F", fg="#FFFFFF")
+        SettingTheme.language_radio_de.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.language_radio_en.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.theme_bright_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.theme_violet_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.theme_dark_radio.config(bg="#1F1F1F", fg="#FFFFFF", selectcolor="#333333")
+        SettingTheme.save_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+        SettingTheme.load_butt.config(bg="#1F1F1F", fg="#FFFFFF")
+
+    elif variables.theme_var.get().lower()=="violet":
+        GuiConfig.window.config(bg="#7F00FF")
+        theme.deconvert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_msg.config(bg="#7F00FF", fg="#00FF00")
+        theme.deconvert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_var.config(bg="#7F00FF", fg="#00FF00")
+        theme.convert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.deconvert_check.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        theme.convert_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.settings_butt.config(bg="#7F00FF", fg="#00FF00")
+        theme.exit_butt.config(bg="#7F00FF", fg="#7F00FF0000FF")
+        theme.options.config(bg="#7F00FF", fg="#00FF00")
+        theme.options["menu"].config(bg="#7F00FF", fg="#00FF00")
+        theme.show_last_convert_butt.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.settingsgui.config(bg="#7F00FF")
+        SettingTheme.log_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.update_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.gui_checkbox.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.language_label.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.language_radio_de.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.language_radio_en.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_bright_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_violet_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.theme_dark_radio.config(bg="#7F00FF", fg="#00FF00", selectcolor="#7F00FF")
+        SettingTheme.save_butt.config(bg="#7F00FF", fg="#00FF00")
+        SettingTheme.load_butt.config(bg="#7F00FF", fg="#00FF00")
+    
+    elif variables.theme_var.get()=="custom":
+        temp=""
 
 def save_settings(GuiConfig, config, theme):
     if variables.update_var.get()==1:
@@ -315,7 +465,40 @@ def save_settings(GuiConfig, config, theme):
         json.dump(settings, save)
 
 def load_settings(GuiConfig, config, theme):
-    temp=""
+    with open("settings.json", "r") as file:
+        config.config=json.load(file)
+    
+    config.language=config.config.get("language")
+    #print(config.language) #Debugging purposes
+    if config.language not in ("de", "en"):
+        config.language="en"
+    config.ad=config.config.get("advert")
+    if config.ad not in (True, False):
+        config.ad=True
+    config.prompt=config.config.get("prompt")
+    if config.prompt==None:
+        config.prompt=f"{config.name}@{config.host}:~$ "
+    config.upcheck=config.config.get("update-check")
+    if config.upcheck not in (True, False):
+        config.upcheck=True
+    config.logg=config.config.get("logging")
+    if config.logg not in (True, False):
+        config.logg=True
+    config.gui=config.config.get("gui")
+    if config.gui not in (True, False):
+        config.gui=False
+    config.theme=config.config.get("theme")
+    if config.theme not in ("bright", "dark", "violet", "custom"):
+        config.theme="dark"
+    
+    variables.log_var.set(config.logg)
+    variables.language_var.set(config.language)
+    variables.update_var.set(config.upcheck)
+    variables.gui_var.set(config.gui)
+    variables.theme_var.set(config.theme)
+
+    change_theme(GuiConfig, config, theme)
+    return
 
 if __name__=="__main__":
     input("Please don't open that file on it's own. This is a module!")

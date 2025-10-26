@@ -1,15 +1,13 @@
-import concurrent.futures, platform, subprocess
-
-import ping3
+import concurrent.futures, platform, subprocess, sys
 
 try:
     import ping3 #Trying to import requests
 except ImportError: #If the module isn't installed.
     try:
-        if input("The 'ping3' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes": #asking if installing the module is wanted.
-            if platform.system=="Windows":
+        if input("The 'ping3' Module is missign, do you wanna install it? (Yes/No) ").lower() == "yes" or "ja": #asking if installing the module is wanted.
+            if platform.system()=="Windows":
                 subprocess.check_call([sys.executable, "-m", "pip", "install", "ping3"])
-            elif platform.system=="Linux":
+            elif platform.system()=="Linux":
                 subprocess.check_call([sys.executable, "-m", "pip", "install", "--user","ping3", "--break-system-packages"])
             import ping3
 
@@ -21,6 +19,7 @@ except ImportError: #If the module isn't installed.
 class pingdata:
     host=""
     maxpings=100
+    limit=20
 
 def do_ping(i):
     ping_time = ping3.ping(pingdata.host)
@@ -40,9 +39,8 @@ def run_pings(total_pings, max_threads):
 
 def init_ping(PingDataModule):
     pingdata.host=PingDataModule.host
-    Y = 20  # max threads simultaneously
-    print(f"Running {PingDataModule.maxpings} pings with max {Y} threads at once...\n")
-    ping_times = run_pings(PingDataModule.maxpings, Y)
+    print(f"Running {PingDataModule.maxpings} pings with max {pingdata.limit} threads at once...\n")
+    ping_times = run_pings(PingDataModule.maxpings, pingdata.limit)
 
     filtered = [p for p in ping_times if p != float('inf')]
     if filtered:
@@ -59,27 +57,26 @@ def init_ping(PingDataModule):
     return 
 
 if __name__ == "__main__":
-    pingdata.host=input("What host? ")
-    if pingdata.host=="":
-        pingdata.host="127.0.0.1"
-
-    print("init amount")
     while True:
-        try:
-            pingdata.maxpings=int(input("How many?(don't do too many if slow internet) "))
-            break
-        except ValueError:
-            print(f"Nope, that ain't a number.\n")
-    print("done init")
-    Y = 20  # max threads simultaneously
-    print(f"Running {pingdata.maxpings} pings with max {Y} threads at once...\n")
-    ping_times = run_pings(pingdata.maxpings, Y)
+        pingdata.host=input("What host? ")
+        if pingdata.host=="":
+            pingdata.host="127.0.0.1"
 
-    filtered = [p for p in ping_times if p != float('inf')]
-    if filtered:
-        print("\nAll done!")
-        print(f"Minimum Ping: {min(filtered):.3f}s")
-        print(f"Maximum Ping: {max(filtered):.3f}s")
-        print(f"Average Ping: {sum(filtered)/len(filtered):.3f}s")
-    else:
-        print("No successful pings!")
+        while True:
+            try:
+                pingdata.maxpings=int(input("How many?(don't do too many if slow internet) "))
+                break
+            except ValueError:
+                print(f"Nope, that ain't a number.\n")
+
+        print(f"Running {pingdata.maxpings} pings with max {pingdata.limit} threads at once...\n")
+        ping_times = run_pings(pingdata.maxpings, pingdata.limit)
+
+        filtered = [p for p in ping_times if p != float('inf')]
+        if filtered:
+            print("\nAll done!")
+            print(f"Minimum Ping: {min(filtered):.3f}s")
+            print(f"Maximum Ping: {max(filtered):.3f}s")
+            print(f"Average Ping: {sum(filtered)/len(filtered):.3f}s")
+        else:
+            print("No successful pings!")

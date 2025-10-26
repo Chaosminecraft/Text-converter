@@ -30,7 +30,8 @@ Allgemeine commands:
     lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
-    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
+    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
+    symbenc konvertiert zwischen symbenc und text\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
     prompt ändert den prompt look (direkt nach start den prompt)
@@ -52,7 +53,8 @@ Common commands:
     lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
-    base64 converts between base64 and text (only normal text for now)\n
+    base64 converts between base64 and text (only normal text for now)
+    symbenc converts between smybenc and text\n
 Additional info:
     language let's you change between English(en) or German(de).
     prompt let's you change the prompt look. (After startup the prompt)

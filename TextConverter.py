@@ -3,8 +3,8 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 #The version variables in a class
 class version:
     release=True        #if that version is a release or beta version
-    version="3.1.0"      #The release version
-    beta_version="3.1.9" #The Beta version
+    version="3.2.0"      #The release version
+    beta_version="3.2.9" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -74,8 +74,8 @@ class PingDataModule:
 class backupfunc:
     def backup_logg(**kwargs):
         if kwargs["mode"]=="init":
-            if not os.path.exists('meinOrdner'):
-                os.mkdir('meinOrdner')
+            if not os.path.exists('logs'):
+                os.mkdir('logs')
             loggfile=datetime.datetime.now().strftime("%d.%m.%Y %H.%M.%S")
             config.logg_path=f"logs/{loggfile} logg.txt"
             logging.basicConfig(filename=config.logg_path, filemode="w", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
@@ -137,7 +137,8 @@ Allgemeine commands:
     lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
-    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)\n
+    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
+    symbenc ist eine custom Convertier methode wo zwischen Text und SymbEnc konvertiert. (Methode von voxjgithub)\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
     prompt ändert den prompt look (direkt nach start den prompt)
@@ -159,7 +160,8 @@ Common commands:
     lpbin converts between an older version of Pseudo Binary and text
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
-    base64 converts between base64 and text (only normal text for now)\n
+    base64 converts between base64 and text (only normal text for now)
+    Symbenc is a custom conversion method that converts between Text and symbenc. (Method by voxjgithub\n
 Additional info:
     language let's you change between English(en) or German(de).
     prompt let's you change the prompt look. (After startup the prompt)
@@ -304,7 +306,7 @@ def updatecheck():
             if config.language=="de":
                 print(f"Die version {version.beta_version} ist die neuste Beta version.\n")
             else:
-                print(f"The beta verision {version.beta_version} is the latest version right now.\n")
+                print(f"The beta version {version.beta_version} is the latest version right now.\n")
             return
         
         elif checked_version<version.beta_version:
@@ -415,8 +417,8 @@ def init():
             if config.gui not in (True, False):
                 config.gui=False
             config.theme=config.config.get("theme")
-            if config.theme not in ("bright", "dark"):
-                config.theme="bright"
+            if config.theme not in ("bright", "dark", "violet", "custom"):
+                config.theme="dark"
             break
 
         except:
@@ -424,7 +426,7 @@ def init():
             text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
             if modules.logg_module==True:
                 log_error(text)
-            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+            if input("Press enter to retry, to close this program, write exit").lower()=="exit":
                 break
     
     if stopvars.is_exit==False:
@@ -442,17 +444,20 @@ def init():
         
         if version.release==True:
             if config.language=="de":
-                print(f"\nWillkommen zur Beta version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
+                print(f"\nWillkommen zur Release version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
             else:
-                print(f"\nWelcome to the currently Beta version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
+                print(f"\nWelcome to the currently Release version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
         
         elif version.release==False:
             if config.language=="de":
                 print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
 Bitte meldet dies bei:
+                      
 {info.issues_site}
 
 Info: GUI ist bis jetzt nur bei Windows 10 getestet
+
+Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
 
 Willkommen zur Beta version vom Text converter.\n""")
 
@@ -464,6 +469,8 @@ So please report it to:
 
 Info: GUI is for now only tested on Windows 10.
 
+Info: I work on the GUI code now, so it could not work quite right.
+
 Welcome to the Beta version of the Text Converter.\n""")
         while stopvars.is_exit is not True:
             if stopvars.is_exit==False:
@@ -474,19 +481,18 @@ def main():
     try:
         while stopvars.exit_code is not True:
             try:
-                if config.upcheck==True:
-                    if startup.init==False:
+                if startup.init==False:
+                    if config.upcheck==True:
                         threads.updatethread.join()
 
-                if startup.init==False:
                     if startup.Startup_time_check==True:
                         startup.start= datetime.datetime.now()-startup.start
                         if config.language=="de":
-                            print(f"Das programm hat so viel zeit gebraucht: {startup.start}")
+                            print(f"Das program hat so viel zeit gebraucht: {startup.start}")
                         else:
-                            print(f"The programm needed that much to start: {startup.start}")
+                            print(f"The program needed that much to start: {startup.start}")
 
-                        text=f"The programm needed that much to start: {startup.start}"
+                        text=f"The program needed that much to start: {startup.start}"
                         if modules.logg_module==True:
                             log_system(text)
                         else:
@@ -495,7 +501,7 @@ def main():
                 startup.init=True
                 if config.gui==True:
                     if modules.gui_module==True:
-                        cli_to_gui(config, sysinf, version)
+                        cli_to_gui(config, sysinf, version, backupfunc)
                         return
                     else:
                         config.gui=False
@@ -581,8 +587,8 @@ def main():
                             if config.gui not in (True, False):
                                 config.gui=False
                             config.theme=config.config.get("theme")
-                            if config.theme!="bright" or config.theme!="dark":
-                                config.theme="bright"
+                            if config.theme not in ("bright", "dark", "violet", "custom"):
+                                config.theme="dark"
                             break
 
                         except:
@@ -590,7 +596,7 @@ def main():
                             text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
                             if modules.logg_module==True:
                                 log_error(text)
-                            if input("Press enter to retry, to close this programm, write exit").lower()=="exit":
+                            if input("Press enter to retry, to close this , write exit").lower()=="exit":
                                 return
 
                 elif VariableData.command=="check update":
@@ -609,7 +615,7 @@ def main():
                     if modules.gui_module==True:
                         backup=config.gui
                         config.gui=True
-                        cli_to_gui(config, sysinf, version)
+                        cli_to_gui(config, sysinf, version, backupfunc)
                         config.gui=backup
                     else:
                         print("The gui module is missing.")
@@ -649,14 +655,15 @@ def main():
     except:
         error=traceback.format_exc()
         if version.release==False:
-            print(f"An error happened, there it is:\n{error}")
+            print(f"An error happened, there is a traceback:\n{error}")
+            text=f"An error happened, there is a traceback:\n{error}"
         else:
             print(f"An error occured, Please send the log shown to the github issues tab with an explenation of what was done for it to happen.\nThe log file: {config.log_name}\nThe github issues link: {info.issues_site}")
             text=f"There was an error, This is the traceback:\n{error}"
-            if modules.logg_module==True:
-                log_error(text)
-            else:
-                backupfunc.backup_logg(mode="logg", text=text)
+        if modules.logg_module==True:
+            log_error(text)
+        else:
+            backupfunc.backup_logg(mode="logg", text=text)
 
 def close():
     if sysinf.system=="Linux":
@@ -666,22 +673,22 @@ def close():
 
     while True:
         if config.language=="de":
-            text=input("Willst du das Programm beenden? (Ja/Nein) ").lower()
+            text=input("Willst du das Program beenden? (Ja/Nein) ").lower()
         else:
-            text=input("Do you wanna close the Programm? (Yes/No) ").lower()
+            text=input("Do you wanna close the Program? (Yes/No) ").lower()
         
         if text in ("ja", "j", "yes", "y"):
             threads.stop_event.set()
 
             if config.language=="de":
-                print("Programm schließt...")
+                print("Program schließt...")
             else:
                 print("Closing program...")
             
             time.sleep(1)
             stopvars.exit_code=0
             stopvars.is_exit=True
-            text=f"The programm successfully closed with the exit code: {stopvars.exit_code}"
+            text=f"The program successfully closed with the exit code: {stopvars.exit_code}"
             if modules.logg_module==True:
                 log_system(text)
             else:

@@ -4,6 +4,7 @@ class modules:
     more_itertools_module=True
     brainfuckery_module=True
     helpfunctions_module=True
+    logg_module=True
 
 class variables:
     exit=False
@@ -115,7 +116,7 @@ except ImportError:
     print("The help page module can't be loaded, that is currently then not available. I might move the Help site to the relevant modules.")
     modules.helpfunctions_module=False
 
-def parse_input(config, **kwargs):
+def parse_input(config, **kwargs, ):
     convert_list=""
     try:
         if kwargs["mode"]=="phex" or kwargs["mode"]=="pseudo hex":
@@ -225,10 +226,10 @@ def process(config, **kwargs):
                 data=int(data, 2)
                 data=chr(data)
                 variables.out+=data
-                print(data)
-                print(variables.out)
+                #print(data)
+                #print(variables.out)
             
-            print(part1, data)
+            #print(part1, data)
 
             print(variables.out)
             
