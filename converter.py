@@ -226,10 +226,10 @@ def process(config, **kwargs):
                 data=int(data, 2)
                 data=chr(data)
                 variables.out+=data
-                print(data)
-                print(variables.out)
+                #print(data)
+                #print(variables.out)
             
-            print(part1, data)
+            #print(part1, data)
 
             print(variables.out)
             

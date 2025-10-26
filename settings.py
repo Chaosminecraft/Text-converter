@@ -301,7 +301,11 @@ def gui_settings(GuiConfig, config, theme):
             SettingTheme.load_butt=Button(SettingTheme.settingsgui, text="reload", command=lambda:load_settings(GuiConfig, config, theme))
             SettingTheme.load_butt.pack()
 
-            print(SettingTheme.bg_color.get())
+            try:
+                print(SettingTheme.bg_color.get())
+            except:
+                print(SettingTheme.bg_color)
+                print(test)
         
         if config.language=="de":
             variables.log_var=IntVar(value=1 if config.logg else 0)

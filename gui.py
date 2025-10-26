@@ -1,29 +1,29 @@
 import ctypes, threading, datetime, time, traceback
 from tkinter import *
-
+# Try pyqt Chaos
 class modules:
     logg_module=True
-
+# Try pyqt Chaos
 try:
     from converter import parse_input
 except ImportError:
     result=ctypes.windll.user32.MessageBoxW(0, "The Converter module is not found, Please download the code again, I can maybe in some time make that it isn't an issue. Do you wanna contiue?", "Woops, Import error!", 1)
     if result==2:
         exit()
-
+# Try pyqt Chaos
 try:
     from settings import gui_settings
 except ImportError:
     result=ctypes.windll.user32.MessageBoxW(0, "The Settigns module is not found, Please download the code again, I can maybe in some time make that it isn't an issue. Do you wanna contiue?", "Woops, Import error!", 1)
     if result==2:
         exit()
-
+# Try pyqt Chaos
 try:
     from logger import log_error
 except ImportError:
     print("The module is missing. Logging on GUI without the module is not possible right now.")
     modules.logg_module=False
-
+# Try pyqt Chaos
 class GuiConfig:
     window=""
     operator=""
@@ -34,7 +34,7 @@ class GuiConfig:
     converted="Something went wrong, Fix it Chaosminecraft!!"
     isexit=False
     stop_event=""
-
+# Try pyqt Chaos
 class theme:
     deconvert_msg=""
     convert_msg=""
@@ -48,7 +48,7 @@ class theme:
     options=""
     show_last_convert_butt=""
 
-
+# Try pyqt Chaos
 def cli_to_gui(config, sysinf, version, backupfunc):
     try:
         GuiConfig.window=Tk()
@@ -151,7 +151,7 @@ def cli_to_gui(config, sysinf, version, backupfunc):
         GuiConfig.window.mainloop()
     except AttributeError:
         return
-
+# Try pyqt Chaos
 def set_theme(config):
     if config.theme.lower()=="bright":
         GuiConfig.window.config(bg="#EFEFEF")
@@ -196,10 +196,10 @@ def set_theme(config):
         theme.show_last_convert_butt.config(bg="#7F00FF", fg="#00FF00")
 
     return
-
+# Try pyqt Chaos
 def display_conversion():
     ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
-
+# Try pyqt Chaos
 def prep_convert(config, convert_var, deconvert_var, version, backupfunc):
     try:
         if GuiConfig.convert.get()==1:
@@ -223,13 +223,13 @@ def prep_convert(config, convert_var, deconvert_var, version, backupfunc):
             log_error(text=text)
         else:
             backupfunc.backup_logg(mode="logg", text=text)
-
+# Try pyqt Chaos
 def start_thread(config, sysinf, version, backupfunc):
     GuiConfig.stop_event=threading.Event()
     title_thread=threading.Thread(target=title_time, args=(config, sysinf, version, backupfunc, ))
     title_thread.start()
     return
-
+# Try pyqt Chaos
 def title_time(config, sysinf, version, backupfunc):
     try:
         while not GuiConfig.stop_event.set():
@@ -264,7 +264,7 @@ def title_time(config, sysinf, version, backupfunc):
             log_error(text=text)
         else:
             backupfunc.backup_logg(mode="logg", text=text)
-
+# Try pyqt Chaos
 def ui_exit(config):
     result=ctypes.windll.user32.MessageBoxW(0, "If you press Ok, the Program will close, but if you press Cancel it stays open.", "Do you wanna close that?", 1)
     if result == 1:
@@ -275,7 +275,7 @@ def ui_exit(config):
         return
     else:
         return
-
+# Try pyqt Chaos
 if __name__=="__main__":
     input("This is a module, Please don't run it on it's own!")
     exit()
