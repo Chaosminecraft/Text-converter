@@ -209,8 +209,9 @@ def prep_convert(config, convert_var, deconvert_var, version, backupfunc):
         if GuiConfig.deconvert.get()==1:
             convert_mode="deconvert"
             GuiConfig.converted=parse_input(config, guimode=convert_mode, mode=GuiConfig.optionsvar.get().lower(), convdata=deconvert_var.get())
-    
-        ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
+        
+        messagethread=threading.Thread(target=display_message)
+        messagethread.start()   
     except:
         error=traceback.format_exc()
         if version.release==False:
@@ -223,6 +224,10 @@ def prep_convert(config, convert_var, deconvert_var, version, backupfunc):
             log_error(text=text)
         else:
             backupfunc.backup_logg(mode="logg", text=text)
+
+def display_message():
+    ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
+
 # Try pyqt Chaos
 def start_thread(config, sysinf, version, backupfunc):
     GuiConfig.stop_event=threading.Event()
@@ -232,7 +237,7 @@ def start_thread(config, sysinf, version, backupfunc):
 # Try pyqt Chaos
 def title_time(config, sysinf, version, backupfunc):
     try:
-        while not GuiConfig.stop_event.set():
+        while not GuiConfig.stop_event.is_set():
             now=datetime.datetime.now()
             start=time.time()
             if config.language=="de":
@@ -252,18 +257,8 @@ def title_time(config, sysinf, version, backupfunc):
             time.sleep(wait_time)
     
     except:
-        error=traceback.format_exc()
-        if version.release==False:
-            print(f"An error happened, there is a traceback:\n{error}")
-            text=f"An error happened, there is a traceback:\n{error}"
-        if version.release==True:
-            text=f"An error happened, there is a traceback:\n{error}"
-            ctypes.windll.user32.MessageBoxW(0, error, "Error", 0)
+        pass
 
-        if modules.logg_module==True:
-            log_error(text=text)
-        else:
-            backupfunc.backup_logg(mode="logg", text=text)
 # Try pyqt Chaos
 def ui_exit(config):
     result=ctypes.windll.user32.MessageBoxW(0, "If you press Ok, the Program will close, but if you press Cancel it stays open.", "Do you wanna close that?", 1)
