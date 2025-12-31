@@ -3,7 +3,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 #The version variables in a class
 class version:
     release=True        #if that version is a release or beta version
-    version="3.2.0"      #The release version
+    version="3.3.0"      #The release version
     beta_version="3.2.9" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)

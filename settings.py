@@ -305,7 +305,7 @@ def gui_settings(GuiConfig, config, theme):
                 print(SettingTheme.bg_color.get())
             except:
                 print(SettingTheme.bg_color)
-                print(test)
+                print("test")
         
         if config.language=="de":
             variables.log_var=IntVar(value=1 if config.logg else 0)
