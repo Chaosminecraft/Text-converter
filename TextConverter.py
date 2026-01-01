@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=True        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.1" #The Beta version
+    beta_version="3.3.2" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -330,14 +330,14 @@ def title_time(stop_event):
                 start=time.time()
                 now=datetime.datetime.now()
                 if config.language=="de":
-                    now=now.strftime("%d/%m/%Y, %H:%M:%S") #%H:%M:%S.%f
+                    now=now.strftime("%H:%M:%S") #%H:%M:%S.%f
                 if config.language=="en":
-                    now=now.strftime("%m/%d/%Y, %r")
+                    now=now.strftime("%r")
                 
                 if version.release==True:
-                    os.system(f"title Text Converter V{version.version} {now}")
+                    os.system(f"title TextConv V{version.version} {now}")
                 else:
-                    os.system(f"title Text Converter Beta V{version.beta_version} {now}")
+                    os.system(f"title TextConv Beta V{version.beta_version} {now}")
                 elapsed_time=time.time()-start
                 wait_time=max(0.5, elapsed_time * 2)
                 time.sleep(wait_time)
@@ -382,6 +382,100 @@ if  sysinf.system=="Linux":
 
 if sysinf.system=="Darwin":
     print("WARNING: You're on your own. I (the creator) do not test the code if it runs on MacOS/Darwin. Good luck.")
+
+#Commented for testing.
+#def init():
+#    while True:
+#        try:
+#            with open("settings.json", "r") as load:
+#                config.config=json.load(load)
+#        except FileNotFoundError:
+#            if modules.settings_module==True:
+#                settings_init(name=config.name, host=config.host)
+#            else:
+#                backupfunc.backup_setting_init()
+#            with open("settings.json", "r") as load:
+#                config.config=json.load(load)
+#
+#        try:
+#            config.language=config.config.get("language")
+#            #print(config.language) #Debugging purposes
+#            if config.language not in ("de", "en"):
+#                config.language="en"
+#            config.ad=config.config.get("advert")
+#            if config.ad not in (True, False):
+#                config.ad=True
+#            config.prompt=config.config.get("prompt")
+#            if config.prompt==None:
+#                config.prompt=f"{config.name}@{config.host}:~$ "
+#            config.upcheck=config.config.get("update-check")
+#            if config.upcheck not in (True, False):
+#                config.upcheck=True
+#            config.logg=config.config.get("logging")
+#            if config.logg not in (True, False):
+#                config.logg=True
+#            config.gui=config.config.get("gui")
+#            if config.gui not in (True, False):
+#                config.gui=False
+#            config.theme=config.config.get("theme")
+#            if config.theme not in ("bright", "dark", "violet", "custom"):
+#                config.theme="dark"
+#            break
+#
+#        except:
+#            exception=traceback.format_exc()
+#            text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
+#            if modules.logg_module==True:
+#                log_error(text)
+#            if input("Press enter to retry, to close this program, write exit").lower()=="exit":
+#                break
+#    
+#    if stopvars.is_exit==False:
+#        if config.ad==True:
+#            if startup.init==False:
+#                if modules.advert_module==True:
+#                    free_ad(config)
+#
+#        if startup.init==False:
+#            threads.time_thread.start()
+#        
+#        if startup.init==False:
+#            if config.upcheck==True:
+#                threads.updatethread.start()
+#        
+#        if version.release==True:
+#            if config.language=="de":
+#                print(f"\nWillkommen zur Release version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
+#            else:
+#                print(f"\nWelcome to the currently Release version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
+#        
+#        elif version.release==False:
+#            if config.language=="de":
+#                print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
+#Bitte meldet dies bei:
+#                      
+#{info.issues_site}
+#
+#Info: GUI ist bis jetzt nur bei Windows 10 getestet
+#
+#Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
+#
+#Willkommen zur Beta version vom Text converter.\n""")
+#
+#            else:
+#                print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
+#So please report it to:
+#
+#{info.issues_site}
+#
+#Info: GUI is for now only tested on Windows 10.
+#
+#Info: I work on the GUI code now, so it could not work quite right.
+#
+#Welcome to the Beta version of the Text Converter.\n""")
+#        while stopvars.is_exit is not True:
+#            if stopvars.is_exit==False:
+#                main()
 
 def init():
     while True:
@@ -459,7 +553,11 @@ Info: GUI ist bis jetzt nur bei Windows 10 getestet
 
 Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
 
-Willkommen zur Beta version vom Text converter.\n""")
+Willkommen zur Beta version vom Text converter.
+
+WARNUNG: Momentan gibt es das Problem wo bei der GUI version das der Title thread nicht geschlossen wird.
+Ich schaue nach das dies nicht mehr passiert.
+PS: Wenn ein fehler kommt nach schließen vom Grafik Interface, Dies ist momentan kein problem.\n""")
 
             else:
                 print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
@@ -471,11 +569,16 @@ Info: GUI is for now only tested on Windows 10.
 
 Info: I work on the GUI code now, so it could not work quite right.
 
-Welcome to the Beta version of the Text Converter.\n""")
+Welcome to the Beta version of the Text Converter.
+
+WARNING: Currently there is an issue with the title thread, There might be errors in the code.
+I look that it doesn't happen anymore.
+PS: If there is an error after closing the graphical interface, that is not a problem at the moment.\n""")
         while stopvars.is_exit is not True:
             if stopvars.is_exit==False:
                 main()
-
+            else:
+                return
 
 def main():
     try:
@@ -501,7 +604,10 @@ def main():
                 startup.init=True
                 if config.gui==True:
                     if modules.gui_module==True:
+                        threads.stop_event.set()
                         cli_to_gui(config, sysinf, version, backupfunc)
+                        stopvars.exit_code=0
+                        stopvars.is_exit=True
                         return
                     else:
                         config.gui=False
@@ -720,3 +826,4 @@ def timereader():
 
 if __name__=="__main__":
     init()
+    exit()

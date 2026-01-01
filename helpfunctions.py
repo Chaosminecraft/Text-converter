@@ -31,14 +31,16 @@ Allgemeine commands:
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
-    symbenc konvertiert zwischen symbenc und text\n
+    symbenc konvertiert zwischen symbenc und text
+    start gui oder sg startet die Visuelle oberfläche\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
     prompt ändert den prompt look (direkt nach start den prompt)
     ad gibt dir die option ob du die Werbung sehen willst oder nicht
     update gibt dir die option nach updates zu schauen am start.
     logging gibt dir die option ob du Nicht essenzielle sachen loggen möchtest.
-    ping ist ein einfacher ping command.\n""")
+    ping ist ein einfacher ping command.
+    gui ändert was zuerst startet (CLI oder GUI)\n""")
         
         return
     
@@ -54,14 +56,16 @@ Common commands:
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)
-    symbenc converts between smybenc and text\n
+    symbenc converts between smybenc and text
+    start gui or sg starts the visual version\n
 Additional info:
     language let's you change between English(en) or German(de).
     prompt let's you change the prompt look. (After startup the prompt)
     ad let's you change if you wanna see the ad (currently broken)
     update let's you change the setting if you want to check for updates.
-    logging let's you change if you wanna log non critical things. (critical things are like: Mid runtime there was a Recoverable or non recoverable error)
-    ping is a simple ping command.\n""")
+    logging let's you change if you wanna log non critical things.
+    ping is a simple ping command.
+    gui changes what starts first (CLI or GUI)\n""")
         
         return
 

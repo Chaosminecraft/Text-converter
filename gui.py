@@ -33,7 +33,7 @@ class GuiConfig:
     options_window_count=0
     converted="Something went wrong, Fix it Chaosminecraft!!"
     isexit=False
-    stop_event=""
+    stop_event=threading.Event()
 # Try pyqt Chaos
 class theme:
     deconvert_msg=""
@@ -145,7 +145,7 @@ def cli_to_gui(config, sysinf, version, backupfunc):
             theme.options.place(x=220, y=160)
 
         GuiConfig.window.after(5, lambda:set_theme(config))
-        GuiConfig.window.after(5, lambda:start_thread(config, sysinf, version, backupfunc))
+        GuiConfig.window.after(5, lambda:start_thread(config, version))
         GuiConfig.window.after(25, lambda:GuiConfig.window.attributes("-topmost", False))
 
         GuiConfig.window.mainloop()
@@ -229,13 +229,14 @@ def display_message():
     ctypes.windll.user32.MessageBoxW(0, GuiConfig.converted, "Converted data", 0)
 
 # Try pyqt Chaos
-def start_thread(config, sysinf, version, backupfunc):
+def start_thread(config,version):
     GuiConfig.stop_event=threading.Event()
-    title_thread=threading.Thread(target=title_time, args=(config, sysinf, version, backupfunc, ))
+    title_thread=threading.Thread(target=title_time, args=(config, version, GuiConfig, ))
     title_thread.start()
     return
+    #exit()
 # Try pyqt Chaos
-def title_time(config, sysinf, version, backupfunc):
+def title_time(config, version, GuiConfig):
     try:
         while not GuiConfig.stop_event.is_set():
             now=datetime.datetime.now()
@@ -265,6 +266,7 @@ def ui_exit(config):
     if result == 1:
         #stop_event.set()
         GuiConfig.stop_event.set()
+        print("Test")
         GuiConfig.window.destroy()
         config.gui=False
         return
