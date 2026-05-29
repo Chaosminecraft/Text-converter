@@ -1,3 +1,4 @@
+from socket import timeout
 import ctypes, threading, datetime, time, traceback
 from tkinter import *
 # Try pyqt Chaos
@@ -33,7 +34,8 @@ class GuiConfig:
     options_window_count=0
     converted="Something went wrong, Fix it Chaosminecraft!!"
     isexit=False
-    stop_event=threading.Event()
+    stop_event=""
+    title_thread=""
 # Try pyqt Chaos
 class theme:
     deconvert_msg=""
@@ -231,10 +233,10 @@ def display_message():
 # Try pyqt Chaos
 def start_thread(config,version):
     GuiConfig.stop_event=threading.Event()
-    title_thread=threading.Thread(target=title_time, args=(config, version, GuiConfig, ))
-    title_thread.start()
+    GuiConfig.title_thread=threading.Thread(target=title_time, args=(config, version, GuiConfig, ))
+    GuiConfig.title_thread.start()
     return
-    #exit()
+
 # Try pyqt Chaos
 def title_time(config, version, GuiConfig):
     try:
@@ -256,7 +258,10 @@ def title_time(config, version, GuiConfig):
             elapsed_time=time.time()-start
             wait_time=max(0.5, elapsed_time * 2)
             time.sleep(wait_time)
-    
+
+        print("TEST")
+        return
+
     except:
         pass
 
@@ -266,7 +271,7 @@ def ui_exit(config):
     if result == 1:
         #stop_event.set()
         GuiConfig.stop_event.set()
-        print("Test")
+        #GuiConfig.title_thread.join()
         GuiConfig.window.destroy()
         config.gui=False
         return

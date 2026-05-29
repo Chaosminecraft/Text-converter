@@ -2,9 +2,9 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 
 #The version variables in a class
 class version:
-    release=True        #if that version is a release or beta version
+    release=False        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.2" #The Beta version
+    beta_version="3.3.3" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -203,12 +203,13 @@ except ImportError:
     modules.logg_module=False
 
 try:
-    from settings import settings_init, change_settings
+    from settings import settings_init, change_settings_cli
 except ImportError:
+    error=traceback.format_exc()
     if version.release==True:
         print(f"The module that is responsible for changing settings is unable to be loaded, please download the version of converter.py of V{version.version}")
     else:
-        print(f"The module that is responsible for changing settings is unable to be loaded, please download the version of converter.py of V{info.beta_site}")
+        print(f"The module that is responsible for changing settings is unable to be loaded, please download the version of converter.py of V{info.beta_site}\nThe error is: {error}")
     print("INFO: Only manual settings changes are possible at the moment. You can load the changes via 'reload settings'")
     modules.settings_module=False
 
@@ -256,8 +257,7 @@ def updatecheck():
     if version.release==True:
         #print("RELEASE VERSION") #says if it is a Release version.
         link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/version.txt"
-        checked_version=requests.get(link_ver, allow_redirects=True)
-        checked_version=str(checked_version.content)[2:7]
+        checked_version=str(requests.get(link_ver, allow_redirects=True, timeout=10).content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
         
         if checked_version>version.version:
@@ -291,8 +291,7 @@ def updatecheck():
     elif version.release==False:
         #print("BETA RELEASE") Says if it is a Beta version.
         link_ver="https://raw.githubusercontent.com/Chaosminecraft/Text-converter/refs/heads/Beta/betaversion.txt"
-        checked_version=requests.get(link_ver, allow_redirects=True, timeout=10)
-        checked_version=str(checked_version.content)[2:7]
+        checked_version=str(requests.get(link_ver, allow_redirects=True, timeout=10).content)[2:7]
         #print(checked_version) #If the version from the internet doesn't give good results.
 
         if checked_version>version.beta_version:
@@ -300,28 +299,28 @@ def updatecheck():
                 print(f"Da ist eine neue beta version: {checked_version}\nDa ist der Download link: {info.beta_site}\n")
             else:
                 print(f"There is a new beta version, Download it here: {checked_version}\nThere is the download link: {info.beta_site}\n")
-            return
+            #return
         
         elif checked_version==version.beta_version:
             if config.language=="de":
                 print(f"Die version {version.beta_version} ist die neuste Beta version.\n")
             else:
                 print(f"The beta version {version.beta_version} is the latest version right now.\n")
-            return
+            #return
         
         elif checked_version<version.beta_version:
             if config.language=="de":
                 print(f"Yay, Dev gefunden :D\n")
             else:
                 print(f"Yay, found a Dev :D\n")
-            return
+            #return
         
         else:
             if config.language=="de":
                 print(f"Eine unbekannte beta version wurde gefunden :(\n")
             else:
                 print(f"An unknown beta version was found :(\n")
-            return
+            #return
 
 def title_time(stop_event):
     try:
@@ -383,100 +382,6 @@ if  sysinf.system=="Linux":
 if sysinf.system=="Darwin":
     print("WARNING: You're on your own. I (the creator) do not test the code if it runs on MacOS/Darwin. Good luck.")
 
-#Commented for testing.
-#def init():
-#    while True:
-#        try:
-#            with open("settings.json", "r") as load:
-#                config.config=json.load(load)
-#        except FileNotFoundError:
-#            if modules.settings_module==True:
-#                settings_init(name=config.name, host=config.host)
-#            else:
-#                backupfunc.backup_setting_init()
-#            with open("settings.json", "r") as load:
-#                config.config=json.load(load)
-#
-#        try:
-#            config.language=config.config.get("language")
-#            #print(config.language) #Debugging purposes
-#            if config.language not in ("de", "en"):
-#                config.language="en"
-#            config.ad=config.config.get("advert")
-#            if config.ad not in (True, False):
-#                config.ad=True
-#            config.prompt=config.config.get("prompt")
-#            if config.prompt==None:
-#                config.prompt=f"{config.name}@{config.host}:~$ "
-#            config.upcheck=config.config.get("update-check")
-#            if config.upcheck not in (True, False):
-#                config.upcheck=True
-#            config.logg=config.config.get("logging")
-#            if config.logg not in (True, False):
-#                config.logg=True
-#            config.gui=config.config.get("gui")
-#            if config.gui not in (True, False):
-#                config.gui=False
-#            config.theme=config.config.get("theme")
-#            if config.theme not in ("bright", "dark", "violet", "custom"):
-#                config.theme="dark"
-#            break
-#
-#        except:
-#            exception=traceback.format_exc()
-#            text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
-#            if modules.logg_module==True:
-#                log_error(text)
-#            if input("Press enter to retry, to close this program, write exit").lower()=="exit":
-#                break
-#    
-#    if stopvars.is_exit==False:
-#        if config.ad==True:
-#            if startup.init==False:
-#                if modules.advert_module==True:
-#                    free_ad(config)
-#
-#        if startup.init==False:
-#            threads.time_thread.start()
-#        
-#        if startup.init==False:
-#            if config.upcheck==True:
-#                threads.updatethread.start()
-#        
-#        if version.release==True:
-#            if config.language=="de":
-#                print(f"\nWillkommen zur Release version vom Text converter. Bitte beschwer dich bei der Beta seite bei problemen. Sie ist bei {info.release_site}")
-#            else:
-#                print(f"\nWelcome to the currently Release version of Text Converter. Please complain on the Beta GitHub Site about issues. it is at {info.release_site}")
-#        
-#        elif version.release==False:
-#            if config.language=="de":
-#                print(f"""\n[WARNUNG] Dies ist eine BETA version, Die könnte unstabil sein.
-#Bitte meldet dies bei:
-#                      
-#{info.issues_site}
-#
-#Info: GUI ist bis jetzt nur bei Windows 10 getestet
-#
-#Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
-#
-#Willkommen zur Beta version vom Text converter.\n""")
-#
-#            else:
-#                print(f"""\n[WARNING] This is a BETA version, There might be errors in the code.
-#So please report it to:
-#
-#{info.issues_site}
-#
-#Info: GUI is for now only tested on Windows 10.
-#
-#Info: I work on the GUI code now, so it could not work quite right.
-#
-#Welcome to the Beta version of the Text Converter.\n""")
-#        while stopvars.is_exit is not True:
-#            if stopvars.is_exit==False:
-#                main()
-
 def init():
     while True:
         try:
@@ -530,7 +435,8 @@ def init():
                     free_ad(config)
 
         if startup.init==False:
-            threads.time_thread.start()
+            if config.gui==False:
+                threads.time_thread.start()
         
         if startup.init==False:
             if config.upcheck==True:
@@ -576,7 +482,16 @@ I look that it doesn't happen anymore.
 PS: If there is an error after closing the graphical interface, that is not a problem at the moment.\n""")
         while stopvars.is_exit is not True:
             if stopvars.is_exit==False:
-                main()
+                if config.gui==False:
+                    main()
+            
+                if config.gui==True:
+                    if modules.gui_module==True:
+                        threads.stop_event.set()
+                        cli_to_gui(config, sysinf, version, backupfunc)
+                    
+                    break
+                    
             else:
                 return
 
@@ -584,6 +499,9 @@ def main():
     try:
         while stopvars.exit_code is not True:
             try:
+                if startup.init==False:
+                    temp=datetime.datetime.now()-startup.start
+                    print(f"Before Update thread is done: {temp}S")
                 if startup.init==False:
                     if config.upcheck==True:
                         threads.updatethread.join()
@@ -602,17 +520,8 @@ def main():
                             backupfunc.backup_logg(mode="logg", text=text)
 
                 startup.init=True
-                if config.gui==True:
-                    if modules.gui_module==True:
-                        threads.stop_event.set()
-                        cli_to_gui(config, sysinf, version, backupfunc)
-                        stopvars.exit_code=0
-                        stopvars.is_exit=True
-                        return
-                    else:
-                        config.gui=False
-                else:
-                    VariableData.command=input(config.prompt).lower()
+
+                VariableData.command=input(config.prompt).lower()
 
                 if VariableData.command=="":
                     if modules.logg_module==True:
@@ -629,6 +538,9 @@ def main():
                         print("Kein command gefunden.")
                     else:
                         print("No command found.")
+                
+                if VariableData.command=="updatethreadcheck":
+                    print(threads.updatethread)
 
                 elif VariableData.command=="test":
                     print(f"\nTestOK!!\n")
@@ -654,7 +566,7 @@ def main():
                         backupfunc.backuphelp()
                 
                 elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings_cli(config, sysinf, option=VariableData.command)
 
                 elif VariableData.command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
@@ -758,6 +670,7 @@ def main():
                 close()
                 if stopvars.is_exit==True:
                     break
+        return
     except:
         error=traceback.format_exc()
         if version.release==False:
@@ -826,4 +739,3 @@ def timereader():
 
 if __name__=="__main__":
     init()
-    exit()

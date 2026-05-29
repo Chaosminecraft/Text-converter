@@ -1,4 +1,4 @@
-import concurrent.futures, platform, subprocess, sys
+import concurrent.futures, platform, subprocess, sys, os
 
 try:
     import ping3 #Trying to import requests
@@ -19,10 +19,10 @@ except ImportError: #If the module isn't installed.
 class pingdata:
     host=""
     maxpings=100
-    limit=20
+    limit=os.cpu_count()
 
 def do_ping(i):
-    ping_time = ping3.ping(pingdata.host)
+    ping_time = ping3.ping(pingdata.host, size=1472)
     if ping_time is None:
         print(f"Ping {i} failed!")
         return float('inf')
@@ -61,6 +61,15 @@ if __name__ == "__main__":
         pingdata.host=input("What host? ")
         if pingdata.host=="":
             pingdata.host="127.0.0.1"
+        
+        backup=pingdata.limit
+        while True:
+            try:
+                pingdata.limit=int(input("How many threads? "))
+                break
+            except ValueError:
+                pingdata.limit=backup
+                break
 
         while True:
             try:
