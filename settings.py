@@ -1,5 +1,11 @@
+class modules:
+    tkinter_module_ok=True
+
 import locale, json
-from tkinter import *
+try:
+    from tkinter import *
+except ImportError:
+    modules.tkinter_module_ok=False
 
 #The function that makes the Settings file
 def settings_init(**kwargs):

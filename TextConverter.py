@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.4" #The Beta version
+    beta_version="3.3.5" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -180,7 +180,7 @@ except ImportError: #If the module isn't installed.
             if sysinf.system=="Windows":
                 subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
             elif sysinf.system=="Linux":
-                subprocess.check_call([sys.executable, "-m", "pip", "install", "--user","requests", "--break-system-packages"])
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
             import requests
         
         else:
@@ -203,7 +203,7 @@ except ImportError:
     modules.logg_module=False
 
 try:
-    from settings import settings_init, change_settings_cli
+    from settings import settings_init, change_settings
 except ImportError:
     error=traceback.format_exc()
     if version.release==True:
@@ -568,7 +568,7 @@ def main():
                         backupfunc.backuphelp()
                 
                 elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings_cli(config, sysinf, option=VariableData.command)
+                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
 
                 elif VariableData.command=="reset settings":
                     config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)

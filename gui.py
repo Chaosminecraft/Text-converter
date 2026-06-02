@@ -1,9 +1,14 @@
+class modules:
+    tkinter_module_ok=True
+    logg_module=True
+
 from socket import timeout
 import ctypes, threading, datetime, time, traceback
-from tkinter import *
-# Try pyqt Chaos
-class modules:
-    logg_module=True
+try:
+    from tkinter import *
+except ImportError:
+    modules.tkinter_module_ok=False
+
 # Try pyqt Chaos
 try:
     from converter import parse_input
@@ -52,107 +57,110 @@ class theme:
 
 # Try pyqt Chaos
 def cli_to_gui(config, sysinf, version, backupfunc):
-    try:
-        GuiConfig.window=Tk()
-        GuiConfig.window.config(bg="#EFEFEF")
-        GuiConfig.window.title("Text Converter V3.0 UI Preview [W.I.P]")
-        GuiConfig.window.geometry("600x500")
-        GuiConfig.window.resizable(width=False, height=False)
-        GuiConfig.window.attributes("-topmost", True)
+    if modules.tkinter_module_ok==True:
+        try:
+            GuiConfig.window=Tk()
+            GuiConfig.window.config(bg="#EFEFEF")
+            GuiConfig.window.title("Text Converter V3.0 UI Preview [W.I.P]")
+            GuiConfig.window.geometry("600x500")
+            GuiConfig.window.resizable(width=False, height=False)
+            GuiConfig.window.attributes("-topmost", True)
 
-        def on_close():
-            #print("I'M USEFUL!!!!") #for some goddamn debugging if that shi stops working.
-            ui_exit(config)
+            def on_close():
+                #print("I'M USEFUL!!!!") #for some goddamn debugging if that shi stops working.
+                ui_exit(config)
 
-        GuiConfig.window.protocol("WM_DELETE_WINDOW", on_close)
+            GuiConfig.window.protocol("WM_DELETE_WINDOW", on_close)
 
-        if config.language=="en":
-            theme.deconvert_msg=Label(GuiConfig.window, text="Text to deconvert:", padx=5, pady=5)
-            theme.deconvert_msg.place(x=160, y=0)
+            if config.language=="en":
+                theme.deconvert_msg=Label(GuiConfig.window, text="Text to deconvert:", padx=5, pady=5)
+                theme.deconvert_msg.place(x=160, y=0)
 
-            theme.convert_msg=Label(GuiConfig.window, text="Text to convert:", padx=5, pady=5)
-            theme.convert_msg.place(x=160, y=35)
+                theme.convert_msg=Label(GuiConfig.window, text="Text to convert:", padx=5, pady=5)
+                theme.convert_msg.place(x=160, y=35)
 
-            theme.deconvert_var=Entry(GuiConfig.window, width=50)
-            theme.deconvert_var.place(x=160, y=20)
+                theme.deconvert_var=Entry(GuiConfig.window, width=50)
+                theme.deconvert_var.place(x=160, y=20)
 
-            theme.convert_var=Entry(GuiConfig.window, width=50)
-            theme.convert_var.place(x=160, y=60)
-        
-            GuiConfig.convert=IntVar()
-        
-            theme.convert_check=Checkbutton(GuiConfig.window, text="Convert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
-            theme.convert_check.place(x=70, y=57)
-        
-            GuiConfig.deconvert=IntVar()
-        
-            theme.deconvert_check=Checkbutton(GuiConfig.window, text="Deconvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
-            theme.deconvert_check.place(x=70, y=17)
+                theme.convert_var=Entry(GuiConfig.window, width=50)
+                theme.convert_var.place(x=160, y=60)
 
-            theme.convert_butt=Button(GuiConfig.window, text="Go.", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var, version, backupfunc))
-            theme.convert_butt.place(x=70, y=120)
+                GuiConfig.convert=IntVar()
 
-            theme.settings_butt=Button(GuiConfig.window, text="Settings", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
-            theme.settings_butt.place(x=115, y=120) 
+                theme.convert_check=Checkbutton(GuiConfig.window, text="Convert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
+                theme.convert_check.place(x=70, y=57)
 
-            theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
-            theme.exit_butt.place(x=185, y=120)
+                GuiConfig.deconvert=IntVar()
 
-            theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion)
-            theme.show_last_convert_butt.place(x=235, y=120)
+                theme.deconvert_check=Checkbutton(GuiConfig.window, text="Deconvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
+                theme.deconvert_check.place(x=70, y=17)
 
-            GuiConfig.optionsvar=StringVar(GuiConfig.window)
-            GuiConfig.optionsvar.set("Hex")
-            theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
-            theme.options.place(x=220, y=160)
-        
-        elif config.language=="de":
-            theme.deconvert_msg=Label(GuiConfig.window, text="Text zum deconvertieren:", padx=5, pady=5)
-            theme.deconvert_msg.place(x=160, y=0)
+                theme.convert_butt=Button(GuiConfig.window, text="Go.", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var, version, backupfunc))
+                theme.convert_butt.place(x=70, y=120)
 
-            theme.convert_msg=Label(GuiConfig.window, text="Text zu konvertieren:", padx=5, pady=5)
-            theme.convert_msg.place(x=160, y=35)
+                theme.settings_butt=Button(GuiConfig.window, text="Settings", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
+                theme.settings_butt.place(x=115, y=120) 
 
-            theme.deconvert_var=Entry(GuiConfig.window, width=50)
-            theme.deconvert_var.place(x=160, y=20)
+                theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
+                theme.exit_butt.place(x=185, y=120)
 
-            theme.convert_var=Entry(GuiConfig.window, width=50)
-            theme.convert_var.place(x=160, y=60)
-        
-            GuiConfig.convert=IntVar()
-        
-            theme.convert_check=Checkbutton(GuiConfig.window, text="Konvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
-            theme.convert_check.place(x=80, y=57)
-        
-            GuiConfig.deconvert=IntVar()
-        
-            theme.deconvert_check=Checkbutton(GuiConfig.window, text="Dekonvertieren", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
-            theme.deconvert_check.place(x=40, y=17)
+                theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion)
+                theme.show_last_convert_butt.place(x=235, y=120)
 
-            theme.convert_butt=Button(GuiConfig.window, text="Start", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var, version, backupfunc))
-            theme.convert_butt.place(x=70, y=120)
+                GuiConfig.optionsvar=StringVar(GuiConfig.window)
+                GuiConfig.optionsvar.set("Hex")
+                theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
+                theme.options.place(x=220, y=160)
 
-            theme.settings_butt=Button(GuiConfig.window, text="Einstellungen", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
-            theme.settings_butt.place(x=120, y=120) 
+            elif config.language=="de":
+                theme.deconvert_msg=Label(GuiConfig.window, text="Text zum deconvertieren:", padx=5, pady=5)
+                theme.deconvert_msg.place(x=160, y=0)
 
-            theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
-            theme.exit_butt.place(x=217, y=120)
+                theme.convert_msg=Label(GuiConfig.window, text="Text zu konvertieren:", padx=5, pady=5)
+                theme.convert_msg.place(x=160, y=35)
 
-            theme.show_last_convert_butt=Button(GuiConfig.window, text="Letzte Konvertierung", pady=5, padx=5, command=lambda:display_conversion)
-            theme.show_last_convert_butt.place(x=262, y=120)
+                theme.deconvert_var=Entry(GuiConfig.window, width=50)
+                theme.deconvert_var.place(x=160, y=20)
 
-            GuiConfig.optionsvar=StringVar(GuiConfig.window)
-            GuiConfig.optionsvar.set("Hex")
-            theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
-            theme.options.place(x=220, y=160)
+                theme.convert_var=Entry(GuiConfig.window, width=50)
+                theme.convert_var.place(x=160, y=60)
 
-        GuiConfig.window.after(5, lambda:set_theme(config))
-        GuiConfig.window.after(5, lambda:start_thread(config, version))
-        GuiConfig.window.after(25, lambda:GuiConfig.window.attributes("-topmost", False))
+                GuiConfig.convert=IntVar()
 
-        GuiConfig.window.mainloop()
-    except AttributeError:
-        return
+                theme.convert_check=Checkbutton(GuiConfig.window, text="Konvert", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.convert)
+                theme.convert_check.place(x=80, y=57)
+
+                GuiConfig.deconvert=IntVar()
+
+                theme.deconvert_check=Checkbutton(GuiConfig.window, text="Dekonvertieren", relief="raised", onvalue=1, offvalue=0, variable=GuiConfig.deconvert)
+                theme.deconvert_check.place(x=40, y=17)
+
+                theme.convert_butt=Button(GuiConfig.window, text="Start", padx=5, pady=5, command=lambda:prep_convert(config, theme.convert_var, theme.deconvert_var, version, backupfunc))
+                theme.convert_butt.place(x=70, y=120)
+
+                theme.settings_butt=Button(GuiConfig.window, text="Einstellungen", padx=5, pady=5, command=lambda:gui_settings(GuiConfig, config, theme, ))
+                theme.settings_butt.place(x=120, y=120) 
+
+                theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
+                theme.exit_butt.place(x=217, y=120)
+
+                theme.show_last_convert_butt=Button(GuiConfig.window, text="Letzte Konvertierung", pady=5, padx=5, command=lambda:display_conversion)
+                theme.show_last_convert_butt.place(x=262, y=120)
+
+                GuiConfig.optionsvar=StringVar(GuiConfig.window)
+                GuiConfig.optionsvar.set("Hex")
+                theme.options=OptionMenu(GuiConfig.window, GuiConfig.optionsvar, "Hex", "Pseudo Hex", "Binary", "Pseudo Binary", "Legacy Pseudo Binary", "ascii", "brainfuck", "base64", "symbenc")
+                theme.options.place(x=220, y=160)
+
+            GuiConfig.window.after(5, lambda:set_theme(config))
+            GuiConfig.window.after(5, lambda:start_thread(config, version))
+            GuiConfig.window.after(25, lambda:GuiConfig.window.attributes("-topmost", False))
+
+            GuiConfig.window.mainloop()
+        except AttributeError:
+            return
+    else:
+        print(f"This Feature is sadly unavailable due to tkinter not being installed.\n")
 # Try pyqt Chaos
 def set_theme(config):
     if config.theme.lower()=="bright":
