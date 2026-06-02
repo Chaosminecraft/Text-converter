@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.3" #The Beta version
+    beta_version="3.3.4" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -240,7 +240,7 @@ except ImportError:
     print("The GUI module is unable to be loaded. If you want teh GUI too, please download the beta again. (and if you downloaded it before, re-extract it maybe.)")
 
 try:
-    from SplitIt.backend import split
+    from SplitIt.backend import initialize
 except ImportError:
     print("The project SplitIt is unable to be imported. That means it can't be ran.")
     modules.splitit_module=False
@@ -455,9 +455,11 @@ Bitte meldet dies bei:
                       
 {info.issues_site}
 
-Info: GUI ist bis jetzt nur bei Windows 10 getestet
-
+Info: GUI ist bis jetzt nur bei Windows 10 und Windows 11 getestet
 Info: Ich arbeite jetzt am GUI Code und dies könnte nicht ganz richtig funktionieren.
+
+Info: Die neue funktion Split It wurde implementiert, Wenn es probleme gibt, Bitte melden bei mit dem log:
+{info.issues_site}
 
 Willkommen zur Beta version vom Text converter.
 
@@ -627,8 +629,25 @@ def main():
                             print("requests is not installed.")
 
                 elif VariableData.command=="split it":
-                    print("Command comming up ;)")
-                
+                    print("INFO: That command is in it's early stage. So errors may happen with the input.\nWelcome to Split It, Please give the Path of the Fluid simulation that needs to be split up.\nThese paths are needed at the moment:\n   Simulation Folder\n   The Blender File\n   The Destination of the ZIP files\n")
+                    simulation=input("Fluid Cache directory: ")
+                    if sysinf.system=="Windows":
+                        for r in (("\\", "\\\\"), ("", "")):
+                            simulation=simulation.replace(*r)
+                        print(simulation)
+                    blend_file=input("Blend File directory: ")
+                    if sysinf.system=="Windows":
+                        for r in (("\\", "\\\\"), ("", "")):
+                            blend_file=blend_file.replace(*r)
+                        print(blend_file)
+                    destination=input("What destination folder: ")
+                    if sysinf.system=="Windows":
+                        for r in (("\\", "\\\\"), ("", "")):
+                            destination=destination.replace(*r)
+                        print(destination)
+                    initialize(cache_directory_path=simulation, destination_directory_path=destination, blend_file_path=blend_file, system=sysinf.system)
+                    print()
+
                 elif VariableData.command=="start gui" or VariableData.command=="sg":
                     if modules.gui_module==True:
                         backup=config.gui
@@ -739,3 +758,5 @@ def timereader():
 
 if __name__=="__main__":
     init()
+
+    

@@ -1,5 +1,8 @@
 import os, re, time, shutil
 
+class vars:
+    system="Windows"
+
 def data_maker_function(cache_directory_name:str):
     data = []
     for folder in os.listdir(cache_directory_name):
@@ -74,10 +77,14 @@ def split_parser(bufferlist):
     
     return data
 
-def move_and_zip(parsed_bufferlist, cache_directory, destination_directory, blend_file_path):
+def move_and_zip(parsed_bufferlist, cache_directory, destination_directory, blend_file_path, system):
     main_destination = time.asctime().replace(" ", "_").replace(":", "-")
-    sim_dir_name = re.search(r"^.+/(.+)", cache_directory).group(1)
-    blend_file_name = re.search(r"^.+/(.+)", blend_file_path).group(1)
+    if system=="Windows":
+        sim_dir_name = re.search(r"^.+\\(.+)", cache_directory).group(1)
+        blend_file_name = re.search(r"^.+\\(.+)", blend_file_path).group(1)
+    else:
+        sim_dir_name = re.search(r"^.+/(.+)", cache_directory).group(1)
+        blend_file_name = re.search(r"^.+/(.+)", blend_file_path).group(1)
     for buffer in parsed_bufferlist:
         for folderlist in parsed_bufferlist[buffer]:
             foldername = re.search(r"^.+/(.+)", folderlist).group(1)
@@ -103,6 +110,7 @@ def initialize(
         cache_directory_path:str,
         destination_directory_path:str,
         blend_file_path:str,
+        system:str,
         other_files_and_dirs:list=None,
         ):
     maxsize = 2147483648
@@ -117,20 +125,14 @@ def initialize(
             maxsize
         )
     )
-    move_and_zip(splitted_data, cache_directory_path, destination_directory_path, blend_file_path)
+    move_and_zip(splitted_data, cache_directory_path, destination_directory_path, blend_file_path, system)
 
-def split(**kwargs):
-    print("This functionality is not yet implemented to work with that project and Independently.")
-    if kwargs["standalone"]==True:
-        input("Press enter to close.")
-    return
-    if kwargs["standalone"] == True:
-        temp=""
-    else:
-        temp=""
     ...
 if __name__ == "__main__":
-    split(standalone=True)
+    source="C:\\Users\\Volks\\Videos\\tmp\\fluid\\TestFluid\\"
+    dest="C:\\Users\\Volks\\Videos\\tmp\\"
+    blend="C:\\Users\\Volks\\Videos\\tmp\\fluid\\Untitled.blend"
+    initialize(cache_directory_path=source, destination_directory_path=dest, blend_file_path=blend, system="Windows")
     # print(f"\rDone!"+" "*50, end="")
     # 1 gb  = 1000000000 bytes
     # 1 gib = 1073741824 bytes

@@ -40,7 +40,6 @@ def watchdog():
             subprocess.run(['netsh', 'wlan', 'stop', 'hostednetwork'], capture_output=True)
             subprocess.run(['netsh', 'wlan', 'start', 'hostednetwork'], capture_output=True)
             print("[+] Startbefehl gesendet.")
-        if 
         else:
             print("[i] Warte auf Clients... Alles läuft normal.")
 
