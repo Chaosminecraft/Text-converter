@@ -15,6 +15,7 @@ class config:
     ad=True                   #This is if the ad for the game while true: learn(), But I'm not getting any ad money to show that, so feel free to just set it to false if you wanna.
     logg=True                 #This is a optional thing, But I'm redoing the logging part. So that is to be seen what happens to it.
     gui=False                 #The default setting of the CLI/GUI setting is False
+    gui_running=False
     theme="bright"            #The default theme setting
     log_name=""               #The log name in case of a error
     name=getpass.getuser()    #The Username
@@ -137,7 +138,8 @@ Allgemeine commands:
     lpbin konvertiert zwischen einer älteren Version von Pseudo Binary und Text
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
-    base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
+    base64 konvertiert zwischen base64 und Text (momentan nur normalen Text)
+    base32 konvertiert zwischen base32 und Text (momentan nur normalen text)
     symbenc ist eine custom Convertier methode wo zwischen Text und SymbEnc konvertiert. (Methode von voxjgithub)\n
 Zusätzliche Informationen:
     language Gibt dir eine auswahl zwischen Deutsch(de) und Englisch(en)
@@ -161,7 +163,8 @@ Common commands:
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)
-    Symbenc is a custom conversion method that converts between Text and symbenc. (Method by voxjgithub\n
+    base32 converts between base32 and text (Only normal text for now)
+    Symbenc is a custom conversion method that converts between Text and symbenc. (Method by voxjgithub)\n
 Additional info:
     language let's you change between English(en) or German(de).
     prompt let's you change the prompt look. (After startup the prompt)
@@ -490,6 +493,7 @@ PS: If there is an error after closing the graphical interface, that is not a pr
                 if config.gui==True:
                     if modules.gui_module==True:
                         threads.stop_event.set()
+                        config.gui_running=True
                         cli_to_gui(config, sysinf, version, backupfunc)
                     
                     break
@@ -503,7 +507,7 @@ def main():
             try:
                 if startup.init==False:
                     temp=datetime.datetime.now()-startup.start
-                    print(f"Before Update thread is done: {temp}S")
+                    print(f"Before Update thread is done: {temp}S\n")
                 if startup.init==False:
                     if config.upcheck==True:
                         threads.updatethread.join()
@@ -549,7 +553,7 @@ def main():
                     if modules.logg_module==True:
                         log_system(text="The test went ok.")
 
-                elif VariableData.command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc"):
+                elif VariableData.command in ("phex", "pbin", "lpbin", "hex", "bin", "ascii", "brainfuck", "base64", "symbenc", "base32"):
                     if modules.convert_module==True:
                         VariableData.converted_text=parse_input(config, mode=VariableData.command)
                     else:
@@ -568,10 +572,16 @@ def main():
                         backupfunc.backuphelp()
                 
                 elif VariableData.command in ("language", "prompt", "ad", "update", "logging", "gui", "theme"):
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
+                    if modules.settings_module==True:
+                        config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = change_settings(config, sysinf, option=VariableData.command)
+                    else:
+                        print("The settings can't be changed for the moment...")
 
                 elif VariableData.command=="reset settings":
-                    config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
+                    if modules.settings_module==True:
+                        config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = settings_init(name=config.name, host=config.host)
+                    else:
+                        config.prompt, config.language, config.ad, config.upcheck, config.logg, config.gui, config.theme = backupfunc.backup_setting_init(name=config.name, host=config.host)
                 
                 elif VariableData.command=="reload settings":
                     while True:
@@ -651,7 +661,7 @@ def main():
                 elif VariableData.command=="start gui" or VariableData.command=="sg":
                     if modules.gui_module==True:
                         backup=config.gui
-                        config.gui=True
+                        config.gui_running=True
                         cli_to_gui(config, sysinf, version, backupfunc)
                         config.gui=backup
                     else:

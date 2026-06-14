@@ -31,6 +31,7 @@ Allgemeine commands:
     ASCII konvertiert zwischen ASCII und Text
     Brainfuck konvertiert zwischen Brainfuck und Text
     base64 konvertiert zwischen base64 und Text (vorerst nur normaler Text)
+    base32 konvertiert zwischen base32 und Text (vorerst nur normaler Text)
     symbenc konvertiert zwischen symbenc und text
     start gui oder sg startet die Visuelle oberfläche\n
 Zusätzliche Informationen:
@@ -56,6 +57,7 @@ Common commands:
     ascii converts between ascii and text
     brainfuck converts between brainfuck and text
     base64 converts between base64 and text (only normal text for now)
+    base32 converts between base32 and text (only normal text for now)
     symbenc converts between smybenc and text
     start gui or sg starts the visual version\n
 Additional info:

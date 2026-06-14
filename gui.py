@@ -267,7 +267,7 @@ def title_time(config, version, GuiConfig):
             wait_time=max(0.5, elapsed_time * 2)
             time.sleep(wait_time)
 
-        print("TEST")
+        #print("TEST")
         return
 
     except:
@@ -281,7 +281,7 @@ def ui_exit(config):
         GuiConfig.stop_event.set()
         #GuiConfig.title_thread.join()
         GuiConfig.window.destroy()
-        config.gui=False
+        config.gui_running=False
         return
     else:
         return

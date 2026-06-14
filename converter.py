@@ -1,4 +1,5 @@
 import subprocess, sys, base64, platform
+from unittest.mock import Base
 
 class modules:
     more_itertools_module=True
@@ -145,7 +146,7 @@ def parse_input(config, **kwargs, ):
                     variables.exit=True
                     break
 
-        elif config.gui==True:
+        elif config.gui_running==True:
             convert_mode=kwargs["guimode"]
             content=kwargs["convdata"]
 
@@ -207,6 +208,12 @@ def process(config, **kwargs):
             else:
                 print(f"That symbol is not supported: {unsupported_symbols}")
             unsupported_symbols=""
+        
+        elif kwargs["convert"]=="base32":
+            part1=kwargs["content"].encode("ascii")
+            part2=base64.b32encode(part1)
+            variables.out=bytes.decode(part2)
+            print(variables.out)
             
         else:
             if config.language=="de":
@@ -266,6 +273,13 @@ def process(config, **kwargs):
             else:
                 print(f"Error: the symbols are not supported: {unsupported_symbols}")
                 unsupported_symbols=""
+
+        elif kwargs["convert"]=="base32":
+            part1=bytes(kwargs["content"], encoding="utf-8")
+            part2=base64.b32decode(part1)
+            variables.out=str(part2, encoding="utf-8")
+            print(variables.out)
+
         else:
             if config.language=="de":
                 print(f"\nDiese option ist nicht da, wie auch immer du es geschafft hast.\n")
