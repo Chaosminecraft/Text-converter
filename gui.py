@@ -247,25 +247,32 @@ def start_thread(config,version):
 
 # Try pyqt Chaos
 def title_time(config, version, GuiConfig):
+    count=0
     try:
         while not GuiConfig.stop_event.is_set():
-            now=datetime.datetime.now()
             start=time.time()
-            if config.language=="de":
-                if version.release==True:
-                    GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
-                else:
-                    GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
+            if count>4:
+                print(count)
+                count=0
+                now=datetime.datetime.now()
+                if config.language=="de":
+                    if version.release==True:
+                        GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
+                    else:
+                        GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
 
-            else:
-                if version.release==True:
-                    GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%m/%d/%Y, %r")}")
                 else:
-                    GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}")
+                    if version.release==True:
+                        GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%m/%d/%Y, %r")}")
+                    else:
+                        GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}")
 
+            count+=1
             elapsed_time=time.time()-start
-            wait_time=max(0.5, elapsed_time * 2)
+            wait_time=max(0.1, elapsed_time * 2)
             time.sleep(wait_time)
+            if GuiConfig.stop_event.is_set():
+                break
 
         #print("TEST")
         return

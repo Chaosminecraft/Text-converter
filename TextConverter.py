@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.6" #The Beta version
+    beta_version="3.3.7" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -88,8 +88,7 @@ class backupfunc:
             return
     
     def backup_setting_init(**kwargs):
-        system_language=locale.getdefaultlocale()[:1]
-        system_language=str(system_language).lower()[2:7]
+        system_language=str(locale.getlocale()[:1]).lower()[2:7]
     
         if system_language=="de_de":
             language="de"
@@ -109,7 +108,7 @@ class backupfunc:
     
         gui=False
         
-        theme="bright"
+        theme="dark"
     
         settings_file={
             "language":language,
@@ -124,7 +123,7 @@ class backupfunc:
         with open("settings.json", "w") as save:
             json.dump(settings_file, save)
     
-        return prompt, language, ad, upcheck, theme
+        return prompt, language, ad, upcheck, theme, logg, theme
     
     def backuphelp():
         if config.language=="de":
@@ -326,22 +325,27 @@ def updatecheck():
             #return
 
 def title_time(stop_event):
+    count=5
     try:
         if sysinf.system=="Windows":
             while not stop_event.is_set():
                 start=time.time()
-                now=datetime.datetime.now()
-                if config.language=="de":
-                    now=now.strftime("%H:%M:%S") #%H:%M:%S.%f
-                if config.language=="en":
-                    now=now.strftime("%r")
-                
-                if version.release==True:
-                    os.system(f"title TextConv V{version.version} {now}")
-                else:
-                    os.system(f"title TextConv Beta V{version.beta_version} {now}")
+                if count==5:
+                    count=0
+                    now=datetime.datetime.now()
+                    if config.language=="de":
+                        now=now.strftime("%H:%M:%S") #%H:%M:%S.%f
+                    if config.language=="en":
+                        now=now.strftime("%r")
+
+                    if version.release==True:
+                        os.system(f"title TextConv V{version.version} {now}")
+                    else:
+                        os.system(f"title TextConv Beta V{version.beta_version} {now}")
+
+                count+=1
                 elapsed_time=time.time()-start
-                wait_time=max(0.5, elapsed_time * 2)
+                wait_time=max(0.1, elapsed_time * 2)
                 time.sleep(wait_time)
             return   
 
@@ -495,8 +499,11 @@ PS: If there is an error after closing the graphical interface, that is not a pr
                         threads.stop_event.set()
                         config.gui_running=True
                         cli_to_gui(config, sysinf, version, backupfunc)
+                        stopvars.is_exit=True
+                        stopvars.exit_code=0
+                        print("It's safe to close this window.")
                     
-                    break
+                    return
                     
             else:
                 return
@@ -768,5 +775,4 @@ def timereader():
 
 if __name__=="__main__":
     init()
-
-    
+    exit()
