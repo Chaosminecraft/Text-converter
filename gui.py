@@ -2,8 +2,10 @@ class modules:
     tkinter_module_ok=True
     logg_module=True
 
+import select
+from selectors import SelectSelector
 from socket import timeout
-import ctypes, threading, datetime, time, traceback
+import ctypes, threading, datetime, time, traceback, sys
 try:
     from tkinter import *
 except ImportError:
@@ -104,7 +106,7 @@ def cli_to_gui(config, sysinf, version, backupfunc):
                 theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
                 theme.exit_butt.place(x=185, y=120)
 
-                theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion)
+                theme.show_last_convert_butt=Button(GuiConfig.window, text="Last Conversion", pady=5, padx=5, command=lambda:display_conversion())
                 theme.show_last_convert_butt.place(x=235, y=120)
 
                 GuiConfig.optionsvar=StringVar(GuiConfig.window)
@@ -144,7 +146,7 @@ def cli_to_gui(config, sysinf, version, backupfunc):
                 theme.exit_butt=Button(GuiConfig.window, text="Exit", pady=5, padx=5, command=lambda:ui_exit(config))
                 theme.exit_butt.place(x=217, y=120)
 
-                theme.show_last_convert_butt=Button(GuiConfig.window, text="Letzte Konvertierung", pady=5, padx=5, command=lambda:display_conversion)
+                theme.show_last_convert_butt=Button(GuiConfig.window, text="Letzte Konvertierung", pady=5, padx=5, command=lambda:display_conversion())
                 theme.show_last_convert_butt.place(x=262, y=120)
 
                 GuiConfig.optionsvar=StringVar(GuiConfig.window)
@@ -252,27 +254,25 @@ def title_time(config, version, GuiConfig):
         while not GuiConfig.stop_event.is_set():
             start=time.time()
             if count>4:
-                print(count)
+                #print(count)
                 count=0
                 now=datetime.datetime.now()
                 if config.language=="de":
                     if version.release==True:
-                        GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
+                        GuiConfig.window.title(f'Text Converter GUI V{version.version} {now.strftime("%d/%m/%Y, %H:%M:%S")}')
                     else:
-                        GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}")
+                        GuiConfig.window.title(f'Text Converter GUI Beta V{version.beta_version} {now.strftime("%d/%m/%Y, %H:%M:%S")}')
 
                 else:
                     if version.release==True:
-                        GuiConfig.window.title(f"Text Converter GUI V{version.version} {now.strftime("%m/%d/%Y, %r")}")
+                        GuiConfig.window.title(f'Text Converter GUI V{version.version} {now.strftime("%m/%d/%Y, %r")}')
                     else:
-                        GuiConfig.window.title(f"Text Converter GUI Beta V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}")
+                        GuiConfig.window.title(f'Text Converter GUI Beta V{version.beta_version} {now.strftime("%m/%d/%Y, %r")}')
 
             count+=1
             elapsed_time=time.time()-start
             wait_time=max(0.1, elapsed_time * 2)
             time.sleep(wait_time)
-            if GuiConfig.stop_event.is_set():
-                break
 
         #print("TEST")
         return
@@ -289,7 +289,7 @@ def ui_exit(config):
         #GuiConfig.title_thread.join()
         GuiConfig.window.destroy()
         config.gui_running=False
-        return
+        #sys.exit(0)
     else:
         return
 # Try pyqt Chaos

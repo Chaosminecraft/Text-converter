@@ -4,7 +4,7 @@ import getpass, os, platform, socket, json, traceback, locale, time, datetime, t
 class version:
     release=False        #if that version is a release or beta version
     version="3.3.0"      #The release version
-    beta_version="3.3.7" #The Beta version
+    beta_version="3.3.8" #The Beta version
 
 #The settings variables in a class (Some name clashing was making me name the settings class to config)
 class config:
@@ -427,7 +427,7 @@ def init():
                 config.theme="dark"
             break
 
-        except:
+        except Exception:
             exception=traceback.format_exc()
             text=f"There has been a edge case that has not been found yet, There is the traceback:\n{exception}"
             if modules.logg_module==True:
@@ -490,11 +490,11 @@ WARNING: Currently there is an issue with the title thread, There might be error
 I look that it doesn't happen anymore.
 PS: If there is an error after closing the graphical interface, that is not a problem at the moment.\n""")
         while stopvars.is_exit is not True:
-            if stopvars.is_exit==False:
-                if config.gui==False:
-                    main()
+            if config.gui==False:
+                main()
             
-                if config.gui==True:
+            elif config.gui==True:
+                try:
                     if modules.gui_module==True:
                         threads.stop_event.set()
                         config.gui_running=True
@@ -502,11 +502,15 @@ PS: If there is an error after closing the graphical interface, that is not a pr
                         stopvars.is_exit=True
                         stopvars.exit_code=0
                         print("It's safe to close this window.")
-                    
-                    return
-                    
-            else:
-                return
+                except:
+                    if modules.logg_module==True:
+                        log_error(text=traceback.format_exc())
+                    else:
+                        backupfunc.backup_logg(mode="logg", text=traceback.format_exc())
+                    sys.exit(stopvars.exit_code)
+                
+                break
+    return
 
 def main():
     try:
@@ -775,4 +779,3 @@ def timereader():
 
 if __name__=="__main__":
     init()
-    exit()
